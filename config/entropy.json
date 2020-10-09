@@ -1,0 +1,17 @@
+{
+    "Searcharea": "body",
+    "rules": [
+        {
+            "Code": 5001,
+            "Pattern": "('[^'\\s]{12,64}'|\"[^\"\\s]{12,64}\")",
+            "Caption": "High entropy string -- potential password",
+            "Category": "password-secret",
+            "Example": "'b6SxM4UwRm1dBqTG4zIVU6rcBy1QhnfQKmSZOnmR6fS7ZvuCxf1C1uQFNI9CVWzH'",
+            "SolutionID": 1,
+            "Severity": 3,
+            "Confidence": 3,
+            "Postprocess": "entropy",
+            "CWE": ["CWE-798", "CWE-312", "CWE-257", "CWE-259"]
+        }
+    ]
+}

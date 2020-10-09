@@ -1,0 +1,101 @@
+{
+    "Searcharea": "body",
+    "rules": [
+        {
+            "Code": 1002,
+            "Pattern": "(?i)\"p[a4@][s$][s$]w[o0]rd([#!@]?(123)?)?\"",
+            "Caption": "Potential default password in file",
+            "Category": "password-secret",
+            "Example": "\"password\"",
+            "SolutionID": 8,
+            "Severity": 2,
+            "Confidence": 3,
+            "Postprocess": "password",
+            "CWE": ["CWE-521", "CWE-312", "CWE-257", "CWE-259"]
+        },
+        {
+            "Code": 1061,
+            "Pattern": "(?i)['\"]ch[a@]ngeme['\"]",
+            "Caption": "Potential default password in file",
+            "Category": "password-secret",
+            "Example": "\"changeme\"",
+            "SolutionID": 8,
+            "Severity": 2,
+            "Confidence": 4,
+            "Postprocess": "",
+            "CWE": ["CWE-521", "CWE-312", "CWE-257", "CWE-259"]
+        },
+        {
+            "Code": 1068,
+            "Pattern": "(?i)1q2w3e4r",
+            "Caption": "Potential default password in file",
+            "Category": "password-secret",
+            "Example": "1q2w3e4r",
+            "SolutionID": 8,
+            "Severity": 2,
+            "Confidence": 3,
+            "Postprocess": "",
+            "CWE": ["CWE-521", "CWE-312", "CWE-257", "CWE-259"]
+        },
+        {
+            "Code": 1072,
+            "Pattern": "(?i)admin[1-3]",
+            "Caption": "Potential default password in file",
+            "Category": "password-secret",
+            "Example": "admin1",
+            "SolutionID": 8,
+            "Severity": 2,
+            "Confidence": 3,
+            "Postprocess": "",
+            "CWE": ["CWE-521", "CWE-312", "CWE-257", "CWE-259"]
+        },
+        {
+            "Code": 1073,
+            "Pattern": "(?i)1qaz@WSX",
+            "Caption": "Potential default password in file",
+            "Category": "password-secret",
+            "Example": "1qaz@WSX",
+            "SolutionID": 8,
+            "Severity": 2,
+            "Confidence": 3,
+            "Postprocess": "",
+            "CWE": ["CWE-521", "CWE-312", "CWE-257", "CWE-259"]
+        },
+        {
+            "Code": 1074,
+            "Pattern": "(?i)letmein",
+            "Caption": "Potential default password in file",
+            "Category": "password-secret",
+            "Example": "letmein",
+            "SolutionID": 8,
+            "Severity": 2,
+            "Confidence": 3,
+            "Postprocess": "",
+            "CWE": ["CWE-521", "CWE-312", "CWE-257", "CWE-259"]
+        },
+        {
+            "Code": 1074,
+            "Pattern": "(?i)w2e3r4t5",
+            "Caption": "Potential default password in file",
+            "Category": "password-secret",
+            "Example": "password = 'w2e3r4t5'",
+            "SolutionID": 8,
+            "Severity": 2,
+            "Confidence": 3,
+            "Postprocess": "",
+            "CWE": ["CWE-521", "CWE-312", "CWE-257", "CWE-259"]
+        },
+        {
+            "Code": 1074,
+            "Pattern": "(?i)password.+winter|spring|summer|autumn|fall",
+            "Caption": "Potential default password in file",
+            "Category": "password-secret",
+            "Example": "password = 'autumn2019'",
+            "SolutionID": 8,
+            "Severity": 2,
+            "Confidence": 3,
+            "Postprocess": "",
+            "CWE": ["CWE-521", "CWE-312", "CWE-257", "CWE-259"]
+        }
+    ]
+}

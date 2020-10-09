@@ -1,0 +1,18 @@
+{
+    "Searcharea":"body",
+    "rules": [
+        {
+            "Code": 2001,
+
+            "Pattern": "[^\\.](\\b3[47]\\d{13}\\b)",
+            "Caption": "Potential American Express credit card number in file",
+            "Category": "cc-number",
+            "Example": "\"378282246310005\"",
+            "SolutionID": 7,
+            "Severity": 2,
+            "Confidence": 2,
+            "Postprocess": "mod10",
+            "CWE": ["CWE-312"]
+        }
+    ]
+}

@@ -1,0 +1,5 @@
+    {
+        "write-timeout": 30,
+        "read-timeout": 30,
+        "idle-timeout": 120
+    }
