@@ -1,3 +1,5 @@
+#!/bin/sh
+
 #
 # Copyright 2020 American Express
 #
@@ -14,7 +16,6 @@
 # permissions and limitations under the License.
 #
 
-#!/bin/sh
 echo Installing Go-EarlyBird
 # create the default config directory structure
 CONFIGDIR="$HOME/.go-earlybird"
