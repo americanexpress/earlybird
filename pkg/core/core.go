@@ -258,7 +258,7 @@ func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, 
 			RulesObserved: len(scan.CombinedRules),
 			StartTime:     start.UTC().Format(time.RFC3339),
 			EndTime:       time.Now().UTC().Format(time.RFC3339),
-			Duration:      string(time.Since(start)),
+			Duration:      fmt.Sprint(time.Since(start)),
 		}
 		_, err = writers.WriteJSON(report, eb.Config.OutputFile)
 	case eb.Config.OutputFormat == "csv":

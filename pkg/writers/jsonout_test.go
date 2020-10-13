@@ -18,6 +18,7 @@ package writers
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 	"time"
 
@@ -52,7 +53,7 @@ func TestWriteJSON(t *testing.T) {
 					Version:   "Test 1.0",
 					StartTime: start.UTC().Format(time.RFC3339),
 					EndTime:   time.Now().UTC().Format(time.RFC3339),
-					Duration:  string(time.Since(start)),
+					Duration:  fmt.Sprint(time.Since(start)),
 				},
 			},
 			wantErr: false,

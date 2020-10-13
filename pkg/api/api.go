@@ -69,7 +69,7 @@ func Scan(cfg cfgreader.EarlybirdConfig) http.HandlerFunc {
 			RulesObserved: len(scan.CombinedRules),
 			StartTime:     start.UTC().Format(time.RFC3339),
 			EndTime:       time.Now().UTC().Format(time.RFC3339),
-			Duration:      string(time.Since(start)),
+			Duration:      fmt.Sprint(time.Since(start)),
 		}
 
 		//Encode and send JSON response
@@ -138,7 +138,7 @@ func GITScan(cfg cfgreader.EarlybirdConfig) http.HandlerFunc {
 			RulesObserved: len(scan.CombinedRules),
 			StartTime:     start.UTC().Format(time.RFC3339),
 			EndTime:       time.Now().UTC().Format(time.RFC3339),
-			Duration:      string(time.Since(start)),
+			Duration:      fmt.Sprint(time.Since(start)),
 		}
 
 		response, err := json.MarshalIndent(report, "", "\t")
