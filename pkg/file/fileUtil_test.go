@@ -17,7 +17,6 @@
 package file
 
 import (
-	"log"
 	"os"
 	"reflect"
 	"strings"
@@ -26,20 +25,16 @@ import (
 	"github.com/americanexpress/earlybird/pkg/scan"
 )
 
-var userHomeDir string
+//workDir is the relative path to project root
+var workDir = "../../"
 
 func init() {
-	var err error
-	userHomeDir, err = os.UserHomeDir()
-	if err != nil {
-		log.Fatal("Home directory doesn't exist", err)
-	}
-	ignorePatterns = getIgnorePatterns(userHomeDir+string(os.PathSeparator), ".ge_ignore", false)
+	ignorePatterns = getIgnorePatterns(workDir+string(os.PathSeparator), ".ge_ignore", false)
 }
 
 func TestGetFiles(t *testing.T) {
 	searchDir := "test_data"
-	ignoreFile := userHomeDir + string(os.PathSeparator) + ".ge_ignore"
+	ignoreFile := workDir + string(os.PathSeparator) + ".ge_ignore"
 	verbose := false
 	maxFileSize := int64(1000000)
 
@@ -117,7 +112,7 @@ func Test_getFileSizeOK(t *testing.T) {
 }
 
 func Test_getIgnorePatterns(t *testing.T) {
-	if gotIgnorePatterns := getIgnorePatterns(userHomeDir+string(os.PathSeparator), ".ge_ignore", false); len(ignorePatterns) == 0 {
+	if gotIgnorePatterns := getIgnorePatterns(workDir+string(os.PathSeparator), ".ge_ignore", false); len(ignorePatterns) == 0 {
 		t.Errorf("getIgnorePatterns() = %v, want multiple patterns", gotIgnorePatterns)
 	}
 }
