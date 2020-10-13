@@ -1,3 +1,5 @@
+#!/bin/sh
+
 #
 # Copyright 2020 American Express
 #
@@ -14,7 +16,6 @@
 # permissions and limitations under the License.
 #
 
-#!/bin/sh
 echo "Running Unit Tests"
 tmpfile=/tmp/eb-tmp.log
 if SCRIPT_OUTPUT=$(local=true go test ./pkg/... > ${tmpfile}); then
