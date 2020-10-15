@@ -159,7 +159,7 @@ func GetGitProject(gitURL string) (project string) {
 	return strings.TrimPrefix(u.Path, "/")
 }
 
-//GetGitURL Format GI URL and parse/prompt user password
+//GetGitURL Format GIT URL and parse/prompt user password
 func GetGitURL(ptrRepo, ptrRepoUser *string) (Password string) {
 	//Parse Username from URL
 	u, err := url.Parse(*ptrRepo)
