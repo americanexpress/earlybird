@@ -1,8 +1,6 @@
 ![Logo](docs/GoEarlyBird-logo_sm.png)
-&nbsp;
 
 EarlyBird is a sensitive data detection tool capable of scanning source code repositories for clear text password violations, PII, outdated cryptography methods, key files and more. It can be used to scan remote git repositories, local files or directories or as a pre-commit step.
-
 
 ## Installation
 ### Linux & Mac
@@ -11,14 +9,12 @@ Running the `build.sh` script will produce a binary for each OS, while the `inst
 ./build.sh && ./install.sh
 ```
 
-
 ### Windows
 Running `build.bat` will produce your binaries while the `install.bat` script will create a 'go-earlybird' directory in `C:\Users\[my user]\App Data\`, and copy the required configurations there.  This script will also install `go-earlybird.exe` as an executable in the App Data directory (which should be in your path).
-&nbsp;
+
 ```
 build.bat && install.bat
 ```
-
 
 ## Usage
 To launch a basic EarlyBird scan against a directory:
@@ -58,22 +54,19 @@ The MITRE Corporation provides a catalog of [Common Weakness Enumerations](https
  - [CWE-546 - Suspicious Comments](https://cwe.mitre.org/data/definitions/546.html)
  - [CWE-521 - Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)
 
-&nbsp;
-
 ---
-## Contributing
 
+## Contributing
 We welcome your interest in the American Express Open Source Community on Github. Any Contributor to
 any Open Source Project managed by the American Express Open Source Community must accept and sign
 an Agreement indicating agreement to the terms below. Except for the rights granted in this 
 Agreement to American Express and to recipients of software distributed by American Express, You
 reserve all right, title, and interest, if any, in and to your contributions. Please
 [fill out the Agreement](https://cla-assistant.io/americanexpress/earlybird).
+
 ## License
+Any contributions made under this project will be governed by the [Apache License 2.0](./LICENSE.txt).
 
-Any contributions made under this project will be governed by the
-[Apache License 2.0](./LICENSE.txt).
 ## Code of Conduct
+This project adheres to the [American Express Community Guidelines](./CODE_OF_CONDUCT.md). By participating, you are expected to honor these guidelines.
 
-This project adheres to the [American Express Community Guidelines](./CODE_OF_CONDUCT.md). By
-participating, you are expected to honor these guidelines.
