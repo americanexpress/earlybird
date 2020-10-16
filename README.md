@@ -4,7 +4,7 @@ EarlyBird is a sensitive data detection tool capable of scanning source code rep
 
 ## Installation
 ### Linux & Mac
-Running the `build.sh` script will produce a binary for each OS, while the `install.sh` script will install Earlybird on your system. This will create a `.go-earlybird` directory in your home diretory with all the configuration files. Finally installing `go-earlybird` as an executable in `/usr/local/bin/`.
+Running the `build.sh` script will produce a binary for each OS, while the `install.sh` script will install Earlybird on your system. This will create a `.go-earlybird` directory in your home directory with all the configuration files. Finally installing `go-earlybird` as an executable in `/usr/local/bin/`.
 ```
 ./build.sh && ./install.sh
 ```
