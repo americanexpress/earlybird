@@ -36,6 +36,7 @@ jobs:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ./binaries/go-earlybird-linux
           asset_name: go-earlybird-linux
+          asset_content_type: application/octet-stream
       - name: Upload macOS Release Asset
         id: upload-macos
         uses: actions/upload-release-asset@v1
@@ -45,6 +46,7 @@ jobs:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ./binaries/go-earlybird
           asset_name: go-earlybird-macos
+          asset_content_type: application/octet-stream
       - name: Upload Windows Release Asset
         id: upload-windows
         uses: actions/upload-release-asset@v1
@@ -54,3 +56,4 @@ jobs:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ./binaries/go-earlybird.exe
           asset_name: go-earlybird.exe
+          asset_content_type: application/x-msdownload
