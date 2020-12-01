@@ -2,7 +2,7 @@ on:
   push:
     branches: [ main, master ]
 
-name: Build and publish new EarlyBird release
+name: Create new EarlyBird release
 
 jobs:
   build:
