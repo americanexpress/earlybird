@@ -19,26 +19,15 @@ package cfgreader
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
-
 	"os"
-
-	"github.com/americanexpress/earlybird/pkg/utils"
 )
 
 //Settings contains imported earlybird.json configuration
 var Settings Configs
 
-func init() {
-	configPath := utils.GetConfigDir() + "earlybird.json"
-	err := LoadConfig(&Settings, configPath)
-	if err != nil {
-		log.Fatal("Failed to load Earlybird config", err)
-	}
-}
-
 //LoadConfig parses json configuration file into structure
 func LoadConfig(cfg interface{}, path string) (err error) {
+
 	jsonFile, err := os.Open(path)
 	// if we os.Open returns an error then handle it
 	if err != nil {

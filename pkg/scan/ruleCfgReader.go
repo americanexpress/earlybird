@@ -19,6 +19,7 @@ package scan
 import (
 	"fmt"
 	"os"
+	"path"
 	"regexp"
 
 	cfgreader "github.com/americanexpress/earlybird/pkg/config"
@@ -47,14 +48,14 @@ func Init(cfg cfgreader.EarlybirdConfig) {
 
 	//Load solutions for the rules
 	if cfg.ShowSolutions {
-		SolutionConfigs = loadSolutions(cfg.ConfigDir + "solutions.json")
+		SolutionConfigs = loadSolutions(path.Join(cfg.ConfigDir , "solutions.json"))
 	}
 
 	// Init label configs
-	Labels = loadLabelConfigs(cfg.ConfigDir + "labels.json")
+	Labels = loadLabelConfigs(path.Join(cfg.ConfigDir , "labels.json"))
 
 	//Load false positive rules
-	FalsePositiveRules = loadFalsePositives(cfg.ConfigDir + "false-positives.json")
+	FalsePositiveRules = loadFalsePositives(path.Join(cfg.ConfigDir, "false-positives.json"))
 
 	// If we're only displaying the rules to be run, filter out anything that we wouldn't fail on and exit to skip the scan.
 	// Only one output option since we exit before any interaction with Writers

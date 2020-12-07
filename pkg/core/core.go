@@ -23,6 +23,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"time"
 
 	"github.com/americanexpress/earlybird/pkg/api"
@@ -134,14 +135,23 @@ func (eb *EarlybirdCfg) StartHTTP(ptr PTRHTTPConfig) {
 
 //ConfigInit loads in the earlybird configuration and CLI flags
 func (eb *EarlybirdCfg) ConfigInit() {
-	eb.Config.ConfigDir = utils.GetConfigDir()
+	flag.Parse()
+
+	//Load Earlybird config
+	eb.Config.ConfigDir = *ptrConfigDir
+	configPath := path.Join(eb.Config.ConfigDir, "earlybird.json")
+	log.Printf("Earlybird config path- %s ...", configPath)
+	err := cfgreader.LoadConfig(&cfgreader.Settings, configPath)
+	if err != nil {
+		log.Fatal("Failed to load Earlybird config ", err)
+	}
+
 	eb.Config.LevelMap = cfgreader.Settings.GetLevelMap()
 	// Build the string to display available modules for the CLI flags
 	availableModules := cfgreader.Settings.GetAvailableModules()
 
-	//Load CLI arguments and parse
+	//Load CLI arguments
 	flag.Var(&enableFlags, "enable", "Enable individual scanning modules "+utils.GetDisplayList(availableModules))
-	flag.Parse()
 
 	//Assign CLI arguments to our global configuration
 	eb.Config.WorkerCount = *ptrWorkerCount
@@ -153,7 +163,6 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	eb.Config.OutputFormat = *ptrOutputFormat
 	eb.Config.OutputFile = *ptrOutputFile
 	eb.Config.SearchDir = *ptrPath
-	eb.Config.ConfigDir = *ptrConfigDir
 	eb.Config.IgnoreFile = *ptrIgnoreFile
 	eb.Config.GitStream = *ptrGitStreamInput
 	eb.Config.RulesOnly = *ptrRulesOnly
@@ -169,7 +178,6 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	// Check to see if the user opted to update.  If they choose this option
 	// the configuration files will be updated and the program will exit.
 	if *ptrUpdateFlag {
-		configPath := utils.GetConfigDir() + "earlybird.json"
 		doUpdate(eb.Config.ConfigDir, configPath, cfgreader.Settings.ConfigFileURL)
 	}
 
