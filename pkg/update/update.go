@@ -19,7 +19,9 @@ package configupdate
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"path"
 
 	cfgreader "github.com/americanexpress/earlybird/pkg/config"
 )
@@ -28,8 +30,8 @@ import (
 func UpdateConfigFiles(configDir string, appConfigPath string, appConfigURL string) error {
 	var moduleFilePath string
 	for _, module := range cfgreader.Settings.ModuleConfigs {
-		moduleFilePath = configDir + module.Name + ".json"
-		fmt.Println("Updating ", moduleFilePath)
+		moduleFilePath = path.Join(configDir , module.Name + ".json")
+		log.Println("Updating ", moduleFilePath)
 		if module.ConfigURL != "" {
 			err := downloadFile(moduleFilePath, module.ConfigURL)
 			if err != nil {
@@ -38,7 +40,7 @@ func UpdateConfigFiles(configDir string, appConfigPath string, appConfigURL stri
 		}
 	}
 
-	fmt.Println("Updating ", appConfigPath)
+	log.Println("Updating ", appConfigPath)
 	return downloadFile(moduleFilePath, appConfigURL)
 }
 
