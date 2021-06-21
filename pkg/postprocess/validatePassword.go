@@ -35,7 +35,7 @@ func PasswordFalse(password string) (confidence int, ignore bool) {
 	confidence = 3 // Mark default confidence medium
 	// Separate password from full value
 	passwords := pswdPattern.FindStringSubmatch(password)
-	// FIXME the conditional >2 will never evaluate to true with the "current" pswdRegex.
+	// Note: the conditional >2 will never evaluate to true with the "current" pswdRegex.
 	// However, leaving to ensure we do not break any other flows and leaving to core development team to identify if can be removed later
 	if len(passwords) > 2 {
 		password = passwords[2]

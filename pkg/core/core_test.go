@@ -83,9 +83,6 @@ func TestEarlybirdCfg_getDefaultModuleSettings(t *testing.T) {
 		"inclusivity": {
 			DisplaySeverity: "high",
 		},
-		"rtfUrl": {
-			DisplayConfidence: "medium",
-		},
 	}
 	eb.Config.ModuleConfigs.Modules = modules
 
@@ -93,11 +90,6 @@ func TestEarlybirdCfg_getDefaultModuleSettings(t *testing.T) {
 
 	// we didn't explicitly configure  DisplayConfidence, make sure it got set to global default
 	if got, want := eb.Config.ModuleConfigs.Modules["inclusivity"].DisplayConfidenceLevel, eb.Config.ConfidenceDisplayLevel; got != want {
-		t.Fatalf("Unexpected default value set, got: %d, want: %d", got, want)
-	}
-
-	// we didn't explicitly configure DisplaySeverity, make sure it got set to global default
-	if got, want := eb.Config.ModuleConfigs.Modules["rtfUrl"].DisplaySeverityLevel, eb.Config.SeverityDisplayLevel; got != want {
 		t.Fatalf("Unexpected default value set, got: %d, want: %d", got, want)
 	}
 

@@ -230,7 +230,7 @@ var testsSkipSameKeyValuePasswords []struct {
 		name: "Skip same key/value when match value and line value are different",
 		params: params{
 			matchValue: "Secret=npazAppSecret",
-			lineValue:  "npaz.appSecret=npazAppSecret",
+			lineValue:  "api.appSecret=apiAppSecret",
 		},
 		wantIgnore: true,
 	},
