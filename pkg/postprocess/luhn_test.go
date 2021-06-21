@@ -28,7 +28,7 @@ func TestIsCard(t *testing.T) {
 			true,
 		},
 		{
-			"Test AMEX example credit card",
+			"Test AMEX example credit card", //For more information, see designated test card number page
 			"370000000000002",
 			true,
 		},

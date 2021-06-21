@@ -19,33 +19,48 @@ package scan
 import (
 	"bufio"
 	"crypto/sha1"
+	cfgReader "github.com/americanexpress/earlybird/pkg/config"
+	"github.com/americanexpress/earlybird/pkg/utils"
+	"path"
 	"reflect"
 	"strconv"
 	"strings"
 	"testing"
-
-	cfgReader "github.com/americanexpress/earlybird/pkg/config"
-	"github.com/americanexpress/earlybird/pkg/utils"
 )
 
 var cfg = cfgReader.EarlybirdConfig{
-	ConfigDir:              utils.GetConfigDir(),
-	IgnoreFile:             utils.GetConfigDir() + ".ge_ignore",
-	SeverityDisplayLevel:   4,
-	SeverityFailLevel:      4,
-	ConfidenceDisplayLevel: 4,
-	ConfidenceFailLevel:    4,
-	MaxFileSize:            10240000,
-	WorkLength:             2500,
-	EnabledModules:         []string{"ccnumber", "common", "content", "filename", "entropy"},
+	ConfigDir:               path.Join(utils.MustGetWD(), utils.GetConfigDir()),
+	LabelsConfigDir:         path.Join(utils.MustGetWD(), utils.GetConfigDir(), "labels"),
+	FalsePositivesConfigDir: path.Join(utils.MustGetWD(), utils.GetConfigDir(), "falsepositives"),
+	RulesConfigDir:          path.Join(utils.MustGetWD(), utils.GetConfigDir(), "rules"),
+	IgnoreFile:              path.Join(utils.MustGetWD(), "../../.ge_ignore"),
+	SeverityDisplayLevel:    4,
+	SeverityFailLevel:       4,
+	ConfidenceDisplayLevel:  4,
+	ConfidenceFailLevel:     4,
+	MaxFileSize:             10240000,
+	WorkLength:              2500,
+	EnabledModulesMap:       map[string]string{"content": "content.yaml", "password-secret": "password-secret.yaml"},
+	LevelMap: map[string]int{
+		"critical": 1,
+		"high":     2,
+		"info":     5,
+		"low":      4,
+		"medium":   3,
+	},
 }
 
 func init() {
+	err := cfgReader.LoadConfig(&cfgReader.Settings, path.Join(utils.MustGetWD(), utils.GetConfigDir(), "earlybird.json"))
+	if err != nil {
+		panic(err)
+	}
+
+	cfg.AdjustedSeverityCategories = cfgReader.Settings.AdjustedSeverityCategories
 	Init(cfg)
 }
 
 func TestScanFiles(t *testing.T) {
-	CombinedRules = loadRuleConfigs(2, 4, utils.GetConfigDir()+"content.json")
 	files := []File{
 		{
 			Name: "file.py",
@@ -126,7 +141,7 @@ func Test_hitUnique(t *testing.T) {
 		Code:       3003,
 		Line:       1,
 		Filename:   "sample.py",
-		MatchValue: "password = '123'",
+		MatchValue: "tomcat_password = '123'",
 	}
 
 	digest := sha1.New()
@@ -179,7 +194,6 @@ func Test_hitUnique(t *testing.T) {
 }
 
 func Test_scanLine(t *testing.T) {
-	CombinedRules = loadRuleConfigs(4, 4, utils.GetConfigDir()+"content.json")
 	var fileLines []Line
 	type args struct {
 		line      Line
@@ -200,6 +214,26 @@ func Test_scanLine(t *testing.T) {
 				fileLines: fileLines,
 			},
 			wantIsHit: true,
+		},
+		{
+			name: "Find fall as a password",
+			args: args{
+				line: Line{
+					LineValue: "password = fall123",
+				},
+				fileLines: fileLines,
+			},
+			wantIsHit: true,
+		},
+		{
+			name: "Ignore fall in a sentence",
+			args: args{
+				line: Line{
+					LineValue: "using fall in a general sentence should not error",
+				},
+				fileLines: fileLines,
+			},
+			wantIsHit: false,
 		},
 	}
 	for _, tt := range tests {
@@ -226,7 +260,7 @@ func Test_scanName(t *testing.T) {
 		{
 			name: "Check if keyfile matches",
 			args: args{
-				rules: loadRuleConfigs(2, 2, utils.GetConfigDir()+"filename.json"),
+				rules: loadRuleConfigs(cfg, "filename", "filename.yaml"),
 				file: File{
 					Name: "findme.pem",
 					Path: "/bad/findme.pem",
@@ -238,9 +272,11 @@ func Test_scanName(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotIsHit, gotHit := scanName(tt.args.file, tt.args.rules, cfg.LevelMap, cfg.ShowSolutions)
-			if !gotIsHit {
-				t.Errorf("scanName() gotIsHit = %v, want true", gotIsHit)
+
+			if gotIsHit != tt.wantIsHit {
+				t.Errorf("scanName() gotIsHit = %v, want %v", gotIsHit, tt.wantIsHit)
 			}
+
 			if gotHit.Code == 0 {
 				t.Errorf("scanName() gotIsHit = %v, want non empty hit", gotHit)
 			}
@@ -411,10 +447,194 @@ func Test_labelHit(t *testing.T) {
 		Code:       3003,
 		Line:       1,
 		Filename:   "sample.py",
-		MatchValue: "test_password = '123'",
+		MatchValue: "tomcat_password = '123'",
 	}
 	labelHit(hit, []Line{})
 	if len(hit.Labels) != 0 {
 		t.Errorf("LabelHit() = [], failed to label hit")
+	}
+}
+
+func Test_determineSeverity(t *testing.T) {
+	rule := Rule{
+		Category: "password-secret",
+		Code:     3001,
+		Severity: 2,
+	}
+
+	tests := []struct {
+		name               string
+		hit                *Hit
+		expectedSeverity   string
+		expectedSeverityId int
+	}{
+		{
+			name: "it should return normal severity findings",
+			hit: &Hit{
+				Code:       3001,
+				Line:       1,
+				Filename:   "bar/foo.js",
+				MatchValue: "password = 'aReallyBadPassword'",
+			},
+			expectedSeverity:   "high",
+			expectedSeverityId: 2,
+		},
+		{
+			name: "it should reduce severity findings based on test dir",
+			hit: &Hit{
+				Code:       3001,
+				Line:       1,
+				Filename:   "a/b/__tests__/foo.js",
+				MatchValue: "password = 'aReallyBadPassword'",
+			},
+			expectedSeverity:   "medium",
+			expectedSeverityId: 3,
+		},
+		{
+			name: "it should reduce severity findings based on e0 dir",
+			hit: &Hit{
+				Code:       3001,
+				Line:       1,
+				Filename:   "root/of/repo/e0/foo.js",
+				MatchValue: "password = 'aReallyBadPassword'",
+			},
+			expectedSeverity:   "medium",
+			expectedSeverityId: 3,
+		},
+		{
+			name: "it should reduce severity findings for files with e0 in name",
+			hit: &Hit{
+				Code:       3001,
+				Line:       1,
+				Filename:   "bar/config-e0.js",
+				MatchValue: "password = 'aReallyBadPassword'",
+			},
+			expectedSeverity:   "medium",
+			expectedSeverityId: 3,
+		},
+		{
+			name: "it should reduce severity findings for files with e0 in name #2",
+			hit: &Hit{
+				Code:       3001,
+				Line:       1,
+				Filename:   "bar/latest/e0.js",
+				MatchValue: "password = 'aReallyBadPassword'",
+			},
+			expectedSeverity:   "medium",
+			expectedSeverityId: 3,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.hit.determineSeverity(&cfg, &rule)
+
+			if tt.hit.SeverityID != tt.expectedSeverityId && tt.hit.Severity != tt.expectedSeverity {
+				t.Errorf("hit.Severity = %s, want %s, hit.SeverityId = %d, want %d", tt.hit.Severity, tt.expectedSeverity, tt.hit.SeverityID, tt.expectedSeverityId)
+			}
+		})
+	}
+}
+
+func Test_determineScanFail(t *testing.T) {
+	levelMap := map[string]int{
+		"critical": 1,
+		"high":     2,
+		"info":     5,
+		"low":      4,
+		"medium":   3,
+	}
+	tests := []struct {
+		name           string
+		hit            *Hit
+		cfg            *cfgReader.EarlybirdConfig
+		shouldFailScan bool
+	}{
+		{
+			name: "hit severity < fail severity and hit confidence < fail confidence",
+			hit: &Hit{
+				SeverityID:   1, // critical
+				ConfidenceID: 1, // critical
+			},
+			cfg: &cfgReader.EarlybirdConfig{
+				SeverityFailLevel:   2, // high
+				ConfidenceFailLevel: 2, // high
+				LevelMap:            levelMap,
+			},
+			shouldFailScan: true,
+		},
+		{
+			name: "hit severity == fail severity and hit confidence == fail confidence",
+			hit: &Hit{
+				SeverityID:   2, // high
+				ConfidenceID: 2, // high
+			},
+			cfg: &cfgReader.EarlybirdConfig{
+				SeverityFailLevel:   2, // high
+				ConfidenceFailLevel: 2, // high
+				LevelMap:            levelMap,
+			},
+			shouldFailScan: true,
+		},
+		{
+			name: "hit severity < fail severity and hit confidence > fail confidence",
+			hit: &Hit{
+				SeverityID:   1, // high
+				ConfidenceID: 3, // medium
+			},
+			cfg: &cfgReader.EarlybirdConfig{
+				SeverityFailLevel:   2, // high
+				ConfidenceFailLevel: 2, // high
+				LevelMap:            levelMap,
+			},
+			shouldFailScan: false,
+		},
+		{
+			name: "hit severity > fail severity and hit confidence < fail confidence",
+			hit: &Hit{
+				SeverityID:   3, // medium
+				ConfidenceID: 1, // critical
+			},
+			cfg: &cfgReader.EarlybirdConfig{
+				SeverityFailLevel:   2, // high
+				ConfidenceFailLevel: 2, // high
+				LevelMap:            levelMap,
+			},
+			shouldFailScan: false,
+		},
+		{
+			name: "hit severity > fail severity and hit confidence > fail confidence",
+			hit: &Hit{
+				SeverityID:   3, // medium
+				ConfidenceID: 3, // medium
+			},
+			cfg: &cfgReader.EarlybirdConfig{
+				SeverityFailLevel:   2, // high
+				ConfidenceFailLevel: 2, // high
+				LevelMap:            levelMap,
+			},
+			shouldFailScan: false,
+		},
+		{
+			name: "hit severity is info level",
+			hit: &Hit{
+				SeverityID:   5, // info
+				ConfidenceID: 1, // critical
+			},
+			cfg: &cfgReader.EarlybirdConfig{
+				SeverityFailLevel:   2, // high
+				ConfidenceFailLevel: 2, // high
+				LevelMap:            levelMap,
+			},
+			shouldFailScan: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := determineScanFail(tt.cfg, tt.hit); got != tt.shouldFailScan {
+				t.Errorf("determineScanFail() = %t, want %t", got, tt.shouldFailScan)
+			}
+		})
 	}
 }

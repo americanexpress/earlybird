@@ -17,18 +17,21 @@
 package utils
 
 import (
-	"fmt"
 	"log"
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
+	"unicode"
 
 	"github.com/howeyc/gopass"
 )
 
-//Contains Does an array/slice contain a string
+var gitURLPattern = regexp.MustCompile(`([^/]*)(?:.git)`)
+
+// Contains Does an array/slice contain a string
 func Contains(haystack []string, needle string) bool {
 	for _, item := range haystack {
 		if item == needle {
@@ -38,7 +41,7 @@ func Contains(haystack []string, needle string) bool {
 	return false
 }
 
-//PathMustExist exit if path is invalid
+// PathMustExist exit if path is invalid
 func PathMustExist(path string) {
 	if fileExists, err := Exists(path); !fileExists {
 		if err != nil {
@@ -47,9 +50,9 @@ func PathMustExist(path string) {
 	}
 }
 
-//GetConfigDir Determine the operating system and pull the path to the go-earlybird config directory
+// GetConfigDir Determine the operating system and pull the path to the go-earlybird config directory
 func GetConfigDir() (configDir string) {
-	if strings.HasSuffix(os.Args[0], ".test") { //Return repository config directory when testing ../../config
+	if strings.HasSuffix(os.Args[0], ".test") { // Return repository config directory when testing ../../config
 		return ".." + string(os.PathSeparator) + ".." + string(os.PathSeparator) + "config" + string(os.PathSeparator)
 	}
 
@@ -64,7 +67,7 @@ func GetConfigDir() (configDir string) {
 	localOverrideFileCheck := localOverrideDir + ebConfFileName
 	if fe, _ := Exists(localOverrideFileCheck); fe {
 		configDir = localOverrideDir
-		fmt.Println("Using local config directory: ", localOverrideDir)
+		log.Println("Using local config directory: ", localOverrideDir)
 	} else {
 		switch runtime.GOOS {
 		case "windows":
@@ -79,7 +82,7 @@ func GetConfigDir() (configDir string) {
 	return configDir
 }
 
-//MustGetED Get the executable directory or exit
+// MustGetED Get the executable directory or exit
 func MustGetED() string {
 	ex, err := os.Executable()
 	if err != nil {
@@ -88,7 +91,7 @@ func MustGetED() string {
 	return filepath.Dir(ex)
 }
 
-//MustGetWD Get the CWD for the default target Directory or exit
+// MustGetWD Get the CWD for the default target Directory or exit
 func MustGetWD() string {
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -97,7 +100,7 @@ func MustGetWD() string {
 	return cwd
 }
 
-//GetTargetType returns the file scan context
+// GetTargetType returns the file scan context
 func GetTargetType(GitStagedFlag, GitTrackedFlag bool) (targetType string) {
 	if GitStagedFlag {
 		targetType = Staged
@@ -109,48 +112,79 @@ func GetTargetType(GitStagedFlag, GitTrackedFlag bool) (targetType string) {
 	return targetType
 }
 
-//GetEnabledModules returns a list of modules enabled by default or explicitly defined with CLI paramters
-func GetEnabledModules(enableFlags, availableModules []string) (enabledModules []string) {
+// GetEnabledModulesMap returns a map of module name to filename enabled by default or explicitly defined with CLI paramters
+func GetEnabledModulesMap(enableFlags []string, availableModules map[string]string) (enabledModules map[string]string) {
+	enabledModules = make(map[string]string)
+
 	if len(enableFlags) == 0 {
 		return availableModules
 	}
 
 	for _, moduleName := range enableFlags {
-		if Contains(availableModules, moduleName) {
-			enabledModules = append(enabledModules, moduleName)
-		}
+		enabledModules[moduleName] = availableModules[moduleName]
 	}
 	return enabledModules
 }
 
-//GetDisplayList Build the string to display an array in a human readable format
+// GetDisplayList Build the string to display an array in a human readable format
 func GetDisplayList(levelNames []string) string {
 	return "[ " + strings.Join(levelNames, " | ") + " ]"
 }
 
-//DeleteGit Check if we've cloned a git repo, if so delete it
+// DeleteGit Check if we've cloned a git repo, if so delete it
 func DeleteGit(ptrRepo string, path string) {
 	if ptrRepo != "" {
 		err := os.RemoveAll(path)
 		if err != nil {
-			fmt.Println(errGitDelete, err)
+			log.Println(errGitDelete, err)
 		}
 	}
 }
 
-//GetGitRepo Parse repository name from URL
+// GetGitRepo Parse repository name from URL
 func GetGitRepo(gitURL string) (repository string) {
-	u, err := url.Parse(gitURL)
-	if err != nil {
-		return
+	if strings.Contains(gitURL, "github.com/") {
+		u, err := url.Parse(gitURL)
+		if err != nil {
+			return
+		}
+		repository = strings.TrimPrefix(u.Path, "/")
+	} else {
+		items := gitURLPattern.FindStringSubmatch(gitURL)
+		if len(items) > 1 {
+			repository = items[1]
+		}
 	}
-	repository = strings.TrimPrefix(u.Path, "/")
-	//Trim suffix .git if exists
-	repository = strings.TrimSuffix(repository, filepath.Ext(repository))
 	return repository
 }
 
-//GetGitProject parse project from URL
+// GetBBProject Parse project name from bitbucket URL
+func GetBBProject(bbURL string) (project string) {
+	re := regexp.MustCompile(`(?:projects/)([^/]*)`)
+	results := re.FindStringSubmatch(bbURL) // Match second capture group, 1 = project/XXX, 2 = XXX
+	if len(results) < 1 {
+		log.Println("Failed To Get BB Project from URL:", bbURL)
+		os.Exit(1)
+	} else {
+		project = results[1]
+	}
+	return project
+}
+
+// ParseBBURL Parse the base URL, Path and project name from BB URL
+func ParseBBURL(bbURL string) (baseurl, path, project string) {
+	u, err := url.Parse(bbURL)
+	if err != nil {
+		log.Println("Failed to parse Bitbucket URL")
+		return
+	}
+	baseurl = u.Scheme + "://" + u.Host               // Parse Base URL
+	parts := strings.Split(bbURL, "/projects/")       // Get URL before /projects
+	path = strings.Replace(parts[0], baseurl, "", -1) // Delete the base url leaving the path
+	return baseurl, path, GetBBProject(bbURL)
+}
+
+// GetGitProject parse project from URL
 func GetGitProject(gitURL string) (project string) {
 	u, err := url.Parse(gitURL)
 	if err != nil {
@@ -159,38 +193,38 @@ func GetGitProject(gitURL string) (project string) {
 	return strings.TrimPrefix(u.Path, "/")
 }
 
-//GetGitURL Format GIT URL and parse/prompt user password
+// GetGitURL Format GI URL and parse/prompt user password
 func GetGitURL(ptrRepo, ptrRepoUser *string) (Password string) {
-	//Parse Username from URL
+	// Parse Username from URL
 	u, err := url.Parse(*ptrRepo)
 	if err != nil {
 		return
 	}
 
-	//Remove Username prefix
+	// Remove Username prefix
 	*ptrRepo = strings.Replace(*ptrRepo, u.User.Username()+"@", "", 1)
 	if *ptrRepoUser == "" {
 		*ptrRepoUser = u.User.Username()
 	}
 
-	//Remove HTTP and HTTPS prefix
+	// Remove HTTP and HTTPS prefix
 	*ptrRepo = strings.Replace(*ptrRepo, gitHTTP, "", 1)
 	*ptrRepo = strings.Replace(*ptrRepo, gitHTTPS, "", 1)
 	*ptrRepo = gitHTTPS + *ptrRepo
 	if *ptrRepoUser != "" {
-		fmt.Print(gitPasswdPrompt)
+		log.Print(gitPasswdPrompt)
 		RepoPass, err := gopass.GetPasswdMasked()
 		if err != nil {
-			fmt.Println(errGitPasswd, err)
+			log.Println(errGitPasswd, err)
 			os.Exit(1)
 		}
-		//Format git URL with user and password
+		// Format git URL with user and password
 		return string(RepoPass)
 	}
 	return ""
 }
 
-//Exists Check to see if a path exists
+// Exists Check to see if a path exists
 func Exists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -200,4 +234,14 @@ func Exists(path string) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+// GetAlphaNumericValues returns the alphanumeric part of the input string
+func GetAlphaNumericValues(input string) string {
+	return strings.Map(func(r rune) rune {
+		if unicode.IsLetter(r) || unicode.IsNumber(r) {
+			return r
+		}
+		return -1
+	}, input)
 }

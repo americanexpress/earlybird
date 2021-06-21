@@ -1,0 +1,80 @@
+---
+Searcharea: body
+rules:
+  - Code: 2001
+    Pattern: "[^\\.](\\b3[47]\\d{13}\\b)"
+    Caption: Potential credit card number in file
+    Category: cc-number
+    Example: '"378282246310005"'
+    SolutionID: 7
+    Severity: 2
+    Confidence: 2
+    Postprocess: mod10
+    CWE:
+      - CWE-312
+  - Code: 2002
+    Pattern: "[^\\.](\\b3(0[0-5]|[68]\\d)\\d{11}\\b)"
+    Caption: Potential credit card number in file
+    Category: cc-number
+    Example: '"30569309025904"'
+    SolutionID: 7
+    Severity: 2
+    Confidence: 2
+    Postprocess: mod10
+    CWE:
+      - CWE-312
+  - Code: 2003
+    Pattern: "[^\\.](\\b6(011|5\\d{2})(\\d{12})\\b)"
+    Caption: Potential credit card number in file
+    Category: cc-number
+    Example: '"6011111111111117"'
+    SolutionID: 7
+    Severity: 2
+    Confidence: 2
+    Postprocess: mod10
+    CWE:
+      - CWE-312
+  - Code: 2004
+    Pattern: "[^\\.](\\b(2131|1800|35\\d{3})\\d{11}\\b)"
+    Caption: Potential credit card number in file
+    Category: cc-number
+    Example: '"3530111333300000"'
+    SolutionID: 7
+    Severity: 2
+    Confidence: 2
+    Postprocess: mod10
+    CWE:
+      - CWE-312
+  - Code: 2005
+    Pattern: "[^\\.](\\b(5[0678]\\d{2}|6304|6390|67\\d{2})\\d{8,15}\\b)"
+    Caption: Potential credit card number in file
+    Category: cc-number
+    Example: '"6304000000000000"'
+    SolutionID: 7
+    Severity: 2
+    Confidence: 2
+    Postprocess: mod10
+    CWE:
+      - CWE-312
+  - Code: 2006
+    Pattern: "[^\\.](\\b(5[1-5]\\d{2}|222[1-9]|22[3-9]\\d|2[3-6]\\d{2}|27[01]\\d|2720)\\d{12}\\b)"
+    Caption: Potential credit card number in file
+    Category: cc-number
+    Example: '"5555555555554444"'
+    SolutionID: 7
+    Severity: 2
+    Confidence: 2
+    Postprocess: mod10
+    CWE:
+      - CWE-312
+  - Code: 2007
+    Pattern: "[^\\.](\\b(4\\d{15})\\b)"
+    Caption: Potential credit card number in file
+    Category: cc-number
+    Example: '"4111111111111111"'
+    SolutionID: 7
+    Severity: 2
+    Confidence: 2
+    Postprocess: mod10
+    CWE:
+      - CWE-312

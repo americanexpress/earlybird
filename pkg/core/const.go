@@ -24,6 +24,13 @@ import (
 	"github.com/americanexpress/earlybird/pkg/utils"
 )
 
+const (
+	rulesDir          = "rules"
+	falsePositivesDir = "falsepositives"
+	labelsDir         = "labels"
+	solutionsDir      = "solutions"
+)
+
 type arrayFlags []string
 
 func (i *arrayFlags) String() string {
@@ -64,4 +71,5 @@ var (
 	ptrDisplaySeverityThreshold   = flag.String("display-severity", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.DisplayThreshold), "Lowest severity level to display "+levelOptions)
 	ptrDisplayConfidenceThreshold = flag.String("display-confidence", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.DisplayConfidenceThreshold), "Lowest confidence level to display "+levelOptions)
 	ptrFailConfidenceThreshold    = flag.String("fail-confidence", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.FailThreshold), "Lowest confidence level at which to fail "+levelOptions)
+	ptrModuleConfigFile           = flag.String("module-config-file", "", "Path to file with per module config settings")
 )

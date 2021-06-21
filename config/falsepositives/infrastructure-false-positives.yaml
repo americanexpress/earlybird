@@ -1,0 +1,22 @@
+---
+rules:
+  - Codes:
+      - 3020
+    Pattern: "(?i)00[:-]?00[:-]?5e[:-]?00[:-]?53[:-]?[0-9a-f]{2}"
+    FileExtensions: []
+    UseFullLine: true
+    Description: 'Ignore unicast mac addresses that fall within RFC 7042 documentation
+    range: https://tools.ietf.org/html/rfc7042#section-2.1.2'
+  - Codes:
+      - 3020
+    Pattern: "(?i)01[:-]?00[:-]?5e[:-]?90[:-]?10[:-]?[0-9a-f]{2}"
+    FileExtensions: []
+    UseFullLine: true
+    Description: 'Ignore multicast mac addresses that fall within RFC 7042 documentation
+    range: https://tools.ietf.org/html/rfc7042#section-2.1.2'
+  - Codes:
+      - 3020
+    Pattern: 00[:-]?00[:-]?00[:-]?00[:-]?00[:-]?00
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore mac addresses that are all zeros

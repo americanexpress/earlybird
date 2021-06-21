@@ -19,8 +19,6 @@ package scan
 import (
 	"regexp"
 	"testing"
-
-	"github.com/americanexpress/earlybird/pkg/utils"
 )
 
 func Test_findHit(t *testing.T) {
@@ -185,41 +183,6 @@ func Test_shouldStrip(t *testing.T) {
 	}
 }
 
-func Test_findFalsePositive(t *testing.T) {
-	FalsePositiveRules = loadFalsePositives(utils.GetConfigDir() + "false-positives.json")
-	tests := []struct {
-		name     string
-		hit      Hit
-		wantIsFP bool
-	}{
-		{
-			name: "Don't skip positive finding",
-			hit: Hit{
-				Code:       3001,
-				Filename:   "source.java",
-				MatchValue: `password = "StrongFinding5813!"`,
-			},
-			wantIsFP: false,
-		},
-		{
-			name: "Skip false positive",
-			hit: Hit{
-				Code:       3001,
-				Filename:   "source.properties",
-				MatchValue: `password=None`,
-			},
-			wantIsFP: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if gotIsFP := findFalsePositive(tt.hit); gotIsFP != tt.wantIsFP {
-				t.Errorf("findFalsePositive() = %v, want %v", gotIsFP, tt.wantIsFP)
-			}
-		})
-	}
-}
-
 func Test_getLevelNameFromID(t *testing.T) {
 	type args struct {
 		level    int
@@ -260,8 +223,8 @@ func Test_getZIPURL(t *testing.T) {
 	}{
 		{
 			name: "Get zip URL",
-			url:  "https://example.com/foobar/sample.zip/ignorethis",
-			want: "https://example.com/foobar/sample.zip",
+			url:  "https://github.com/test/sample.zip/ignorethis",
+			want: "https://github.com/test/sample.zip",
 		},
 	}
 	for _, tt := range tests {
@@ -284,12 +247,20 @@ func Test_getFileURL(t *testing.T) {
 		wantFileurl string
 	}{
 		{
-			name: "Get file link from repository link and path",
+			name: "Get file link from github link and path",
 			args: args{
-				giturl:   "https://example.com/foobar",
+				giturl:   "https://github.com/test",
 				filepath: "test_data/sample.zip",
 			},
-			wantFileurl: "test_data/sample.zip:https://example.com/foobar/blob/master/test_data/sample.zip",
+			wantFileurl: "test_data/sample.zip:https://github.com/test/blob/master/test_data/sample.zip",
+		},
+		{
+			name: "Get file link from bitbucket link and path",
+			args: args{
+				giturl:   "https://bitbucket.com/stash/scm/project/test",
+				filepath: "test_data/sample.zip",
+			},
+			wantFileurl: "test_data/sample.zip:https://bitbucket.com/stash/projects/project/repos/test/browse/test_data/sample.zip",
 		},
 	}
 	for _, tt := range tests {

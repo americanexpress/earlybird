@@ -1,0 +1,14 @@
+---
+rules:
+  - Codes:
+      - 20014
+    Pattern: (?i)ticketmaster
+    FileExtensions:
+    UseFullLine: false
+    Description: Ignore references to the ticketmaster company
+  - Codes:
+      - 20014
+    Pattern: (?i)mastercard
+    FileExtensions:
+    UseFullLine: false
+    Description: Ignore references to the mastercard company

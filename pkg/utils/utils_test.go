@@ -160,8 +160,8 @@ func TestGetGitRepo(t *testing.T) {
 	}{
 		{
 			name:           "Parse repository name from git repo",
-			gitURL:         "https://example.com/foobar/earlybird",
-			wantRepository: "foobar/earlybird",
+			gitURL:         "https://github.com/americanexpress/earlybird",
+			wantRepository: "americanexpress/earlybird",
 		},
 	}
 	for _, tt := range tests {
@@ -172,6 +172,60 @@ func TestGetGitRepo(t *testing.T) {
 		})
 	}
 }
+
+func TestGetBBProject(t *testing.T) {
+	tests := []struct {
+		name        string
+		bbURL       string
+		wantProject string
+	}{
+		{
+			name:        "Parse project from bitbucket URL",
+			bbURL:       "https://example.com/stash/projects/TEST123/repos/test-repo/browse",
+			wantProject: "TEST123",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotProject := GetBBProject(tt.bbURL); gotProject != tt.wantProject {
+				t.Errorf("GetBBProject() = %v, want %v", gotProject, tt.wantProject)
+			}
+		})
+	}
+}
+
+func TestParseBBURL(t *testing.T) {
+	tests := []struct {
+		name        string
+		bbURL       string
+		wantBaseurl string
+		wantPath    string
+		wantProject string
+	}{
+		{
+			name:        "Parse bitbucket URL format into separate values",
+			bbURL:       "https://example.com/stash/projects/TEST123/repos/test-repo/browse",
+			wantBaseurl: "https://example.com",
+			wantPath:    "/stash",
+			wantProject: "TEST123",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotBaseurl, gotPath, gotProject := ParseBBURL(tt.bbURL)
+			if gotBaseurl != tt.wantBaseurl {
+				t.Errorf("ParseBBURL() gotBaseurl = %v, want %v", gotBaseurl, tt.wantBaseurl)
+			}
+			if gotPath != tt.wantPath {
+				t.Errorf("ParseBBURL() gotPath = %v, want %v", gotPath, tt.wantPath)
+			}
+			if gotProject != tt.wantProject {
+				t.Errorf("ParseBBURL() gotProject = %v, want %v", gotProject, tt.wantProject)
+			}
+		})
+	}
+}
+
 func TestGetGitProject(t *testing.T) {
 	testURL := "https://example.com/test-project"
 	tests := []struct {
@@ -251,6 +305,33 @@ func TestExists(t *testing.T) {
 			}
 			if got != tt.want {
 				t.Errorf("Exists() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetAlphaNumericValues(t *testing.T) {
+	tests := []struct {
+		name  string
+		value string
+		want  string
+	}{
+		{
+			name:  "Remove Underscore from string",
+			value: "COUCHBASE_PASSWORD",
+			want:  "COUCHBASEPASSWORD",
+		},
+		{
+			name:  "Remove all special chars from the string",
+			value: "MONGO$##@@)(!~_PASSWORD##$$%%_123",
+			want:  "MONGOPASSWORD123",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := GetAlphaNumericValues(tt.value)
+			if got != tt.want {
+				t.Errorf("GetAlphaNumericValues() = %v, want %v", got, tt.want)
 			}
 		})
 	}

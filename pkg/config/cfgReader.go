@@ -17,9 +17,13 @@
 package cfgreader
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"unicode"
+
+	"github.com/ghodss/yaml"
 )
 
 //Settings contains imported earlybird.json configuration
@@ -27,18 +31,22 @@ var Settings Configs
 
 //LoadConfig parses json configuration file into structure
 func LoadConfig(cfg interface{}, path string) (err error) {
-
-	jsonFile, err := os.Open(path)
+	file, err := os.Open(path)
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		return err
 	}
 	// defer the closing of our jsonFile so that we can parse it later on
-	defer jsonFile.Close()
+	defer file.Close()
 
 	// read our opened json file as a byte array.
-	byteValue, readErr := ioutil.ReadAll(jsonFile)
+	data, readErr := ioutil.ReadAll(file)
 	if readErr != nil {
+		return readErr
+	}
+
+	byteValue, err := toJson(data)
+	if err != nil {
 		return err
 	}
 
@@ -50,6 +58,29 @@ func LoadConfig(cfg interface{}, path string) (err error) {
 	}
 
 	return err
+}
+
+// toJson returns json from data. If data is already json this fn is a noop, if data is yaml
+// the yaml is converted to json
+func toJson(data []byte) ([]byte, error) {
+	if hasJSONPrefix(data) {
+		return data, nil
+	}
+
+	return yaml.YAMLToJSON(data)
+}
+
+// hasJSONPrefix determines if data has an opening curly brace, signifying the file is json
+func hasJSONPrefix(data []byte) bool {
+	jsonPrefix := []byte("{")
+	return hasPrefix(data, jsonPrefix)
+}
+
+// hasPrefix determines if the bytes has a particular prefix
+func hasPrefix(data, prefix []byte) bool {
+	trimmed := bytes.TrimLeftFunc(data, unicode.IsSpace)
+
+	return bytes.HasPrefix(trimmed, prefix)
 }
 
 //TranslateLevelID returns the text value of a level integer (e.g., 2 --> high)
@@ -87,12 +118,4 @@ func (cfg *Configs) GetLevelMap() (levelMap map[string]int) {
 		levelMap[levelConfig.Name] = levelConfig.ID
 	}
 	return levelMap
-}
-
-//GetAvailableModules returns all Earlybird available modules
-func (cfg *Configs) GetAvailableModules() (modules []string) {
-	for _, module := range cfg.ModuleConfigs {
-		modules = append(modules, module.Name)
-	}
-	return modules
 }

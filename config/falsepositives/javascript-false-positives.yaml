@@ -1,0 +1,19 @@
+---
+rules:
+  - Codes:
+      - 3057
+      - 3006
+      - 3026
+    Pattern: (?i)['"]?(password|passphrase|secret)['"]? *[:=] *['"]?(conf|config)\.[a-z0-9.]+
+    FileExtensions:
+      - ".js"
+      - ".ts"
+    UseFullLine: true
+    Description: Ignore password like 'config.elastic.password'
+  - Codes:
+      - 6008
+    Pattern: ".*PropTypes.*"
+    FileExtensions:
+      - ".jsx"
+    UseFullLine: false
+    Description: Ignore token in PropType definitions

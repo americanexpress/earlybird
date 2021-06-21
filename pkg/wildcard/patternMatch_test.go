@@ -60,10 +60,50 @@ func TestWildcardPatternMatch(t *testing.T) {
 		want bool
 	}{
 		{
-			name: "Match foobar wildcard",
+			name: "Match google wildcard",
 			args: args{
-				str:     "foobar",
-				pattern: "f*bar",
+				str:     "google",
+				pattern: "g*gle",
+			},
+			want: true,
+		},
+		{
+			name: "Match LICENSE",
+			args: args{
+				str:     "LICENSE",
+				pattern: "LICENSE",
+			},
+			want: true,
+		},
+		{
+			name: "Match LICENSE with wildcards: 1",
+			args: args{
+				str:     "LICENSE",
+				pattern: "*LICENSE*",
+			},
+			want: true,
+		},
+		{
+			name: "Match filepath with wildcards",
+			args: args{
+				str:     "bundle.min.js",
+				pattern: "*.min.js",
+			},
+			want: true,
+		},
+		{
+			name: "Match filepath extension",
+			args: args{
+				str:     "something.woff",
+				pattern: "*.woff",
+			},
+			want: true,
+		},
+		{
+			name: "Match file recursively",
+			args: args{
+				str:     "/some/deeply/nested/dir/something.woff",
+				pattern: "*.woff",
 			},
 			want: true,
 		},
