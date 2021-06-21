@@ -1,31 +1,5 @@
 {
-  "modules": [
-    {
-      "name": "ccnumber",
-      "default_enabled": true,
-      "config_url": "https://raw.githubusercontent.com/americanexpress/earlybird/master/config/ccnumber.json"
-    },
-    {
-      "name": "common",
-      "default_enabled": true,
-      "config_url": "https://raw.githubusercontent.com/americanexpress/earlybird/master/config/common.json"
-    },
-    {
-      "name": "content",
-      "default_enabled": true,
-      "config_url": "https://raw.githubusercontent.com/americanexpress/earlybird/master/config/content.json"
-    },
-    {
-      "name": "entropy",
-      "default_enabled": false,
-      "config_url": "https://raw.githubusercontent.com/americanexpress/earlybird/master/config/entropy.json"
-    },
-    {
-      "name": "filename",
-      "default_enabled": true,
-      "config_url": "https://raw.githubusercontent.com/americanexpress/earlybird/master/config/filename.json"
-    }
-  ],
+  "config_base_url": "https://raw.githubusercontent.com/americanexpress/earlybird/master/config",
   "finding_levels": [
     {
       "level_name": "critical",
@@ -42,13 +16,61 @@
     {
       "level_name": "low",
       "level_id": 4
+    },
+    {
+      "level_name": "info",
+      "level_id": 5
     }
   ],
-  "text_ignore_patterns": ["EARLYBIRD-IGNORE","EB-IGNORE"],
-  "filename_skip_text_scanning_extensions": [".pem",".p12",".pkcs12",".jks",".ppk",".pfx",".asc",".private_key",".keychain",".keystore",".keyring",".pcap",".htpasswd",".kwallet",".tblk",".min.js",".js.map",".css",".min.css",".woff",".ttf",".otf",".png",".gif",".jpg",".jpeg",".svg",".tiff"],
+  "text_ignore_patterns": ["EARLYBIRD-IGNORE", "EB-IGNORE"],
+  "filename_skip_text_scanning_extensions": [
+    ".pem",
+    ".p12",
+    ".pkcs12",
+    ".jks",
+    ".ppk",
+    ".pfx",
+    ".asc",
+    ".private_key",
+    ".keychain",
+    ".keystore",
+    ".keyring",
+    ".pcap",
+    ".htpasswd",
+    ".kwallet",
+    ".tblk",
+    ".min.js",
+    ".js.map",
+    ".css",
+    ".min.css",
+    ".woff",
+    ".ttf",
+    ".otf",
+    ".png",
+    ".gif",
+    ".jpg",
+    ".jpeg",
+    ".svg",
+    ".tiff"
+  ],
   "fail_threshold_level": 2,
   "display_threshold_level": 3,
   "display_confidence_threshold_level": 2,
   "earlybird_config_url": "https://raw.githubusercontent.com/americanexpress/earlybird/master/config/earlybird.json",
-  "version": "1.25.0"
+  "version": "2.0.0",
+  "name": "earlybird",
+  "adjusted_severity_categories_patterns": [
+    {
+      "category": "password-secret",
+      "patterns": [
+        "(?i)/e0/",
+        "(?i)/test/",
+        "(?i)/tests/",
+        "(?i)/__tests__/",
+        "(?i)e0\\.(yaml|yml|properties|js|json)"
+      ],
+      "adjusted_display_severity": "medium",
+      "use_filename": true
+    }
+  ]
 }

@@ -85,7 +85,7 @@ func hitsToFile(hits <-chan scan.Hit, fileName string, showFullLine bool) error 
 	//Get actual file stats for file size
 	fi, err := f.Stat()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return err
 	}
 	fmt.Println(fi.Size(), outputBytesWritten, fileName)

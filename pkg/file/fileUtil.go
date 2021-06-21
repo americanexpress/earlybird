@@ -19,6 +19,8 @@ package file
 import (
 	"archive/zip"
 	"bufio"
+	"bytes"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -36,9 +38,85 @@ import (
 )
 
 var (
-	ignoreFiles    = [...]string{".ge_ignore", ".gitignore"}
+	ignoreFiles    = [...]string{".ge_ignore", ".gitignore"} //TODO make this list configurable
 	ignorePatterns []string
 )
+
+//MultipartToScanFiles converts the multipart file upload into Earlybird files
+func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.EarlybirdConfig) (fileList []scan.File, err error) {
+	ignorePatterns = getIgnorePatterns(cfg.SearchDir, cfg.IgnoreFile, cfg.VerboseEnabled)
+
+	for _, fheader := range files {
+		myfile, err := fheader.Open()
+		if err != nil {
+			return fileList, err
+		}
+		// Per the HTTP spec, The filename directive of multipart form data will have it's path information stripped https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition.
+		// .ge_ignore file only works on absolute paths, not the basename of a file
+		// client will send filepath as base64 encoded and earlybird will decode to get the full path
+		// a `/` in order to have the .ge_ignore rules apply for files scanned by HTTP request
+		fileNameBytes, err := base64.StdEncoding.DecodeString(fheader.Filename)
+		var fileName string
+		// If filename is passed as utf-8 string then base64 decode will throw error
+		if err != nil {
+			fileName = fheader.Filename // Support utf-8 filename as backward compatibility
+		} else {
+			fileName = string(fileNameBytes) // Use base64 decoded value
+		}
+		fileNameWithPathPrefix := fileName
+		pathSeparator := "/"
+		if !strings.HasPrefix(fileName, pathSeparator) {
+			fileNameWithPathPrefix = pathSeparator + fileNameWithPathPrefix
+		}
+		//Skip file with extensions Earlybird ignores
+		if isIgnoredFile(fileNameWithPathPrefix) {
+			continue
+		}
+
+		//Start of file upload parsing (indepth comments in scanUtil.go)
+		curFile := scan.File{
+			Name: fileNameWithPathPrefix,
+			Path: "buffer",
+		}
+
+		var line scan.Line
+		reader := bufio.NewReader(myfile)
+		for {
+			var buffer bytes.Buffer
+
+			var l []byte
+			var isPrefix bool
+			for {
+				l, isPrefix, err = reader.ReadLine()
+				buffer.Write(l)
+				//Reached the end of the line, stop reading.
+				if !isPrefix {
+					break
+				}
+				// EOF, break
+				if err != nil {
+					break
+				}
+			}
+			if err == io.EOF {
+				break
+			}
+			lineText := buffer.String()
+			line.LineNum = line.LineNum + 1
+			line.LineValue = lineText
+			line.FilePath = curFile.Path
+			line.FileName = fileNameWithPathPrefix
+			curFile.Lines = append(curFile.Lines, line)
+		}
+		if err != io.EOF {
+			return fileList, err
+		}
+
+		myfile.Close()
+		fileList = append(fileList, curFile)
+	}
+	return
+}
 
 //GetGitFiles Builds the list of staged or tracked files
 func GetGitFiles(fileType string, cfg *cfgreader.EarlybirdConfig) (fileContext Context, err error) {
@@ -77,7 +155,7 @@ func parseGitFiles(out []byte, verbose bool, maxFileSize int64) (fileList []scan
 	// Convert byteArray to string
 	gitFiles := string(out)
 	if len(gitFiles) < 1 {
-		fmt.Println(gitErr)
+		log.Println(gitErr)
 	} else {
 		// Parse the directory tree into a slice of scan.File objects
 		scanner := bufio.NewScanner(strings.NewReader(gitFiles))
@@ -87,11 +165,11 @@ func parseGitFiles(out []byte, verbose bool, maxFileSize int64) (fileList []scan
 			if fileExists := Exists(curFile.Path); fileExists {
 				pathIsDirectory, dirErr := isDirectory(curFile.Path)
 				if dirErr != nil {
-					fmt.Println(dirErr)
+					log.Println(dirErr)
 				}
 				if !pathIsDirectory && getFileSizeOK(curFile.Path, maxFileSize) {
 					if verbose {
-						fmt.Println("Reading file ", curFile.Path)
+						log.Println("Reading file ", curFile.Path)
 					}
 					fileList = append(fileList, curFile)
 				}
@@ -108,7 +186,7 @@ func GetFiles(searchDir, ignoreFile string, verbose bool, maxFileSize int64) (fi
 	var curFile scan.File
 	err = filepath.Walk(searchDir, func(path string, f os.FileInfo, err error) error {
 		if err != nil {
-			fmt.Println("Error reading directory: ", err)
+			log.Println("Error reading directory: ", err)
 		}
 		if !isIgnoredFile(path) {
 			// Ignore the path if it's a directory
@@ -119,7 +197,7 @@ func GetFiles(searchDir, ignoreFile string, verbose bool, maxFileSize int64) (fi
 				}
 				if getFileSizeOK(path, maxFileSize) {
 					if verbose {
-						fmt.Println("Reading file ", curFile.Path)
+						log.Println("Reading file ", curFile.Path)
 					}
 					curFile.Name = f.Name()
 					curFile.Path = path
@@ -127,14 +205,14 @@ func GetFiles(searchDir, ignoreFile string, verbose bool, maxFileSize int64) (fi
 				} else {
 					fileContext.SkippedFiles = append(fileContext.SkippedFiles, path)
 					if verbose {
-						fmt.Println("Ignoring", path, ". Filesize is too large.")
+						log.Println("Ignoring", path, ". Filesize is too large.")
 					}
 				}
 			}
 		} else {
 			fileContext.SkippedFiles = append(fileContext.SkippedFiles, path)
 			if verbose {
-				fmt.Println("Ignoring", path, ". File blacklisted.")
+				log.Println("Ignoring", path, ". File blacklisted.")
 			}
 		}
 		return err
@@ -256,7 +334,7 @@ func getIgnorePatterns(path, ignoreFile string, verbose bool) (ignorePatterns []
 	if ignoreFile != "" {
 		file, err := os.Open(ignoreFile)
 		if err != nil {
-			fmt.Println("Failed to open ignore file", err)
+			log.Println("Failed to open ignore file", err)
 		} else {
 			defer file.Close()
 			scanner := bufio.NewScanner(file)
@@ -275,7 +353,7 @@ func getIgnorePatterns(path, ignoreFile string, verbose bool) (ignorePatterns []
 	}
 
 	if verbose {
-		fmt.Println("Ignore pattern: ", strings.Join(ignorePatterns, ", "))
+		log.Println("Ignore pattern: ", strings.Join(ignorePatterns, ", "))
 	}
 	return ignorePatterns
 }
@@ -419,45 +497,4 @@ func Uncompress(src string, dest string) (filenames []string, err error) {
 		}
 	}
 	return filenames, nil
-}
-
-//MultipartToScanFiles converts the multipart file upload into Earlybird files
-func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.EarlybirdConfig) (fileList []scan.File, err error) {
-	ignorePatterns = getIgnorePatterns(cfg.SearchDir, cfg.IgnoreFile, cfg.VerboseEnabled)
-
-	for _, fheader := range files {
-		myfile, err := fheader.Open()
-		if err != nil {
-			return fileList, err
-		}
-
-		//Skip file with extensions Earlybird ignores
-		if isIgnoredFile(fheader.Filename) {
-			continue
-		}
-
-		//Start of file upload parsing (indepth comments in scanUtil.go)
-		curFile := scan.File{
-			Name: fheader.Filename,
-			Path: "buffer",
-		}
-
-		var line scan.Line
-
-		scanner := bufio.NewScanner(bufio.NewReader(myfile))
-		for scanner.Scan() {
-			lineText := scanner.Text()
-			line.LineNum = line.LineNum + 1
-			line.LineValue = lineText
-			line.FilePath = curFile.Path
-			line.FileName = fheader.Filename
-			curFile.Lines = append(curFile.Lines, line)
-		}
-		if err := scanner.Err(); err != nil {
-			return fileList, err
-		}
-		myfile.Close()
-		fileList = append(fileList, curFile)
-	}
-	return
 }

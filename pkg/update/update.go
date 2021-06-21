@@ -21,36 +21,61 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"path"
 
 	cfgreader "github.com/americanexpress/earlybird/pkg/config"
 )
 
 //UpdateConfigFiles updates all of the modules via the defined module URL in earlybird.json
-func UpdateConfigFiles(configDir string, appConfigPath string, appConfigURL string) error {
-	var moduleFilePath string
-	for _, module := range cfgreader.Settings.ModuleConfigs {
-		moduleFilePath = path.Join(configDir , module.Name + ".json")
+func UpdateConfigFiles(configDir, rulesConfigDir, appConfigPath, appConfigURL string, ruleModulesFilenameMap map[string]string) error {
+	for _, fileName := range ruleModulesFilenameMap {
+		moduleFilePath := path.Join(rulesConfigDir, fileName)
 		log.Println("Updating ", moduleFilePath)
-		if module.ConfigURL != "" {
-			err := downloadFile(moduleFilePath, module.ConfigURL)
-			if err != nil {
-				return err
-			}
+
+		parsedUrl, err := url.Parse(cfgreader.Settings.ConfigBaseUrl)
+
+		if err != nil {
+			return err
+		}
+
+		parsedUrl.Path = path.Join(parsedUrl.Path, fileName)
+
+		err = downloadFile(moduleFilePath, parsedUrl.String())
+
+		if err != nil {
+			return err
 		}
 	}
 
 	log.Println("Updating ", appConfigPath)
-	return downloadFile(moduleFilePath, appConfigURL)
+	return downloadFile(path.Join(configDir, "earlybird.json"), appConfigURL)
 }
 
 func downloadFile(path string, url string) error {
-	resp, err := http.Get(url)
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+
+	if err != nil {
+		return err
+	}
+
+	req.Header.Add("Accept", "application/json")
+	resp, err := client.Do(req)
+
 	if err != nil {
 		return fmt.Errorf("downloading file from %s: %v", url, err)
 	}
+
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		b, _ := ioutil.ReadAll(resp.Body)
+		return fmt.Errorf("received non 200 status code: status=%d, response=%v", resp.StatusCode, string(b))
+	}
+
 	b, err := ioutil.ReadAll(resp.Body)
+
 	if err != nil {
 		return fmt.Errorf("reading response body: %v", err)
 	}

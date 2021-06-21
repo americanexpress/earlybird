@@ -24,7 +24,7 @@ import (
 
 func Test_splitDiffs(t *testing.T) {
 	gitReader := strings.NewReader(`commit 719709695ab1041c8cde51b721cdc4e63cbac389 (HEAD -> example, origin/example)
-		Author: Foo Bar <example@example.com>
+		Author: Foo Bar <foo@bar.com>
 		Date:   Fri Jan 17 11:34:35 2020 -0700
 		
 			feature(test): Important GIT diff test

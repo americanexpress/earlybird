@@ -16,11 +16,14 @@
 
 package postprocess
 
-const (
-	//WeakPswdCaption is the caption used for password values we identify as weak
-	WeakPswdCaption string = "Potentially Weak Password"
-	strongPswdLen   int    = 9
-	pswdRegex       string = "(?:[:=])(.*)"
-	pswdMinLen      int    = 3
-	splitPswdRegex  string = "[:=]"
+import (
+	"strings"
 )
+
+// To report account_token as credit card, need to skip for password
+func SkipAccountTokenPassword(password string) bool {
+	if strings.Contains(password, "account_token") {
+		return true
+	}
+	return false
+}

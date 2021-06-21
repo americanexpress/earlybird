@@ -27,7 +27,7 @@ func Test_downloadFile(t *testing.T) {
 	}
 	path, _ := os.Getwd()
 	path += "test.txt"
-	err := downloadFile(path, "http://example.com") //Check if page loads
+	err := downloadFile(path, "http://httpstat.us/200") //Check if page loads
 	if err != nil {
 		t.Errorf("Failed to download file: %v", err)
 	} else {

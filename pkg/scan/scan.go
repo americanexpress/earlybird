@@ -19,7 +19,6 @@ package scan
 import (
 	"bufio"
 	"crypto/sha1"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -102,21 +101,23 @@ func scanPool(cfg *cfgReader.EarlybirdConfig, wg *sync.WaitGroup, jobMutex *sync
 						}
 						jobMutex.Unlock()
 						hits <- hit //Push hits to channel
-						// If a hit severity is less than the failLevel, set failScan = true
-						if i := cfg.LevelMap[hit.Severity]; i <= cfg.SeverityFailLevel {
-							cfg.FailScan = true
-						}
 
-						// If a hit confidence is less than the failLevel, set failScan = true
-						if i := cfg.LevelMap[hit.Confidence]; i <= cfg.ConfidenceFailLevel {
-							cfg.FailScan = true
-						}
+						cfg.FailScan = determineScanFail(cfg, &hit)
 					}
 				}
 			}
 			defer wg.Done()
 		}(w)
 	}
+}
+
+// determine if we should fail scan based on severity and confidence
+func determineScanFail(cfg *cfgReader.EarlybirdConfig, hit *Hit) bool {
+	if hit.Severity == infoLevelSeverity {
+		return false
+	}
+
+	return hit.SeverityID <= cfg.SeverityFailLevel && hit.ConfidenceID <= cfg.ConfidenceFailLevel
 }
 
 //contentJobWriter creates work based off file content for scanning
@@ -229,7 +230,7 @@ func hitUnique(dupeMap map[string]bool, hit Hit) bool {
 	digest := sha1.New()
 	_, err := digest.Write([]byte(hit.Filename + strconv.Itoa(hit.Line) + hit.MatchValue))
 	if err != nil {
-		fmt.Println("Failed to produce digest of hit", err)
+		log.Println("Failed to produce digest of hit", err)
 	}
 	hithash := string(digest.Sum(nil))
 	//hash hit here
@@ -252,38 +253,39 @@ func scanLine(line Line, fileLines []Line, cfg *cfgReader.EarlybirdConfig) (isHi
 
 		patternMatch, matchValue := findHit(line.LineValue, rule.CompiledPattern)
 
+		if !patternMatch {
+			continue
+		}
+
 		//If we found a Regexp match, build a Hit
-		if patternMatch {
-			hit.Code = rule.Code
-			hit.Severity = getLevelNameFromID(rule.Severity, cfg.LevelMap)
-			hit.SeverityID = rule.Severity
-			hit.Confidence = getLevelNameFromID(rule.Confidence, cfg.LevelMap)
-			hit.ConfidenceID = rule.Confidence
-			hit.Caption = rule.Caption
-			hit.Category = rule.Category
-			if cfg.ShowSolutions {
-				hit.Solution = SolutionConfigs[rule.SolutionID].Text
-			}
-			hit.CWE = rule.CWE
-			hit.Line = line.LineNum
-			hit.LineValue = strings.TrimSpace(line.LineValue)
-			hit.MatchValue = matchValue
-			if line.FilePath != "buffer" {
-				hit.Filename = removeTempPrefix(line.FilePath)
-			} else {
-				hit.Filename = line.FileName
-			}
-			hit.Time = time.Now().UTC().Format(time.RFC3339)
+		hit.Code = rule.Code
+		hit.Confidence = getLevelNameFromID(rule.Confidence, cfg.LevelMap)
+		hit.ConfidenceID = rule.Confidence
+		hit.Caption = rule.Caption
+		hit.Category = rule.Category
+		if cfg.ShowSolutions {
+			hit.Solution = SolutionConfigs[rule.SolutionID].Text
+		}
+		hit.CWE = rule.CWE
+		hit.Line = line.LineNum
+		hit.LineValue = strings.TrimSpace(line.LineValue)
+		hit.MatchValue = matchValue
+		if line.FilePath != "buffer" {
+			hit.Filename = removeTempPrefix(line.FilePath)
+		} else {
+			hit.Filename = line.FileName
+		}
+		hit.Time = time.Now().UTC().Format(time.RFC3339)
+		hit.determineSeverity(cfg, &rule)
 
-			// Apply labels to the hit if appropriate
-			labelHit(&hit, fileLines)
+		// Apply labels to the hit if appropriate
+		labelHit(&hit, fileLines)
 
-			//Check if our hit has any false positives
-			success := hit.postProcess(cfg, &rule)
-			if success {
-				isHit = true
-				hits = append(hits, hit)
-			}
+		//Check if our hit has any false positives
+		isStillHit := hit.postProcess(cfg, &rule)
+		if isStillHit {
+			isHit = true
+			hits = append(hits, hit)
 		}
 
 	}
@@ -477,24 +479,72 @@ func labelHit(hit *Hit, fileLines []Line) {
 	}
 }
 
+func (hit *Hit) determineSeverity(cfg *cfgReader.EarlybirdConfig, rule *Rule) {
+	// check if for the given category we need to adjust the severity based on user config
+	for _, adjustedSeverityCategoryCfg := range cfg.AdjustedSeverityCategories {
+		if adjustedSeverityCategoryCfg.Category == rule.Category {
+			for _, p := range adjustedSeverityCategoryCfg.CompiledPatterns {
+				var test string
+
+				if adjustedSeverityCategoryCfg.UseFilename {
+					test = hit.Filename
+				} else if adjustedSeverityCategoryCfg.UseLineValue {
+					test = hit.LineValue
+				} else {
+					test = hit.MatchValue
+				}
+
+				if p.Match([]byte(test)) {
+					severityId := getIdFromLevelName(adjustedSeverityCategoryCfg.AdjustedDisplaySeverity, cfg.LevelMap)
+
+					hit.Severity = getLevelNameFromID(severityId, cfg.LevelMap)
+					hit.SeverityID = severityId
+					return
+				}
+			}
+		}
+	}
+
+	hit.Severity = getLevelNameFromID(rule.Severity, cfg.LevelMap)
+	hit.SeverityID = rule.Severity
+}
+
 func (hit *Hit) postProcess(cfg *cfgReader.EarlybirdConfig, rule *Rule) (isHit bool) {
 	fpHit := false
 	if !cfg.IgnoreFPRules {
 		fpHit = findFalsePositive(*hit)
 	}
-
 	switch {
 	case fpHit:
 		isHit = false
-
 		// Check if a password is valid and weak.  Exclude if invalid, label as 'weak' if weak
 	case rule.Postprocess == "password":
-		//If it's a false positive return no match
+		// Skip account_token as password so that it can be reported under credit card
+		SkipAccountToken := postprocess.SkipAccountTokenPassword(hit.LineValue)
+		if SkipAccountToken {
+			isHit = false
+			break
+		}
+		// If it's a false positive return no match.
 		Confidence, IsFalsePositive := postprocess.PasswordFalse(hit.MatchValue)
 		if IsFalsePositive {
 			isHit = false
 			break
 		}
+		// Skip password as same key/value pair
+		IsPasswordSameKeyValue := postprocess.SkipSameKeyValuePassword(hit.MatchValue, hit.LineValue)
+		if IsPasswordSameKeyValue {
+			isHit = false
+			break
+		}
+
+		// Skip password if the value has unicode char in it
+		passwordContainsUnicode := postprocess.SkipPasswordWithUnicode(hit.MatchValue)
+		if passwordContainsUnicode {
+			isHit = false
+			break
+		}
+
 		hit.Confidence = getLevelNameFromID(Confidence, cfg.LevelMap)
 		hit.ConfidenceID = Confidence
 

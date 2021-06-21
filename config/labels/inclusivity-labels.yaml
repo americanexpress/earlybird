@@ -1,0 +1,72 @@
+---
+labels:
+  - label: whitelist
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20001
+  - label: white_list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20002
+  - label: white-list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20003
+  - label: whtlist
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20004
+  - label: wht_list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20005
+  - label: wht-list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20006
+  - label: blacklist
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20007
+  - label: black_list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20008
+  - label: black-list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20009
+  - label: blklist
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20010
+  - label: blk_list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20011
+  - label: blk-list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20012
+  - label: slave
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20013
+  - label: master
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20014

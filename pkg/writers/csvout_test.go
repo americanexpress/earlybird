@@ -29,7 +29,7 @@ func TestWriteCSV(t *testing.T) {
 			Code:       3003,
 			Line:       1,
 			Filename:   "sample.py",
-			MatchValue: "password = '123'",
+			MatchValue: "tomcat_password = '123'",
 		}
 	}()
 

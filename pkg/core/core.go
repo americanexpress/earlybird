@@ -24,6 +24,8 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/americanexpress/earlybird/pkg/api"
@@ -58,7 +60,7 @@ func (eb *EarlybirdCfg) GitClone(ptr PTRGitConfig) {
 		scanRepos = git.ReposPerProject(*ptr.Project, *ptr.RepoUser, gitPassword)
 
 		if eb.Config.OutputFormat != "json" && !(*ptrStreamInput) {
-			fmt.Println("Cloning", len(scanRepos), "Repositories in", utils.GetGitProject(*ptr.Project))
+			log.Println("Cloning", len(scanRepos), "Repositories in", utils.GetGitProject(*ptr.Project))
 		}
 	}
 
@@ -74,12 +76,12 @@ func (eb *EarlybirdCfg) GitClone(ptr PTRGitConfig) {
 			eb.Config.SearchDir, err = git.CloneGitRepos(scanRepos, "", "", (eb.Config.OutputFormat == "json")) //Blank no auth
 		}
 		if err != nil {
-			fmt.Println("Failed to clone repository:", err)
+			log.Println("Failed to clone repository:", err)
 			os.Exit(1)
 		}
 	} else {
 		if eb.Config.OutputFormat != "json" && !(*ptrStreamInput) {
-			fmt.Println("Scanning directory: ", eb.Config.SearchDir)
+			log.Println("Scanning directory: ", eb.Config.SearchDir)
 		}
 	}
 }
@@ -95,15 +97,16 @@ func (eb *EarlybirdCfg) StartHTTP(ptr PTRHTTPConfig) {
 	r.HandleFunc("/categories", api.Categories(eb.Config.Version, scan.CombinedRules)).Methods("GET")
 	// Catch-all: Serve our JavaScript application's entry-point (index.html) and static assets directly.
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir(userHomeDir + string(os.PathSeparator) + ".eb-wa-build" + string(os.PathSeparator))))
+
+	var serverconfig cfgreader.ServerConfig
 	//Default time out settings
-	serverconfig := cfgreader.ServerConfig{
+	serverconfig = cfgreader.ServerConfig{
 		WriteTimeout: 60,
 		ReadTimeout:  60,
 		IdleTimeout:  120,
 	}
 
 	if *ptr.HTTPConfig != "" {
-		var serverconfig cfgreader.ServerConfig
 		err := cfgreader.LoadConfig(&serverconfig, *ptr.HTTPConfig)
 		if err != nil {
 			log.Fatal(err)
@@ -125,35 +128,58 @@ func (eb *EarlybirdCfg) StartHTTP(ptr PTRHTTPConfig) {
 		if err != nil {
 			log.Fatal("Failed to configure HTTP server", err)
 		}
-		fmt.Println("go-earlybird HTTPS/2 API Listening on", *ptr.HTTPS)
+		log.Println("go-earlybird HTTPS/2 API Listening on", *ptr.HTTPS)
 		log.Fatal(srv.ListenAndServeTLS(*ptr.HTTPSCert, *ptr.HTTPSKey))
 	} else {
-		fmt.Println("go-earlybird HTTP API Listening on", *ptr.HTTP)
+		log.Println("go-earlybird HTTP API Listening on", *ptr.HTTP)
 		log.Fatal(srv.ListenAndServe())
 	}
 }
 
+// GetRuleModulesMap walks the `rules` directory and creates a hash map of module name to the filename
+// for example { content: 'content.json', ccnumber: 'ccnumber.json' },
+// and generates a list of the available modules in the `rules` directory
+func (eb *EarlybirdCfg) GetRuleModulesMap() (err error) {
+	rulesPath := filepath.Join(eb.Config.ConfigDir, "rules")
+
+	eb.Config.RuleModulesFilenameMap = make(map[string]string)
+
+	err = filepath.Walk(rulesPath, func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() {
+			return nil
+		}
+
+		moduleName := strings.TrimSuffix(info.Name(), filepath.Ext(info.Name()))
+
+		eb.Config.RuleModulesFilenameMap[moduleName] = info.Name()
+		eb.Config.AvailableModules = append(eb.Config.AvailableModules, moduleName)
+
+		return nil
+	})
+	return err
+}
+
 //ConfigInit loads in the earlybird configuration and CLI flags
 func (eb *EarlybirdCfg) ConfigInit() {
+	//Load CLI arguments and parse
+	flag.Var(&enableFlags, "enable", "Enable individual scanning modules "+utils.GetDisplayList(eb.Config.AvailableModules))
 	flag.Parse()
 
-	//Load Earlybird config
+	// Load Earlybird config
 	eb.Config.ConfigDir = *ptrConfigDir
-	configPath := path.Join(eb.Config.ConfigDir, "earlybird.json")
-	log.Printf("Earlybird config path- %s ...", configPath)
-	err := cfgreader.LoadConfig(&cfgreader.Settings, configPath)
+	earlybirdConfigPath := path.Join(eb.Config.ConfigDir, "earlybird.json")
+	err := cfgreader.LoadConfig(&cfgreader.Settings, earlybirdConfigPath)
 	if err != nil {
-		log.Fatal("Failed to load Earlybird config ", err)
+		log.Fatal("failed to load Earlybird config", err)
 	}
 
-	eb.Config.LevelMap = cfgreader.Settings.GetLevelMap()
-	// Build the string to display available modules for the CLI flags
-	availableModules := cfgreader.Settings.GetAvailableModules()
-
-	//Load CLI arguments
-	flag.Var(&enableFlags, "enable", "Enable individual scanning modules "+utils.GetDisplayList(availableModules))
+	err = eb.GetRuleModulesMap()
+	if err != nil {
+		log.Fatal("error getting rule modules", err)
+	}
 
 	//Assign CLI arguments to our global configuration
+	eb.Config.LevelMap = cfgreader.Settings.GetLevelMap()
 	eb.Config.WorkerCount = *ptrWorkerCount
 	eb.Config.WorkLength = *ptrWorkLength
 	eb.Config.ShowFullLine = *ptrShowFullLine
@@ -170,15 +196,19 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	eb.Config.IgnoreFPRules = *ptrIgnoreFPRules
 	eb.Config.ShowSolutions = *ptrShowSolutions
 
+	eb.Config.RulesConfigDir = path.Join(eb.Config.ConfigDir, rulesDir)
+	eb.Config.FalsePositivesConfigDir = path.Join(eb.Config.ConfigDir, falsePositivesDir)
+	eb.Config.LabelsConfigDir = path.Join(eb.Config.ConfigDir, labelsDir)
+	eb.Config.SolutionsConfigDir = path.Join(eb.Config.ConfigDir, solutionsDir)
+
 	// If the streaming IO flag was specified, accept the streaming input
 	if *ptrStreamInput || eb.Config.GitStream {
 		eb.Config.SearchDir = ""
 	}
-
 	// Check to see if the user opted to update.  If they choose this option
 	// the configuration files will be updated and the program will exit.
 	if *ptrUpdateFlag {
-		doUpdate(eb.Config.ConfigDir, configPath, cfgreader.Settings.ConfigFileURL)
+		doUpdate(eb.Config.ConfigDir, eb.Config.RulesConfigDir, earlybirdConfigPath, cfgreader.Settings.ConfigFileURL, eb.Config.RuleModulesFilenameMap)
 	}
 
 	eb.Config.Version = cfgreader.Settings.Version
@@ -193,7 +223,50 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	eb.Config.ConfidenceFailLevel = cfgreader.Settings.TranslateLevelName(*ptrFailConfidenceThreshold)
 	// Let's see if we have specified git tracked/staged files
 	eb.Config.TargetType = utils.GetTargetType(*ptrGitStagedFlag, *ptrGitTrackedFlag)
-	eb.Config.EnabledModules = utils.GetEnabledModules(enableFlags, availableModules)
+	eb.Config.EnabledModulesMap = utils.GetEnabledModulesMap(enableFlags, eb.Config.RuleModulesFilenameMap)
+	eb.Config.AdjustedSeverityCategories = cfgreader.Settings.AdjustedSeverityCategories
+
+	var enabledModuleNames []string
+	for moduleName := range eb.Config.EnabledModulesMap {
+		enabledModuleNames = append(enabledModuleNames, moduleName)
+	}
+
+	eb.Config.EnabledModules = enabledModuleNames
+
+	if len(*ptrModuleConfigFile) != 0 {
+		eb.LoadModuleConfig(*ptrModuleConfigFile)
+		eb.getDefaultModuleSettings()
+	}
+}
+
+// Load module config if user has passed a config file for individual modules with -module-config-file flag
+func (eb *EarlybirdCfg) LoadModuleConfig(moduleConfigFilePath string) {
+	err := cfgreader.LoadConfig(&eb.Config.ModuleConfigs, moduleConfigFilePath)
+
+	if err != nil {
+		log.Fatal("Error loading module config file", err)
+	}
+}
+
+// A user does not have to define both `display severity` and `display confidence` in their config, so we set the
+// values they left out to their global defaults. For example, if a user passed {"inclusivity": {"display_severity": "info"}}
+// we have to default the missing `display confidence` to its global setting
+func (eb *EarlybirdCfg) getDefaultModuleSettings() {
+	for moduleName, configStruct := range eb.Config.ModuleConfigs.Modules {
+		if len(configStruct.DisplaySeverity) > 0 {
+			configStruct.DisplaySeverityLevel = cfgreader.Settings.TranslateLevelName(configStruct.DisplaySeverity)
+		} else {
+			configStruct.DisplaySeverityLevel = eb.Config.SeverityDisplayLevel
+		}
+
+		if len(configStruct.DisplayConfidence) > 0 {
+			configStruct.DisplayConfidenceLevel = cfgreader.Settings.TranslateLevelName(configStruct.DisplayConfidence)
+		} else {
+			configStruct.DisplayConfidenceLevel = eb.Config.ConfidenceDisplayLevel
+		}
+
+		eb.Config.ModuleConfigs.Modules[moduleName] = configStruct
+	}
 }
 
 //Scan Runs the scan by kicking off the different modules as go routines
@@ -254,6 +327,7 @@ func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, 
 		for hit := range HitChannel {
 			Hits = append(Hits, hit)
 		}
+
 		report := scan.Report{
 			Hits:          Hits,
 			HitCount:      len(Hits),
@@ -266,27 +340,27 @@ func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, 
 			RulesObserved: len(scan.CombinedRules),
 			StartTime:     start.UTC().Format(time.RFC3339),
 			EndTime:       time.Now().UTC().Format(time.RFC3339),
-			Duration:      fmt.Sprint(time.Since(start)),
+			Duration:      fmt.Sprintf("%d ms", time.Since(start)/time.Millisecond),
 		}
 		_, err = writers.WriteJSON(report, eb.Config.OutputFile)
 	case eb.Config.OutputFormat == "csv":
 		err = writers.WriteCSV(HitChannel, eb.Config.OutputFile)
 	default:
 		err = writers.WriteConsole(HitChannel, eb.Config.OutputFile, eb.Config.ShowFullLine)
-		fmt.Printf("\n%d files scanned in %s", len(fileContext.Files), time.Since(start))
-		fmt.Printf("\n%d rules observed\n", len(scan.CombinedRules))
+		log.Printf("\n%d files scanned in %s", len(fileContext.Files), time.Since(start))
+		log.Printf("\n%d rules observed\n", len(scan.CombinedRules))
 	}
 	if err != nil {
-		fmt.Println("Writing Results failed:", err)
+		log.Println("Writing Results failed:", err)
 	}
 }
 
 // Update configs from the latest in the repo
-func doUpdate(configDir string, configPath string, appConfigURL string) {
-	err := configupdate.UpdateConfigFiles(configDir, configPath, appConfigURL)
+func doUpdate(configDir, rulesConfigDir, configPath, appConfigURL string, ruleModulesFilenameMap map[string]string) {
+	err := configupdate.UpdateConfigFiles(configDir, rulesConfigDir, configPath, appConfigURL, ruleModulesFilenameMap)
 	if err != nil {
 		log.Fatal("Failed to update config:", err)
 	}
-	fmt.Println("Configurations updated.  Exiting")
+	log.Println("Configurations updated.  Exiting")
 	os.Exit(0)
 }

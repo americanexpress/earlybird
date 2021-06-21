@@ -21,16 +21,14 @@ import (
 	"testing"
 )
 
+var FakeRepo = "https://github.com/carnal0wnage/fake_commited_secrets"
+
 func TestReposPerProject(t *testing.T) {
-	if os.Getenv("local") == "" {
-		t.Skip("If test cases not running locally, skip project API call for CI/CD purposes.")
+	if os.Getenv("gituser") == "" && os.Getenv("gitpassword") == "" {
+		t.Skip("Skipping ReposPerProject. Authentication needed. Include ENV vars: gituser, gitpassword")
 	}
 
-	if os.Getenv("projecturl") == "" || os.Getenv("gituser") == "" || os.Getenv("gitpassword") == "" {
-		t.Skip("Skipping ReposPerProject. Authentication needed. Include ENV vars: projecturl, gituser, gitpassword")
-	}
-
-	if gotScanRepos := ReposPerProject(os.Getenv("projecturl"), os.Getenv("gituser"), os.Getenv("gitpassword")); len(gotScanRepos) == 0 {
+	if gotScanRepos := ReposPerProject("https://github.com/americanexpress", os.Getenv("gituser"), os.Getenv("gitpassword")); len(gotScanRepos) == 0 {
 		t.Errorf("ReposPerProject() = %v, want multiple repository names", gotScanRepos)
 	}
 }
@@ -40,14 +38,9 @@ func TestCloneGitRepos(t *testing.T) {
 		t.Skip("If test cases not running locally, skip cloning external repositories for CI/CD purposes.")
 	}
 
-	giturl := os.Getenv("giturl")
-	if giturl == "" {
-		t.Skip("Skipping CloneGitRepo. Git repository URL is required. Include ENV var: giturl")
-	}
-
-	SearchDir, err := CloneGitRepos([]string{giturl}, "", "", true)
+	SearchDir, err := CloneGitRepos([]string{FakeRepo}, "", "", true)
 	if err != nil {
-		t.Errorf("Failed to clone repository: %s", giturl)
+		t.Errorf("Failed to clone repository: %s", FakeRepo)
 	}
 
 	//Delete temporary cloned repository directory

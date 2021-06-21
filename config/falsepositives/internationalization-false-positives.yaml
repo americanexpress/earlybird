@@ -1,0 +1,30 @@
+---
+rules:
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: (?i)[=:] ?['"]?.+(passwort|mot|adgangskode|contrase|passord|senha|salasana|wachtwoord|gentag|confirmation|powt|bekreft|conferma|hestro|potvrzen|confirmar|bekr|bevestig|kennwort|Lösenord|Zugangsdaten
+      vergessen|Parola|Hasło)\b['"]?
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore internationalization patterns for password fields
