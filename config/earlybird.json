@@ -1,5 +1,5 @@
 {
-  "config_base_url": "https://raw.githubusercontent.com/americanexpress/earlybird/master/config",
+  "config_base_url": "https://raw.githubusercontent.com/americanexpress/earlybird/main/config/rules",
   "finding_levels": [
     {
       "level_name": "critical",
@@ -56,7 +56,7 @@
   "fail_threshold_level": 2,
   "display_threshold_level": 3,
   "display_confidence_threshold_level": 2,
-  "earlybird_config_url": "https://raw.githubusercontent.com/americanexpress/earlybird/master/config/earlybird.json",
+  "earlybird_config_url": "https://raw.githubusercontent.com/americanexpress/earlybird/main/config/earlybird.json",
   "version": "2.0.0",
   "name": "earlybird",
   "adjusted_severity_categories_patterns": [
