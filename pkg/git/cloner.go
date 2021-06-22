@@ -30,7 +30,7 @@ import (
 	"gopkg.in/src-d/go-git.v4/plumbing/transport/http"
 )
 
-//ReposPerProject returns all the repositories contained withina  bitbucket or github project
+//ReposPerProject returns all the repositories contained within a  bitbucket or github project
 func ReposPerProject(projectURL, username, password string) (scanRepos []string) {
 	if strings.Contains(projectURL, "github.com/") { //Scan Github
 		var basicauth github.BasicAuthTransport
