@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,54 +17,65 @@
 package scan
 
 import (
-	"fmt"
-	"testing"
-
 	cfgreader "github.com/americanexpress/earlybird/pkg/config"
 	"github.com/americanexpress/earlybird/pkg/utils"
+	"path"
+	"testing"
 )
 
 var (
-	config     cfgreader.Configs
-	configPath = utils.GetConfigDir() + "earlybird.json"
+	config cfgreader.EarlybirdConfig
 )
 
 func init() {
-	if err := cfgreader.LoadConfig(&config, configPath); err != nil {
-		fmt.Println("LoadConfig() = error:", err, " want error nil")
-	}
+	config.ConfigDir = path.Join(utils.MustGetWD(), utils.GetConfigDir())
+	config.RulesConfigDir = path.Join(config.ConfigDir, "rules")
+	// low severity
+	config.SeverityDisplayLevel = 4
+	// low confidence
+	config.ConfidenceDisplayLevel = 4
 }
 
 func Test_loadRuleConfigs(t *testing.T) {
-	fmt.Println(config.ModuleConfigs)
-	for _, module := range config.ModuleConfigs {
-		rules := loadRuleConfigs(4, 4, utils.GetConfigDir()+module.Name+ruleSuffix)
-		if len(rules) == 0 {
-			t.Errorf("loadRuleConfigs() = %v, failed to load rules", rules)
-		}
-		for _, rule := range rules {
-			matchValue := rule.CompiledPattern.FindStringSubmatch(rule.Example)
-			if len(matchValue) == 0 {
-				t.Errorf("Failed to match pattern to example. Module: %s Rule Code: %d", module.Name, rule.Code)
-			}
-		}
+	rules := loadRuleConfigs(config, "content", "content.yaml")
+
+	if len(rules) == 0 {
+		t.Errorf("loadRuleConfigs() = %v, failed to load rules", rules)
 	}
 }
 
 func Test_loadLabelConfigs(t *testing.T) {
-	if gotLabelConfigRules := loadLabelConfigs(utils.GetConfigDir() + "labels.json"); len(gotLabelConfigRules) == 0 {
+	gotLabelConfigRules, err := loadLabelConfigs(path.Join(config.ConfigDir, "labels"))
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(gotLabelConfigRules) == 0 {
 		t.Errorf("loadLabelConfigs() = %v, Failed to load labels", gotLabelConfigRules)
 	}
 }
 
 func Test_loadFalsePositives(t *testing.T) {
-	if gotFalsePositiveRules := loadFalsePositives(utils.GetConfigDir() + "false-positives.json"); len(gotFalsePositiveRules) == 0 {
+	gotFalsePositiveRules, err := loadFalsePositives(path.Join(config.ConfigDir, "falsepositives"))
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(gotFalsePositiveRules) == 0 {
 		t.Errorf("loadFalsePositives() = %v, Failed to load any false positive rules", gotFalsePositiveRules)
 	}
 }
 
 func Test_loadSolutions(t *testing.T) {
-	if gotSolutionConfigs := loadSolutions(utils.GetConfigDir() + "solutions.json"); len(gotSolutionConfigs) == 0 {
+	gotSolutionConfigs, err := loadSolutions(path.Join(config.ConfigDir, "solutions"))
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(gotSolutionConfigs) == 0 {
 		t.Errorf("loadSolutions() = %v, Failed to load any solutions", gotSolutionConfigs)
 	}
 }

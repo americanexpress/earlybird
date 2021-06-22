@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ func Test_downloadFile(t *testing.T) {
 	}
 	path, _ := os.Getwd()
 	path += "test.txt"
-	err := downloadFile(path, "http://example.com") //Check if page loads
+	err := downloadFile(path, "http://httpstat.us/200") //Check if page loads
 	if err != nil {
 		t.Errorf("Failed to download file: %v", err)
 	} else {

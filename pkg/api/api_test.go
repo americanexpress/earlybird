@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path"
 	"testing"
 
 	cfgreader "github.com/americanexpress/earlybird/pkg/config"
@@ -32,15 +33,18 @@ import (
 )
 
 var cfg = cfgreader.EarlybirdConfig{
-	ConfigDir:              utils.GetConfigDir(),
-	IgnoreFile:             ".." + string(os.PathSeparator) + ".." + string(os.PathSeparator) + ".ge_ignore",
-	SeverityDisplayLevel:   4,
-	SeverityFailLevel:      4,
-	ConfidenceDisplayLevel: 4,
-	ConfidenceFailLevel:    4,
-	MaxFileSize:            10240000,
-	WorkLength:             2500,
-	EnabledModules:         []string{"ccnumber", "common", "content", "filename", "entropy"},
+	ConfigDir:               path.Join(utils.MustGetWD(), utils.GetConfigDir()),
+	LabelsConfigDir:         path.Join(utils.MustGetWD(), utils.GetConfigDir(), "labels"),
+	FalsePositivesConfigDir: path.Join(utils.MustGetWD(), utils.GetConfigDir(), "falsepositives"),
+	RulesConfigDir:          path.Join(utils.MustGetWD(), utils.GetConfigDir(), "rules"),
+	IgnoreFile:              path.Join(utils.MustGetWD(), "../../.ge_ignore"),
+	SeverityDisplayLevel:    4,
+	SeverityFailLevel:       4,
+	ConfidenceDisplayLevel:  4,
+	ConfidenceFailLevel:     4,
+	MaxFileSize:             10240000,
+	WorkLength:              2500,
+	EnabledModulesMap:       map[string]string{"content": "content.yaml", "password-secret": "password-secret.yaml"},
 }
 
 func init() {
@@ -91,15 +95,9 @@ func TestGITScan(t *testing.T) {
 	if os.Getenv("local") == "" {
 		t.Skip("If test cases not running locally, skip cloning external repositories for CI/CD purposes.")
 	}
-
-	giturl := os.Getenv("giturl")
-	if giturl == "" {
-		t.Skip("Skipping GITScan. Git repository URL is required. Include ENV var: giturl")
-	}
-
 	fmt.Println("Testing GITScan")
 	//Submit example github repository containing secrets
-	req, err := http.NewRequest("GET", "/scan/git?url="+giturl, nil)
+	req, err := http.NewRequest("GET", "/scan/git?url=https://github.com/carnal0wnage/fake_commited_secrets", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -117,7 +115,7 @@ func TestGITScan(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to parse result from GITScan: %v", err)
 	}
-	if results.FilesScanned == 0 {
+	if len(results.Hits) == 0 {
 		t.Errorf("Failed to locate secrets in example repository: %v", results)
 	}
 }

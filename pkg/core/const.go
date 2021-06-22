@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,13 @@ import (
 
 	cfgreader "github.com/americanexpress/earlybird/pkg/config"
 	"github.com/americanexpress/earlybird/pkg/utils"
+)
+
+const (
+	rulesDir          = "rules"
+	falsePositivesDir = "falsepositives"
+	labelsDir         = "labels"
+	solutionsDir      = "solutions"
 )
 
 type arrayFlags []string
@@ -64,4 +71,5 @@ var (
 	ptrDisplaySeverityThreshold   = flag.String("display-severity", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.DisplayThreshold), "Lowest severity level to display "+levelOptions)
 	ptrDisplayConfidenceThreshold = flag.String("display-confidence", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.DisplayConfidenceThreshold), "Lowest confidence level to display "+levelOptions)
 	ptrFailConfidenceThreshold    = flag.String("fail-confidence", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.FailThreshold), "Lowest confidence level at which to fail "+levelOptions)
+	ptrModuleConfigFile           = flag.String("module-config-file", "", "Path to file with per module config settings")
 )

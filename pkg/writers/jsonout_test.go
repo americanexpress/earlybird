@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ func TestWriteJSON(t *testing.T) {
 			Code:       3003,
 			Line:       1,
 			Filename:   "sample.py",
-			MatchValue: "password = '123'",
+			MatchValue: "tomcat_password = '123'",
 		},
 	}
 	type args struct {
@@ -53,7 +53,7 @@ func TestWriteJSON(t *testing.T) {
 					Version:   "Test 1.0",
 					StartTime: start.UTC().Format(time.RFC3339),
 					EndTime:   time.Now().UTC().Format(time.RFC3339),
-					Duration:  fmt.Sprint(time.Since(start)),
+					Duration:  fmt.Sprintf("%d ms", time.Since(start)/time.Millisecond),
 				},
 			},
 			wantErr: false,

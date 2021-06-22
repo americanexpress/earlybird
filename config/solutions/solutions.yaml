@@ -1,0 +1,87 @@
+# Copyright 2021 American Express
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+---
+solutions:
+  - id: 1
+    text: Do not store credentials in source code. Consider a credential storage product
+      for separating passwords from configurations/code.
+  - id: 2
+    text: Protect Personally Identifiable Information (PII) from disclosure.
+  - id: 3
+    text: Exposure of IP addresses and hidden endpoints could provide information to
+      malicious actors.  Prevent unnecessary exposure  of internal infrastructure.
+  - id: 4
+    text: Be cautious about committing temporary workaround solutions, and be aware
+      that suspicious comments draw attention to easily exploited code.
+  - id: 5
+    text: Do not store credentials in source code. Consider a credential storage product
+      for separating passwords from configurations/code.
+  - id: 6
+    text: Use of deprecated cryptographic methods can lead to weaknesses in sensitive
+      data protection.
+  - id: 7
+    text: Credit card numbers should not be stored in source code repositories.
+  - id: 8
+    text: Default passwords must be changed and stored securely.
+  - id: 9
+    text: Exposure of IDs and Credentials could provide information to malicious actors.
+  - id: 10
+    text: Use of deprecated cryptographic methods can  lead to weaknesses in sensitive
+      data protection.
+  - id: 11
+    text: Files containing potentially sensitive information should not be stored in
+      source code repositories.
+  - id: 12
+    text: ''
+  - id: 13
+    text: ''
+  - id: 14
+    text: ''
+  - id: 15
+    text: ''
+  - id: 16
+    text: ''
+  - id: 17
+    text: ''
+  - id: 18
+    text: ''
+  - id: 19
+    text: ''
+  - id: 20
+    text: ''
+  - id: 21
+    text: ''
+  - id: 22
+    text: ''
+  - id: 23
+    text: ''
+  - id: 24
+    text: ''
+  - id: 25
+    text: ''
+  - id: 26
+    text: ''
+  - id: 27
+    text: ''
+  - id: 28
+    text: ''
+  - id: 29
+    text: ''
+  - id: 30
+    text: ''
+  - id: 31
+    text: ''
+  - id: 32
+    text: ''

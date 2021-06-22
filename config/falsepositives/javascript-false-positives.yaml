@@ -1,0 +1,33 @@
+# Copyright 2021 American Express
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+---
+rules:
+  - Codes:
+      - 3057
+      - 3006
+      - 3026
+    Pattern: (?i)['"]?(password|passphrase|secret)['"]? *[:=] *['"]?(conf|config)\.[a-z0-9.]+
+    FileExtensions:
+      - ".js"
+      - ".ts"
+    UseFullLine: true
+    Description: Ignore password like 'config.elastic.password'
+  - Codes:
+      - 6008
+    Pattern: ".*PropTypes.*"
+    FileExtensions:
+      - ".jsx"
+    UseFullLine: false
+    Description: Ignore token in PropType definitions

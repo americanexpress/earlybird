@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ func initLookupTable(row, column int) [][]bool {
 //PatternMatch Function that matches input str with given wildcard pattern
 func PatternMatch(str, pattern string) bool {
 	s := []rune(strings.ToLower(str))
-	p := []rune(pattern)
+	p := []rune(strings.ToLower(pattern))
 
 	// empty pattern can only match with empty string
 	if len(p) == 0 {

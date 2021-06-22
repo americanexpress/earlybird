@@ -1,0 +1,129 @@
+# Copyright 2021 American Express
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+---
+Searcharea: body
+rules:
+  - Code: 20001
+    Pattern: (?i)whitelist
+    Caption: White/black is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: WHITELIST = ["https://example.com"]
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 100
+  - Code: 20002
+    Pattern: (?i)white_list
+    Caption: White/black is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: white_list = ["https://example.com"]
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 100
+  - Code: 20003
+    Pattern: (?i)white-list
+    Caption: White/black is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: white-list = ["https://example.com"]
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 100
+  - Code: 20004
+    Pattern: (?i)whtlist
+    Caption: White/black is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: whtlist = ["https://example.com"]
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 100
+  - Code: 20005
+    Pattern: (?i)wht_list
+    Caption: White/black is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: wht_list = ["https://example.com"]
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 100
+  - Code: 20006
+    Pattern: (?i)wht-list
+    Caption: White/black is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: wht-list = ["https://example.com"]
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 100
+  - Code: 20007
+    Pattern: (?i)blacklist
+    Caption: White/black is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: blacklist = ["https://example.com"]
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 100
+  - Code: 20008
+    Pattern: (?i)black_list
+    Caption: White/black is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: black_list = ["https://example.com"]
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 100
+  - Code: 20009
+    Pattern: (?i)black-list
+    Caption: White/black is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: black-list = ["https://example.com"]
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 100
+  - Code: 20010
+    Pattern: (?i)blklist
+    Caption: White/black is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: blklist = ["https://example.com"]
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 100
+  - Code: 20011
+    Pattern: (?i)blk_list
+    Caption: White/black is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: blk_list = ["https://example.com"]
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 100
+  - Code: 20012
+    Pattern: (?i)blk-list
+    Caption: White/black is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: blk-list = ["https://example.com"]
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 100
+  - Code: 20013
+    Pattern: (?i)\b\w*slave\w*\b
+    Caption: master/slave is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: rs.slaveOk()
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 101
+  - Code: 20014
+    Pattern: (?i)\b\w*master\w*\b
+    Caption: master/slave is an oppressive metaphor and should not be used in our coding practices.
+    Category: inclusivity
+    Example: def releaseBranch = 'master'
+    Severity: 5 # info level
+    Confidence: 1 # high confidence
+    SolutionID: 101

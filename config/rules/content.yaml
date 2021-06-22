@@ -1,0 +1,465 @@
+# Copyright 2021 American Express
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+---
+Searcharea: body
+rules:
+  - Code: 3009
+    Pattern: "(?i)(<ConsumerKey>[^<\\n]*</ConsumerKey>)"
+    Caption: Potential key in file
+    Category: key
+    Example: "<ConsumerKey>foobar</ConsumerKey>"
+    SolutionID: 1
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-798
+      - CWE-321
+      - CWE-312
+  - Code: 3010
+    Pattern: "(?i)(<ConsumerSecret>[^<\\n]*</ConsumerSecret>)"
+    Caption: Potential password key in file
+    Category: key
+    Example: "<ConsumerSecret>foobar</ConsumerSecret>"
+    SolutionID: 1
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-798
+      - CWE-321
+      - CWE-312
+  - Code: 3013
+    Pattern: "\\b(\\+\\d{1,2}[-\\. ])?\\(?\\d{3}\\)?[-\\. ]\\d{3}[-\\. ]\\d{4}\\b"
+    Caption: Potential phone number in file
+    Category: infrastructure
+    Example: "'480-123-1234'"
+    SolutionID: 2
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3014
+    Pattern: "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"
+    Caption: Potential email address in file
+    Category: infrastructure
+    Example: "foo@bar.com"
+    SolutionID: 2
+    Severity: 4
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3015
+    Pattern: "((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))"
+    Caption: Potential IPv4 Address in file
+    Category: infrastructure
+    Example: "8.8.8.8"
+    SolutionID: 3
+    Severity: 4
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3016
+    Pattern: '[''">\s](([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})[''"<\s]'
+    Caption: Potential IPv6 Address in file
+    Category: infrastructure
+    Example: "'2001:0db8:85a3:0000:0000:8a2e:0370:7334'"
+    SolutionID: 3
+    Severity: 4
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3017
+    Pattern: "-?\\b(\\d{3}-\\d{2}-\\d{4})\\b-?"
+    Caption: Potential SSN in file
+    Category: pii
+    Example: "123-45-7890"
+    SolutionID: 2
+    Severity: 1
+    Confidence: 2
+    Postprocess: ssn
+    CWE:
+      - CWE-312
+  - Code: 3018
+    Pattern: "[^\\.](?:\\b[A-Z]{2}\\d{2} ?\\d{4} ?\\d{4} ?\\d{4} ?\\d{4} ?[\\d]{0,2}\\b)"
+    Caption: Potential IBAN in file
+    Category: pii
+    Example: "'DE00 0000 0000 0000 0000 00'"
+    SolutionID: 2
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3019
+    Pattern: "([^\\s:/?#]+)://([^/?#\\s]*)([^?#\\s]*)(\\?([^#\\s]*))?(#([^\\s]*))?"
+    Caption: Potential URL in file
+    Category: infrastructure
+    Example: "http://example.com/"
+    SolutionID: 3
+    Severity: 4
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3020
+    Pattern: "(\\b[0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}\\b)"
+    Caption: Potential MAC address in file
+    Category: infrastructure
+    Example: "00:1B:44:11:3A:B7"
+    SolutionID: 3
+    Severity: 4
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3023
+    Pattern: "(BEGIN (RSA|OPENSSH|DSA|EC|PGP) PRIVATE KEY)"
+    Caption: Private key in file
+    Category: key
+    Example: "BEGIN RSA PRIVATE KEY"
+    SolutionID: 1
+    Severity: 1
+    Confidence: 1
+    Postprocess: ''
+    CWE:
+      - CWE-798
+      - CWE-321
+      - CWE-312
+  - Code: 3024
+    Pattern: "(AKIA[0-9A-Z]{16})"
+    Caption: Potential AWS key in file
+    Category: key
+    Example: "AKIAIOSFODNN7EXAMPLE"
+    SolutionID: 1
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-798
+      - CWE-321
+      - CWE-312
+  - Code: 3025
+    Pattern: "(?i)(//|/\\*|\\*|#).{0,4}(BUG|HACK|FIXME|TODO|SORRY|TEMPORARY|TMP)"
+    Caption: Suspicious comment
+    Category: comment
+    Example: "/*TODO FIXME fixed this bug with a temporary hack. TODO rewrite in future*/"
+    SolutionID: 4
+    Severity: 3
+    Confidence: 4
+    Postprocess: ''
+    CWE:
+      - CWE-546
+  - Code: 3028
+    Pattern: "(BEGIN DSA PRIVATE KEY)"
+    Caption: Private key in file
+    Category: key
+    Example: "BEGIN DSA PRIVATE KEY"
+    SolutionID: 1
+    Severity: 1
+    Confidence: 1
+    Postprocess: ''
+    CWE:
+      - CWE-798
+      - CWE-321
+      - CWE-312
+  - Code: 3031
+    Pattern: "(BEGIN EC PRIVATE KEY)"
+    Caption: Private key in file
+    Category: key
+    Example: "BEGIN EC PRIVATE KEY"
+    SolutionID: 1
+    Severity: 1
+    Confidence: 1
+    Postprocess: ''
+    CWE:
+      - CWE-798
+      - CWE-321
+      - CWE-312
+  - Code: 3038
+    Pattern: "(BEGIN PGP PRIVATE KEY)"
+    Caption: Private key in file
+    Category: key
+    Example: "BEGIN PGP PRIVATE KEY"
+    SolutionID: 5
+    Severity: 1
+    Confidence: 1
+    Postprocess: ''
+    CWE:
+      - CWE-798
+      - CWE-321
+      - CWE-312
+  - Code: 3039
+    Pattern: (?i)['"]?(aws_access_key_id)['"]?[ \t]*[:=][ \t]*['"][^'"]{4,}['"]
+    Caption: Private key in file
+    Category: key
+    Example: "aws_access_key_id = \"test\""
+    SolutionID: 5
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-798
+      - CWE-321
+      - CWE-312
+  - Code: 3050
+    Pattern: "[^\\.](?:\\b([1,2][ ]?[0-9]{2}[ ]?[01235][0-9][ ]?[0-9A-Z]{5}[ ]?[0-9]{3}[
+    ]?[0-9]{2})\\b)"
+    Caption: Potential National ID in file
+    Category: pii
+    Example: "'2 98 39 FTUT4 270 18'"
+    SolutionID: 2
+    Severity: 1
+    Confidence: 4
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3051
+    Pattern: "[^\\.](?:\\b([a-zA-Z]){3}([Pp]){1}([a-zA-Z]){1}([0-9]){4}([a-zA-Z]){1}?\\b)"
+    Caption: Potential National ID in file
+    Category: pii
+    Example: " aaaPa0000a "
+    SolutionID: 2
+    Severity: 1
+    Confidence: 4
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3052
+    Pattern: "[^\\.](?:\\b[a-z]{3}[cphfatblj][a-z]\\d{4}[a-z]\\b)"
+    Caption: Potential National ID in file
+    Category: pii
+    Example: " aaaaa1234a "
+    SolutionID: 2
+    Severity: 1
+    Confidence: 4
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3053
+    Pattern: "(?:\\b([A-Z][AEIOUX][A-Z]{2}\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9][12]\\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\\d])(\\d)\\b)"
+    Caption: Potential National ID in file
+    Category: pii
+    Example: " AAAA11010110HASBBBA0 "
+    SolutionID: 2
+    Severity: 1
+    Confidence: 4
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3054
+    Pattern: "[^\\.](?:\\b[A-CEGHJ-PR-TW-Z]{1}[A-CEGHJ-NPR-TW-Z]{1}[0-9]{6}[A-DFM]{0,1}\\b)"
+    Caption: Potential National ID in file
+    Category: pii
+    Example: " LB692783B "
+    SolutionID: 2
+    Severity: 1
+    Confidence: 4
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3055
+    Pattern: "[^\\.](?:\\b[0-9]{10}GBR[0-9]{7}[UMF]{1}[0-9]{9}\\b)"
+    Caption: Potential Passport Number in file
+    Category: pii
+    Example: " 6205398466GBR5472550F247957610 "
+    SolutionID: 2
+    Severity: 1
+    Confidence: 3
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3056
+    Pattern: "[^\\.](?:\\b[A-Z0-9<]{9}[0-9]{1}[A-Z]{3}[0-9]{7}[A-Z]{1}[0-9]{7}[A-Z0-9<]{14}[0-9]{2}\\b)"
+    Caption: Potential Passport Number in file
+    Category: pii
+    Example: " 3FQ84GBUQ0THN1026257U9982208J24VDKZA1KB15H54 "
+    SolutionID: 2
+    Severity: 1
+    Confidence: 3
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3058
+    Pattern: "(?i)(DESede|3DES|TRIPLEDES)[-_a-zA-Z]*\\(.*\\)"
+    Caption: Potential deprecated cryptographic method in file
+    Category: insecure-crypto
+    Example: "3DES(password)"
+    SolutionID: 6
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-327
+  - Code: 3059
+    Pattern: "(?i)(abcdefghijklmnopqrstuvwxyz0?123456789)"
+    Caption: Potential insecure cryptographic method in file
+    Category: insecure-crypto
+    Example: "abcdefghijklmnopqrstuvwxyz0123456789"
+    SolutionID: 6
+    Severity: 2
+    Confidence: 3
+    Postprocess: ''
+    CWE:
+      - CWE-327
+      - CWE-338
+  - Code: 3061
+    Pattern: "[0-9]{2}[0,1][0-9][0-9]{2}-[A-Z]-[0-9]{5}"
+    Caption: Potential National ID in file
+    Category: pii
+    Example: "500152-R-10396"
+    SolutionID: 2
+    Severity: 1
+    Confidence: 4
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3062
+    Pattern: "[0-9]{3}/?[0-9]{4}/?[0-9]{4}"
+    Caption: Potential National ID in file
+    Category: pii
+    Example: "340/4782/5834"
+    SolutionID: 2
+    Severity: 1
+    Confidence: 4
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3063
+    Pattern: "[0-9]{2}[0-9]{2}[0,1][0-9][0-9]{2}[A-Z][0-9]{2}[0-9]"
+    Caption: Potential National ID in file
+    Category: pii
+    Example: "92550824E222"
+    SolutionID: 2
+    Severity: 1
+    Confidence: 4
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3064
+    Pattern: "[A-Z]{6}[0-9]{2}[A-E,H,L,M,P,R-T][0-9]{2}[A-Z0-9]{5}"
+    Caption: Potential National ID in file
+    Category: pii
+    Example: "EULISU81S08O22BQ"
+    SolutionID: 2
+    Severity: 1
+    Confidence: 4
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 3069
+    Pattern: "(md5|rc4|sha1)\\.New\\(\\)"
+    Caption: Potential deprecated cryptographic method in file
+    Category: insecure-crypto
+    Example: "golang: package main\n\nimport (\n\t\"fmt\"\n\t\"crypto/sha1\"\n)\n\nfunc
+    main() {\n\ts := \"this is the string\"\n\t\n\th := sha1.New()\n\th.Write([]byte(s))\n\tbs
+    := h.Sum(nil)\n\t\n\tfmt.Printf(\"the hash %x\", bs)\n}\n"
+    SolutionID: 6
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-327
+  - Code: 3070
+    Pattern: create(Cipher|Cipheriv|Decipher|Hash|Hmac|Sign|Verify|)\(["'](?i)(md5|md4|rc2|sha1|rc4|ripemd160)["']\)
+    Caption: Potential deprecated cryptographic method in file
+    Category: insecure-crypto
+    Example: |-
+      nodejs: const filename = process.argv[2];
+      const crypto = require('crypto');
+      const fs = require('fs');
+
+      const hash = crypto.createHash('sha1');
+
+      const input = fs.createReadStream(filename);
+      input.on('readable', () => {
+        // Only one element is going to be produced by the
+        // hash stream.
+        const data = input.read();
+        if (data)
+          hash.update(data);
+        else {
+          console.log(`${hash.digest('hex')} ${filename}`);
+        }
+      });
+    SolutionID: 6
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-327
+  - Code: 3071
+    Pattern: MessageDigest\.getInstance\("(MD2|MD5|SHA-1)"\)
+    Caption: Potential deprecated cryptographic method in file
+    Category: insecure-crypto
+    Example: 'java: MessageDigest md = MessageDigest.getInstance("SHA-1");'
+    SolutionID: 6
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-327
+  - Code: 3072
+    Pattern: hashlib\.(sha1|md5)\(["'a-z-]*\)
+    Caption: Potential deprecated cryptographic method in file
+    Category: insecure-crypto
+    Example: |-
+      python: import hashlib
+      m = hashlib.sha1()
+      m.update(b"Nobody inspects")
+      m.update(b" the spammish repetition")
+      m.digest()
+    SolutionID: 6
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-327
+  - Code: 3073
+    Pattern: hashlib\.new\(["'](?i)(md4|md5|sha1|ripemd160)["']\)
+    Caption: Potential deprecated cryptographic method in file
+    Category: insecure-crypto
+    Example: |-
+      python: import hashlib
+      m = hashlib.new("ripemd160")
+      m.update(b"Nobody inspects")
+      m.update(b" the spammish repetition")
+      m.digest()
+    SolutionID: 6
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-327
+  - Code: 3074
+    Pattern: from hashlib import (sha1|md5)
+    Caption: Potential deprecated cryptographic method in file
+    Category: insecure-crypto
+    Example: |-
+      python: from hashlib import sha1
+      m = sha1()
+      m.update(b"Nobody inspects")
+      m.update(b" the spammish repetition")
+      m.digest()
+    SolutionID: 6
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-327

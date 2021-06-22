@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package file
 
 import (
+	"log"
 	"os"
 	"reflect"
 	"strings"
@@ -25,16 +26,20 @@ import (
 	"github.com/americanexpress/earlybird/pkg/scan"
 )
 
-//workDir is the relative path to project root
-var workDir = "../../"
+var userHomeDir string
 
 func init() {
-	ignorePatterns = getIgnorePatterns(workDir+string(os.PathSeparator), ".ge_ignore", false)
+	var err error
+	userHomeDir, err = os.UserHomeDir()
+	if err != nil {
+		log.Fatal("Home directory doesn't exist", err)
+	}
+	ignorePatterns = getIgnorePatterns(userHomeDir+string(os.PathSeparator), ".ge_ignore", false)
 }
 
 func TestGetFiles(t *testing.T) {
 	searchDir := "test_data"
-	ignoreFile := workDir + string(os.PathSeparator) + ".ge_ignore"
+	ignoreFile := userHomeDir + string(os.PathSeparator) + ".ge_ignore"
 	verbose := false
 	maxFileSize := int64(1000000)
 
@@ -112,7 +117,7 @@ func Test_getFileSizeOK(t *testing.T) {
 }
 
 func Test_getIgnorePatterns(t *testing.T) {
-	if gotIgnorePatterns := getIgnorePatterns(workDir+string(os.PathSeparator), ".ge_ignore", false); len(ignorePatterns) == 0 {
+	if gotIgnorePatterns := getIgnorePatterns(userHomeDir+string(os.PathSeparator), ".ge_ignore", false); len(ignorePatterns) == 0 {
 		t.Errorf("getIgnorePatterns() = %v, want multiple patterns", gotIgnorePatterns)
 	}
 }

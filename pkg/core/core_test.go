@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,35 @@ package core
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
+	cfgReader "github.com/americanexpress/earlybird/pkg/config"
 	"github.com/americanexpress/earlybird/pkg/scan"
 	"github.com/americanexpress/earlybird/pkg/utils"
 )
 
 var eb EarlybirdCfg
 
-func init() {
-	scan.Init(eb.Config)
+func setup() {
+	wd := utils.MustGetWD()
+	eb.Config.LabelsConfigDir = filepath.Join(wd, "../../config/labels")
+	eb.Config.SolutionsConfigDir = filepath.Join(wd, "../../config/solutions")
+	eb.Config.FalsePositivesConfigDir = filepath.Join(wd, "../../config/falsepositives")
 }
 
-//Program will exit with error if config init fails
+func cleanup() {
+	eb = EarlybirdCfg{}
+}
+
+func TestMain(m *testing.M) {
+	setup()
+	scan.Init(eb.Config)
+
+	os.Exit(m.Run())
+}
+
+// Program will exit with error if config init fails
 func TestEarlybirdCfg_ConfigInit(t *testing.T) {
 	eb.ConfigInit()
 }
@@ -45,17 +61,13 @@ func TestEarlybirdCfg_GitClone(t *testing.T) {
 		t.Skip("If test cases not running locally, skip cloning external repositories for CI/CD purposes.")
 	}
 
-	giturl := os.Getenv("giturl")
-	if giturl == "" {
-		t.Skip("Skipping GitClone. Git repository URL is required. Include ENV var: giturl")
-	}
-
 	var (
+		FakeRepo = "https://github.com/carnal0wnage/fake_commited_secrets"
 		RepoUser string
 		Project  string
 	)
 	ptr := PTRGitConfig{
-		Repo:     &giturl,
+		Repo:     &FakeRepo,
 		RepoUser: &RepoUser,
 		Project:  &Project,
 	}
@@ -63,5 +75,23 @@ func TestEarlybirdCfg_GitClone(t *testing.T) {
 	eb.GitClone(ptr)
 
 	//Delete temporary cloned repository directory
-	utils.DeleteGit(giturl, eb.Config.SearchDir)
+	utils.DeleteGit(FakeRepo, eb.Config.SearchDir)
+}
+
+func TestEarlybirdCfg_getDefaultModuleSettings(t *testing.T) {
+	modules := map[string]cfgReader.ModuleConfig{
+		"inclusivity": {
+			DisplaySeverity: "high",
+		},
+	}
+	eb.Config.ModuleConfigs.Modules = modules
+
+	eb.getDefaultModuleSettings()
+
+	// we didn't explicitly configure  DisplayConfidence, make sure it got set to global default
+	if got, want := eb.Config.ModuleConfigs.Modules["inclusivity"].DisplayConfidenceLevel, eb.Config.ConfidenceDisplayLevel; got != want {
+		t.Fatalf("Unexpected default value set, got: %d, want: %d", got, want)
+	}
+
+	cleanup()
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,10 @@ package git
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
+	"strings"
 
 	"github.com/americanexpress/earlybird/pkg/utils"
 
@@ -29,22 +30,47 @@ import (
 	"gopkg.in/src-d/go-git.v4/plumbing/transport/http"
 )
 
-//ReposPerProject returns all the repositories contained within a github project
+//ReposPerProject returns all the repositories contained within a  bitbucket or github project
 func ReposPerProject(projectURL, username, password string) (scanRepos []string) {
-	var basicauth github.BasicAuthTransport
-	basicauth.Username = username
-	basicauth.Password = password
+	if strings.Contains(projectURL, "github.com/") { //Scan Github
+		var basicauth github.BasicAuthTransport
+		basicauth.Username = username
+		basicauth.Password = password
 
-	client := github.NewClient(basicauth.Client())
-	// list public repositories for org "github"
-	opt := &github.RepositoryListByOrgOptions{Type: "public"}
-	repos, _, err := client.Repositories.ListByOrg(context.Background(), utils.GetGitProject(projectURL), opt)
-	if err != nil {
-		fmt.Println("Failed To Get Project Repositories:", err)
-		os.Exit(1)
-	}
-	for _, repo := range repos {
-		scanRepos = append(scanRepos, *repo.HTMLURL)
+		client := github.NewClient(basicauth.Client())
+		// list public repositories for org "github"
+		opt := &github.RepositoryListByOrgOptions{Type: "public"}
+		repos, _, err := client.Repositories.ListByOrg(context.Background(), utils.GetGitProject(projectURL), opt)
+		if err != nil {
+			log.Println("Failed To Get Project Repositories:", err)
+			os.Exit(1)
+		}
+		for _, repo := range repos {
+			scanRepos = append(scanRepos, *repo.HTMLURL)
+		}
+	} else { //Scan bitbucket
+		baseurl, path, project := utils.ParseBBURL(projectURL)
+		client := newBitClient(baseurl, path, username, password)
+
+		requestParams := pagedRequest{
+			Limit: 100000,
+			Start: 0,
+		}
+
+		reposResponse, err := client.getRepositories(project, requestParams)
+		if err != nil {
+			log.Println("Failed To Get Project Repositories:", err)
+			os.Exit(1)
+		}
+
+		for _, repo := range reposResponse.Values {
+			links := repo.Links["clone"]
+			for _, link := range links {
+				if link["name"] == "http" {
+					scanRepos = append(scanRepos, link["href"])
+				}
+			}
+		}
 	}
 	return scanRepos
 }
@@ -71,7 +97,7 @@ func CloneGitRepos(repoURLs []string, username, password string, json bool) (tmp
 		}
 
 		if !json {
-			fmt.Println("Cloning Repository:", repo)
+			log.Println("Cloning Repository:", repo)
 			options.Progress = os.Stdout
 		}
 
@@ -81,7 +107,7 @@ func CloneGitRepos(repoURLs []string, username, password string, json bool) (tmp
 		}
 
 		//Clone repo into random temporary path
-		fmt.Println("Cloned into:", scanDir)
+		log.Println("Cloned into:", scanDir)
 		_, err = git.PlainClone(scanDir, false, &options)
 		if err != nil {
 			return tmpDir, err

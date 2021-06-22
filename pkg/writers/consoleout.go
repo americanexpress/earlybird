@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ func hitsToFile(hits <-chan scan.Hit, fileName string, showFullLine bool) error 
 	//Get actual file stats for file size
 	fi, err := f.Stat()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return err
 	}
 	fmt.Println(fi.Size(), outputBytesWritten, fileName)

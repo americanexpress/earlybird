@@ -1,46 +1,48 @@
-# Running EarlyBird
+## <a name="running"></a> Running Go-EarlyBird
 
-## Standalone
-Assuming the `install.sh` script was run, you can kick off the application by running `go-earlybird`, for Windows users call `go-earlybird.exe` instead. Earlybird will scan your current directory unless provided with a target path using the `--path` flag.
+### <a name="standalone"></a> Standalone
+Assuming the setup script was run, you can kick off the application by running 'go-earlybird' / 'go-earlybird.exe' / 'go-earlybird-linux (mac / windows / linux).  See the *Usage* section below
 
+If Go is installed, the project can be downloaded and run with `go run go-earlybird.go`
 
-## Streamed / Piped input
-Using the `--stream` flag, users can stream or pipe file contents to `go-earlybird`.
+### Streamed / Piped input
+Using the `-stream` flag, users can stream or pipe file contents to 'go-earlybird'.  
 
 ```
 ᐅ go-earlybird -stream < /path/to/file
 ```
 ... or:
 ```
-ᐅ cat /path/to/file | go-earlybird --stream
+ᐅ cat /path/to/file | go-earlybird -stream
 ```
 
-
-## Local Git Scanning
-With the flag `--git-staged` or `--git-tracked`, EarlyBird can limit its scan to only look at files that are staged or tracked (respectively) by Git.
-
-
-## Remote Git Repository Scanning
-Using the `--git` flag, you can scan a git repository URL. EarlyBird will clone it into a temporary directory and return results.
-
-For private repositories, please include the `--git-user` flag. You will automatically be prompted for your password. To skip these flags for conveniance or automation, you can use environment variables `gituser` and `gitpassword`
-
+### HTTP API
 ```
-ᐅ go-earlybird --git=https://github.com/americanexpress/earlybird
+ᐅ go-earlybird --http 0.0.0.0:3000
 ```
+`/scan` will accept a multi-part upload and scan the contents, returning json output.
+
+The normal HTTP listener will operate on HTTP/1.1.  Go-EarlyBird can be run as HTTPS/2 with the `-https [ip:port]` flag.  Note that this also requires the `-https-cert [/path/to/cert]` and `-https-key [/path/to/key]` parameters.
+
+The simple webserver configuration file can be found in the local config directory (`~/.go-earlybird/webserver.json` or `C:\Users\[me]\AppData\go-earlybird\webserver.json`).  A separate config file can be specified using the `-http-config [/path/to/configfile]` flag.
 
 
-## EarlyBird flags
+### Local Git Scanning
+With the flag `-git-staged` or `-git-tracked`, Go-EarlyBird can limit its scan to only look at files that are staged or tracked (respectively) by Git.
+
+## Usage
+The executable can be called from the command line with the following syntax:
 ```
-Usage of ./go-earlybird:
+~/go/src/gearlybird (master ✘)✭ ᐅ go-earlybird --help
+Usage of go-earlybird:
   -config string
-    	Directory where configuration files are stored (default "/Users/jdoe/.go-earlybird/")
+    	Directory where configuration files are stored (default "/Users/janedoe/.go-earlybird/")
   -display-confidence string
     	Lowest confidence level to display [ critical | high | medium | low ] (default "high")
   -display-severity string
     	Lowest severity level to display [ critical | high | medium | low ] (default "medium")
   -enable value
-    	Enable individual scanning modules [ ccnumber | common | content | entropy | filename ]
+    	Enable individual scanning modules [ ccnumber | content | filename | password-secret ]
   -fail-confidence string
     	Lowest confidence level at which to fail [ critical | high | medium | low ] (default "high")
   -fail-severity string
@@ -54,7 +56,7 @@ Usage of ./go-earlybird:
   -git-commit-stream
     	Use stream IO of Git commit log as input instead of file(s) -- e.g., 'cat secrets.text > go-earlybird'
   -git-project string
-    	Full URL to a github organization to scan e.g. github.com/org
+    	Full URL to a github organization or bitbucket project to scan e.g. github.com/org
   -git-staged
     	Scan only git staged files
   -git-tracked
@@ -74,17 +76,15 @@ Usage of ./go-earlybird:
   -ignore-fp-rules
     	Ignore the false positive post-process rules
   -ignorefile string
-    	Patterns File (including wildcards) for files to ignore.  (e.g. *.jpg) (default "/Users/jdoe/.ge_ignore")
+    	Patterns File (including wildcards) for files to ignore.  (e.g. *.jpg) (default "/Users/jhans12/.ge_ignore")
   -max-file-size int
     	Maximum file size to scan (in bytes) (default 10240000)
   -path string
-    	Directory to scan (defaults to CWD) -- ABSOLUTE PATH ONLY (default "/Users/jdoe/Documents/opensource-earlybird/binaries")
+    	Directory to scan (defaults to CWD) -- ABSOLUTE PATH ONLY (default "/Users/jhans12/go/src/gearlybird")
   -show-full-line
     	Display the full line where the pattern match was found (warning: this can be dangerous with minified script files)
   -show-rules-only
     	Display rules that would be run, but do not execute a scan
-  -show-solutions
-    	Display recommended solution for each finding
   -skip-comments
     	Skip scanning comments in files -- applies only to the 'content' module
   -stream
@@ -99,4 +99,12 @@ Usage of ./go-earlybird:
     	Set number of workers. (default 100)
   -worksize int
     	Set Line Wrap Length. (default 2500)
+  -module-config-file string
+        Absolute path to a json or yaml file for per module level config -- {"modules": { "aModule": { "display_severity": "medium" } } }
+  ```
+
+### Performing a scan with only certain modules enabled:
+
+```bash
+go-earlybird -path /dir/to/scan -enable password-secret -enable content -enable inclusivity-rules
 ```

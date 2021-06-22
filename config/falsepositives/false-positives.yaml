@@ -1,0 +1,1424 @@
+# Copyright 2021 American Express
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+---
+rules:
+  - Codes:
+      - 3013
+    Pattern: "(000-000-0000)"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore a false positive phone number
+  - Codes:
+      - 4005
+      - 3022
+    Pattern: ".*"
+    FileExtensions:
+      - ".md"
+      - ".txt"
+      - ".doc"
+      - ".pdf"
+      - ".docx"
+      - ".csv"
+      - ".html"
+      - ".htm"
+    UseFullLine: false
+    Description: Ignore deprecated crypto in documents
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "\\$\\{.*\\}"
+    FileExtensions:
+      - ".xml"
+      - ".sh"
+      - ".gradle"
+    UseFullLine: false
+    Description: Ignore ENV variable references in XML and SH files
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: (?i)['"]?(password|secret)['"]? ?[>:=] ?['"]?none['"]?
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore password|secret=None
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: (?i)['"]?password['"]? ?[>:=] ?['"]?null['"]?
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore password=NULL
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "\\['[^']*'\\]"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore array values
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "\\*{4,}"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore password='******', assuming at least 4 * consecutively
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "\\#{4,}"
+    FileExtensions: []
+    UseFullLine: false
+    Description: 'Ignore password=''######'', assuming at least 4 # consecutively'
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "(?i)password ?[>:=] ?(string|self|this)"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore field definition
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "(?i)\\bX{3,}\\b"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore placeholder values of XXX
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "(?i)\\b(true|false)\\b"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore password field definitions using true|false
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "(?i)(reset|change|update|forget|forgot|incorrect)[ \\.(password)]"
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore password reset|change|update|forgot password strings
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: (?i)(['"]#form\.)
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore CF form placeholders
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: '(?i)([''"]password: ?[''"])'
+    FileExtensions:
+      - ".js"
+      - ".html"
+    UseFullLine: false
+    Description: Ignore password patterns that appear to be script functions
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "(?i)(getString|getvalue|setvalue|properties|property|constant| string
+    |function|utils\\.|\\.get|\\(\\)| new | def | static |\\.of\\( | file\\s*\\()"
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore password patterns that appear to be script functions
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "(?i)({)"
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore password patterns that appear to be script functions
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: "(?i)\\btext\\b"
+    FileExtensions:
+      - ".json"
+    UseFullLine: false
+    Description: Ignore password field definition in json files
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "\\b(string|null|int|bool|float|boolean|char)\\b"
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore variable types as password values
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: (?i)((password|secret|credentials|passphrase)['"]? ?[:=] ?['"]?([a-z]+[\._]+)+(password|pass|pwd|pswd|secret|passphrase)['"]?$)
+    FileExtensions: []
+    UseFullLine: true
+    Description: 'Ignore variable definitions as password values eg: password = mongo.password
+    or password: couchbase_db_password'
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: "(?i)(password ?= ?.*password[a-z]*;)"
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore variable definitions as password values
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "(?i)(\\];)"
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore variable definitions as password values
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "(?i)(\\(\\))"
+    FileExtensions:
+      - ".java"
+      - ".js"
+      - ".ts"
+    UseFullLine: true
+    Description: Ignore variable definitions as password values
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "(?i)(\\);)"
+    FileExtensions:
+      - ".java"
+      - ".js"
+      - ".ts"
+    UseFullLine: true
+    Description: Ignore variable definitions as password values
+  - Codes:
+      - 1002
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: (?i)("\{[^ \}]+\}")
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore variable definitions as password values
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "\\[(PASSWORD)\\]"
+    FileExtensions:
+      - ".json"
+      - ".java"
+      - ".xml"
+    UseFullLine: false
+    Description: Ignore bracketed passwords in XML/Java builds
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "(?i)(encrypted)"
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore passwords that are likely encrypted values
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: "(?i)(variable)"
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore passwords that are likely variable assignments
+  - Codes:
+      - 1002
+    Pattern: ".*"
+    FileExtensions:
+      - ".json"
+      - ".xml"
+      - ".jsp"
+      - ".js"
+      - ".html"
+      - ".css"
+      - ".ftl"
+      - ".vm"
+    UseFullLine: false
+    Description: Ignore default password 'password' in documents
+  - Codes:
+      - 3060
+    Pattern: "(?i)(mysql://|oracle://|odbc://|jdbc://)(.{0}|\\{\\}|X+|user)(:)(.{0}|\\{\\}|X+|password|secret)@"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore placeholder proxy URLs, including mysql://user:secret@host:port,'http://:@proxy...',
+      'http://XXX:XXX@proxy...', and 'http://{}:{}@proxy...'
+  - Codes:
+      - 3017
+    Pattern: "(123-45-6789|078-05-1120|219-09-9999|123-12-1234|000-00-0000|111-11-1111|222-22-2222|333-33-3333|444-44-4444|555-55-5555|666-66-6666|777-77-7777|888-88-8888|999-99-9999)"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore common test SSNs and invalid SSNs used in advertising
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 3075
+      - 6001
+      - 6002
+    Pattern: '[a-zA-Z_$][a-zA-Z_$0-9]*([^"''`];?)$'
+    FileExtensions:
+      - ".swift"
+      - ".sql"
+      - ".go"
+      - ".py"
+      - ".php"
+      - ".java"
+      - ".js"
+      - ".ts"
+      - ".c"
+      - ".cpp"
+      - ".rb"
+      - ".groovy"
+      - Jenkinsfile
+      - ".gradle"
+      - ".vb"
+      - ".pl1"
+      - ".pl"
+      - ".rake"
+    UseFullLine: false
+    Description: 'Ignore variable references in source code (password = var). TODO::
+    Handle function call for example const password = decode("abc23534534");'
+  - Codes:
+      - 2001
+      - 2002
+      - 2003
+      - 2004
+      - 2005
+      - 2006
+      - 2007
+      - 2008
+      - 2009
+      - 2010
+      - 2011
+      - 2012
+      - 2013
+    Pattern: "(?i)<option "
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore credit card patterns inside option lists
+  - Codes:
+      - 2001
+      - 2002
+      - 2003
+      - 2004
+      - 2005
+      - 2006
+      - 2007
+      - 2008
+      - 2009
+      - 2010
+      - 2011
+      - 2012
+      - 2013
+      - 6008
+    Pattern: ".*"
+    FileExtensions:
+      - ".go"
+      - ".py"
+      - ".java"
+      - ".rb"
+      - ".js"
+    UseFullLine: false
+    Description: Ignore credit card patterns inside some types of source code files
+  - Codes:
+      - 2001
+      - 2002
+      - 2003
+      - 2004
+      - 2005
+      - 2006
+      - 2007
+      - 2008
+      - 2009
+      - 2010
+      - 2011
+      - 2012
+      - 2013
+      - 6008
+    Pattern: 122000000000003|34343434343434|370000000000002|371270025401035|371270025401043|371270025402025|371270025403015|371270025409004|371270660661018|371270660662024|371270660662032|371270660668005|371343301752007|371343301753021|371343301754011|371449635398431|371505308441020|371505308442010|371505308443000|371528214641020|371528214642010|371528214646003|371709195261026|371709195261034|371709195262016|371709195262040|371709195263006|371757852842034|371757852845003|371757852845029|371782703782007|372288864061016|372288864061024|372288864061032|372288864061057|372288864062006|372288864062048|372322551071010|372322551072034|372322551073008|372322551074022|372322665811038|372322665811046|372322665812010|372322665813000|372322665813026|372329205991006|372329205991022|372329205992012|372390193581027|372390193581035|372390193584005|372390193584013|372718041861011|372718041861029|372718041862001|372718148771006|372718148771030|372718148771048|372718148771055|372718148772012|372718148772020|373313384474009|374200000000004|374660008502006|374801052445003|374903338074001|374904296751002|374904319754009|374904903732007|375000122682005|375000526011009|375005218531008|375010972201004|375200152133008|375201004871001|375203000271004|375207002841003|375310158271007|375380209091001|376020314563002|376064384982007|376087176161001|376090006351008|376370000004321|376532000011005|376532002642005|376532013911001|376743012721016|376743012721040|376743012721065|376743012721099|376743012721107|376743012721115|376743012722055|376743012722071|376743012722089|376743012723020|376743012723038|376743012725009|376950098701008|377410003181001|377410047572009|377410130561000|377410302644006|377473059161012|377473059161038|377473059161046|377473059161053|377473059162002|377473059162028|377473073301016|377473073302022|377473073304002|377473078061011|377473078061029|377473078064007|377473085281016|377473085281024|377473085281032|377473085282006|377473088291004|377473088291020|377473088291038|377473088293018|378240979915002|378243952112001|378244948953003|378247977715003|378247981763007|378282246310005|378282847733001|378283926047008|378289790073004|378734493671000|379743692151010|379743692151028|379743692154006|379744143401004|379744143401012|379744143401020|379744143401038|5610591081018250|5019717010103740|76009244561|30569309025904|36000000000008|36148900647913|36700102000000|38520000023237|38000000000006|6011000000000010|6011000400000000|6011000990139420|6011111111111110|3088000000000010|3528000700000000|3530111333300000|3566002020360500|3569990000000000|630490017740292000|630490017740292000|630495060000000000|6304990000000000000|6304000000000000|6759649826438450|6759649826438450|491182014295916000|6799990100000000000|67999990100000000000|6705000000008|300000000000000000|6777000000007|6766000000000|6759000000005|5641820000000000|2222405343248870|2222990905257050|2223000010309700|2223000010309710|2223007648726980|2223577120017650|5111010030175150|5185540810000010|5204230080000010|5204740009900010|5420923878724330|5424000000000010|5454545454545450|5455330760000010|5496198584584760|5506900490000430|5506900490000440|5506900510000230|5506920809243660|5506922400634930|5506927427317620|5553042241984100|5555553753048190|5555555555554440|5105105105105100|5404000000000000|5404000000000040|5404000000000060|5404000000000080|5200828282828210|5573470000000000|6331101999990010|4007000000027|4012888818888|4222222222222|4911830000000|4929000000006|4929000000014|4929000000022|4929000005559|4000111111111110|4003830171874010|4005519200000000|4009348888881880|4012000033330020|4012000077777770|4012888888881880|4217651111111110|4242424242424240|4444333322221110|4444444444441110|4111111111111111|4500600000000060|4917610000000000|4462000000000000|4000056655665550|4484070000000000|4484000000002|4917610000000000000|4917300000000000|4917300800000000|370700001111001|371013412581005|376930721601007|378737749761004|(3[74]\d{4}0{5}\d{4})|0{6}|.*00000000.*|.*11111111.*|.*22222222.*|.*33333333.*|.*44444444.*|.*55555555.*|.*66666666.*|.*77777777.*|.*88888888.*|.*99999999.*
+    FileExtensions: []
+    UseFullLine: false
+    Description: Designated test card numbers
+  - Codes:
+      - 3058
+    Pattern: "(?i)desc|design"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore 3des as part of a larger word, e.g., 'item3description(...)'
+  - Codes:
+      - 3001
+      - 3007
+      - 3057
+    Pattern: (?i).*password.*[>'"]password[<'"]
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore field descriptions
+  - Codes:
+      - 3006
+      - 3008
+    Pattern: (?i).*passphrase.*[>'"]passphrase[<'"]
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore field descriptions
+  - Codes:
+      - 3001
+      - 3007
+      - 6001
+      - 3026
+      - 3027
+      - 3033
+      - 3034
+      - 3036
+      - 3075
+    Pattern: (?i)['"]?(password)?(CLIENT)?[-_]?(SECRET)?(KEY)?['"]? *[>:=] *['"]?([^\n//]+[
+      \.]){2,}
+    FileExtensions: []
+    UseFullLine: true
+    Description: 'Ignore strings with more than 1 space or dot, as in a prompt configuration
+    like `''password'': ''please enter a valid password''`, or `''client_secret'':
+    ''conf.value.password''`'
+  - Codes:
+      - 3025
+    Pattern: "(?i)(auto?.generated)"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore Auto Generated comments
+  - Codes:
+      - 3019
+    Pattern: ".*"
+    FileExtensions:
+      - ".xml"
+      - ".html"
+      - ".wsdl"
+    UseFullLine: false
+    Description: Ignore URLs in XML files
+  - Codes:
+      - 5001
+    Pattern: ".*"
+    FileExtensions:
+      - ".xml"
+      - ".js"
+      - ".ttf"
+      - ".css"
+      - ".eot"
+      - ".html"
+      - ".woff"
+      - ".otf"
+      - ".bin"
+      - ".exe"
+      - ".class"
+      - ".java"
+      - ".xlsx"
+      - ".docx"
+      - ".pom"
+      - ".pdf"
+    UseFullLine: false
+    Description: Ignore high entropy strings in files where we would expect complex
+      strings to exist
+  - Codes:
+      - 3025
+    Pattern: "(?i)^[^\\(]+\\([^\\)]*(/\\*|#|//)"
+    FileExtensions:
+      - ".java"
+      - ".js"
+      - ".go"
+      - ".py"
+      - ".cs"
+      - ".sh"
+      - ".rb"
+      - ".c"
+    UseFullLine: false
+    Description: Ignore comment keywords in functions
+  - Codes:
+      - 3015
+    Pattern: ".*"
+    FileExtensions:
+      - package.json
+      - package-lock.json
+      - manifest.mf
+      - manifest.in
+      - ".gradle"
+      - requirements.txt
+    UseFullLine: false
+    Description: Ignore strings that look like IPv4 addresses in dependency files since
+      they are likely version numbers
+  - Codes:
+      - 3014
+    Pattern: "(email|username|recipient|firstname|lastname|example|userid)@"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore dummy email addresses
+  - Codes:
+      - 3014
+    Pattern: "@([a-zA-Z0-9\\-_]+\\.)*(host|myhost|domain|test|example|dummy|foo|foobar|foobarbaz|server|myserver)\\.(com|org|net|biz|info|edu)"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore dummy email addresses
+  - Codes:
+      - 3014
+    Pattern: git@github\.com
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore default github email addresses
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: "(?i)\\[[^\\]]+\\]"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore placeholder [PASSWORD] values
+  - Codes:
+      - 3033
+    Pattern: "(?i)(clientSecret ?[>:=] ?[0-9a-zA-Z]+Secret[0-9a-zA-Z]+)"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore placeholder clientSecret values
+  - Codes:
+      - 3033
+    Pattern: (?i)clientSecret[^\n]*[>:=][^\n]*['"][^\n]*[^ \n]* +[^ \n]* +[^ \n]*[^\n]*['"]
+    FileExtensions: []
+    UseFullLine: true
+    Description: 'Ignore strings with more than 1 space, as in a prompt configuration
+    like `''ClientSecret'': ''please enter a valid password''`'
+  - Codes:
+      - 4046
+    Pattern: ".*"
+    FileExtensions:
+      - ".java"
+      - ".py"
+      - ".sh"
+      - ".js"
+      - ".rb"
+      - ".php"
+      - ".c"
+      - ".class"
+      - ".exe"
+      - ".bin"
+      - ".bat"
+      - ".cfg"
+      - ".ttf"
+      - ".css"
+      - ".html"
+      - ".htm"
+      - ".eot"
+      - ".woff"
+      - ".otf"
+      - ".pdf"
+      - ".pom"
+    UseFullLine: false
+    Description: Ignore strings that look like IPv4 addresses in dependency files since
+      they are likely version numbers
+  - Codes:
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+    Pattern: "(?i)(/[a-z0-9\\-_]+){2,}"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore file path in certain key/secret/token configurations
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: (?i)(" ?\+ ?.* ?\+ ?")
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore variables appended to string, usually used during URL building
+  - Codes:
+      - 3018
+    Pattern: ".*"
+    FileExtensions:
+      - ".lst"
+      - ".asm"
+      - ".cpp"
+    UseFullLine: false
+    Description: Ignore IBAN patterns in files likely to use hex addressing strings
+  - Codes:
+      - 3018
+    Pattern: "[00000000|11111111|22222222|33333333|44444444|55555555|66666666|77777777|88888888|99999999]"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore IBAN patterns with more than 8 consecutive same digits
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: "\\.{3,}"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore placeholder values of ...
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: "--password"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore value lowercase --password used as CLI param constant
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: "(?i)password ?[>:=] ?@?\\bpassword\\b"
+    FileExtensions: []
+    UseFullLine: true
+    Description: 'Ignore `password: password` without touching more complex values'
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: '[>:=] ?"\$'
+    FileExtensions: []
+    UseFullLine: true
+    Description: 'Ignore `password: "$password"` without touching more complex values
+    like `"abc$123"`'
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: "(?i)\\b(foo)\\b"
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore value placeholder value foo as a password
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: "(?i)empty"
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore field definitions or initializations for empty password values
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: "(?i)[=:] ?[a-z0-9]+ +[^//#].*"
+    FileExtensions:
+      - ".properties"
+    UseFullLine: true
+    Description: Ignore field definitions
+  - Codes:
+      - 3001
+      - 3003
+      - 3004
+      - 3005
+      - 3006
+      - 3007
+      - 3008
+      - 3021
+      - 3022
+      - 3026
+      - 3027
+      - 3029
+      - 3032
+      - 3033
+      - 3034
+      - 3035
+      - 3036
+      - 3037
+      - 3049
+      - 3057
+      - 6001
+      - 6002
+    Pattern: "[=:] ?Password$"
+    FileExtensions:
+      - ".properties"
+    UseFullLine: true
+    Description: Ignore password field definitions
+  - Codes:
+      - 3037
+      - 3040
+      - 6008
+    Pattern: (?i)token['"]? ?[>:=] ?['"]?[0-9a-zA-A\.\-_]+token[0-9a-zA-A\.\-_\(\),
+      ]*['"]?
+    FileExtensions: []
+    UseFullLine: false
+    Description: Ignore self defining token fields like `auth_token = 'auth_token'`
+      or function calls like account_token = get_account_token(val1, val2)
+  - Codes:
+      - 3037
+      - 3040
+    Pattern: (?i)token['"]? ?[>:=] ?['"]?([s]?[\.]?0{8,})
+    FileExtensions: []
+    UseFullLine: true
+    Description: 'Ignore sample value as TEST_TOKEN: "s.000000000000000000000000"'
+  - Codes:
+      - 3026
+      - 3027
+      - 3033
+      - 3034
+    Pattern: (?i)["']?(CLIENT)?[-_]?SECRET(KEY)?["']? ?[>:=] ?["']?(GRAFANA)?(SOME)?[-_]?(CLIENT)?[-_]?SECRET(KEY)?["']?
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore secret definitions when the value is identical to the variable
+      declaration for example `SECRET = "SECRET"` or `CLIENTSECRET = "CLIENTSECRET"
+      or `CLIENT_SECRET = "CLIENT_SECRET"
+  - Codes:
+      - 3057
+    Pattern: "(?i)(show|hide|setup|forgot|reset|change|update|forget)(password)"
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore showPassword|hidePassword|setupPassword strings
+  - Codes:
+      - 3023
+    Pattern: (?i)[>:=]?["']?(-*BEGIN (RSA|OPENSSH|DSA|EC|PGP) PRIVATE KEY-*(\\n)?)["']?
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore `BEGIN RSA PRIVATE KEY` surrounded by quotes
+  - Codes:
+      - 3075
+    Pattern: (?i)['"]?(use[_-])?credentials['"]? ?[>:=] ?['"]?(include|omit|same-origin|use[_-]credentials)['"]?
+    FileExtensions:
+      - ".js"
+      - ".ts"
+    UseFullLine: true
+    Description: Ignore credentials for fetch API credentials=include,credentials=omit,credentials=this.
+      Read more- https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#parameters
+  - Codes:
+      - 3057
+    Pattern: "(?i)password ?[>:=] ?.*/[a-zA-Z0-9]+\\.[a-zA-Z0-9]+"
+    FileExtensions:
+      - ".js"
+      - ".ts"
+      - ".json"
+      - ".xml"
+      - ".properties"
+    UseFullLine: true
+    Description: 'Ignore password definitions that refer to files, example strmojo.WH.Password:
+    mojo/js/source/WH/Password.js'
+  - Codes:
+      - 3057
+    Pattern: "(?i)password ?[>:=] ?([a-z0-9]+\\.?)+.+(\\().+(\\))"
+    FileExtensions: []
+    UseFullLine: true
+    Description: Ignore functions string, example- `password = context.decrypt("%%ARCHIVAL_DB_PWD%%")`
+  - Codes:
+      - 3035
+      - 3036
+    Pattern: (?i)["']?(auth|secret)[-_.]?key?["']? ?[>:=] ?["']? ?.*[-_.](auth|secret)[-_.]key["']?$
+    FileExtensions: []
+    UseFullLine: true
+    Description: 'Ignore when the value is identical to the variable declaration for
+    example authKey: GITHUB_AUTH_KEY or secret.key: GITHUB_AUTH_KEY'

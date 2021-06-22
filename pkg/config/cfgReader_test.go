@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package cfgreader
 
 import (
+	"bytes"
 	"fmt"
 	"testing"
 
@@ -36,7 +37,7 @@ func init() {
 
 func TestLoadConfig(t *testing.T) {
 	var settings Configs
-	if err := LoadConfig(&settings, configPath); err != nil && len(settings.ModuleConfigs) == 0 {
+	if err := LoadConfig(&settings, configPath); err != nil && len(settings.Version) == 0 {
 		t.Errorf("LoadConfigs() = %v, want non nil value, loaded empty config", settings)
 	}
 }
@@ -87,8 +88,57 @@ func TestGetLevelMap(t *testing.T) {
 	}
 }
 
-func TestGetAvailableModules(t *testing.T) {
-	if gotModules := config.GetAvailableModules(); len(gotModules) == 0 {
-		t.Errorf("GetAvailableModules() = %v, wanted non empty array", gotModules)
+func TestHasJSONPrefix(t *testing.T) {
+	cases := map[string]struct {
+		expected bool
+		input    []byte
+	}{
+		"input is json": {
+			expected: true,
+			input:    []byte("{\"this\": \"is JSON\"}"),
+		},
+		"input is not json": {
+			expected: false,
+			input:    []byte("this is not json"),
+		},
+	}
+
+	for tn, tc := range cases {
+		t.Run(tn, func(t *testing.T) {
+			if got := hasJSONPrefix(tc.input); tc.expected != got {
+				t.Fatalf("Did not get expected result, got: %t, want: %t", got, tc.expected)
+			}
+		})
+	}
+}
+
+func TestToJSON(t *testing.T) {
+	cases := map[string]struct {
+		expected []byte
+		input    []byte
+	}{
+		"input is json": {
+			expected: []byte("{\"this\":\"is json\"}"),
+			input:    []byte("{\"this\":\"is json\"}"),
+		},
+		"input is not json": {
+			expected: []byte("{\"this\":\"is json\"}"),
+			input: []byte(`---
+this:
+  is json`),
+		},
+	}
+
+	for tn, tc := range cases {
+		t.Run(tn, func(t *testing.T) {
+			got, err := toJson(tc.input)
+			if err != nil {
+				t.Fatalf("There was an error converting the input to json: %s", err)
+			}
+
+			if !bytes.Equal(tc.expected, got) {
+				t.Fatalf("Did not get expected result, got: %s, want: %s", string(got), string(tc.expected))
+			}
+		})
 	}
 }

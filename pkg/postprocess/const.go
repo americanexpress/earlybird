@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,4 +22,5 @@ const (
 	strongPswdLen   int    = 9
 	pswdRegex       string = "(?:[:=])(.*)"
 	pswdMinLen      int    = 3
+	splitPswdRegex  string = "[:=]"
 )

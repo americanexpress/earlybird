@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ func Scan(cfg cfgreader.EarlybirdConfig) http.HandlerFunc {
 			RulesObserved: len(scan.CombinedRules),
 			StartTime:     start.UTC().Format(time.RFC3339),
 			EndTime:       time.Now().UTC().Format(time.RFC3339),
-			Duration:      fmt.Sprint(time.Since(start)),
+			Duration:      fmt.Sprintf("%d ms", time.Since(start)/time.Millisecond),
 		}
 
 		//Encode and send JSON response
@@ -132,13 +132,13 @@ func GITScan(cfg cfgreader.EarlybirdConfig) http.HandlerFunc {
 			Skipped:       fileContext.SkippedFiles,
 			Ignore:        fileContext.IgnorePatterns,
 			Version:       cfg.Version,
-			Modules:       mycfg.EnabledModules,
+			Modules:       cfg.EnabledModules,
 			Threshold:     mycfg.SeverityDisplayLevel,
 			FilesScanned:  len(fileContext.Files),
 			RulesObserved: len(scan.CombinedRules),
 			StartTime:     start.UTC().Format(time.RFC3339),
 			EndTime:       time.Now().UTC().Format(time.RFC3339),
-			Duration:      fmt.Sprint(time.Since(start)),
+			Duration:      fmt.Sprintf("%d ms", time.Since(start)/time.Millisecond),
 		}
 
 		response, err := json.MarshalIndent(report, "", "\t")

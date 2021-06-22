@@ -1,0 +1,86 @@
+# Copyright 2021 American Express
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+---
+labels:
+  - label: whitelist
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20001
+  - label: white_list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20002
+  - label: white-list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20003
+  - label: whtlist
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20004
+  - label: wht_list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20005
+  - label: wht-list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20006
+  - label: blacklist
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20007
+  - label: black_list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20008
+  - label: black-list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20009
+  - label: blklist
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20010
+  - label: blk_list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20011
+  - label: blk-list
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20012
+  - label: slave
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20013
+  - label: master
+    multiline: false
+    category: inclusivity
+    codes:
+      - 20014

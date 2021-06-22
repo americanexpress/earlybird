@@ -1,0 +1,691 @@
+# Copyright 2021 American Express
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+---
+Searcharea: filename
+rules:
+  - Code: 4001
+    Pattern: "(?i).*_rsa$"
+    Caption: Private SSH key
+    Category: key
+    Example: file.key_rsa
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4002
+    Pattern: "(?i).*_dsa$"
+    Caption: Private SSH key
+    Category: key
+    Example: file.key_dsa
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4003
+    Pattern: "(?i).*_ed25519$"
+    Caption: Private SSH key
+    Category: key
+    Example: file.key_ed25519
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4004
+    Pattern: "(?i).*_ecdsa$"
+    Caption: Private SSH key
+    Category: key
+    Example: file.key_ecdsa
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4005
+    Pattern: "(?i).*\\.pem$"
+    Caption: Potential cryptographic private key
+    Category: key
+    Example: file.pem
+    SolutionID: 11
+    Severity: 4
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4006
+    Pattern: "(?i).*\\.ppk$"
+    Caption: Potential cryptographic private key
+    Category: key
+    Example: file.ppk
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4007
+    Pattern: "(?i)key(pair)?$"
+    Caption: Potential cryptographic private key
+    Category: key
+    Example: keypair
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4008
+    Pattern: "(?i).*\\.pkcs12$"
+    Caption: Potential cryptographic key bundle
+    Category: key
+    Example: file.pkcs12
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4009
+    Pattern: "(?i).*\\.pfx$"
+    Caption: Potential cryptographic key bundle
+    Category: key
+    Example: file.pfx
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4010
+    Pattern: "(?i).*\\.p12$"
+    Caption: Potential cryptographic key bundle
+    Category: key
+    Example: file.p12
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4011
+    Pattern: "(?i).*\\.asc$"
+    Caption: Potential cryptographic key bundle
+    Category: key
+    Example: file.asc
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4012
+    Pattern: "(?i)otr.private_key"
+    Category: key
+    Caption: Pidgin OTR private key
+    Example: otr.private_key
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4013
+    Pattern: "(?i)\\.(bash_|zsh_|z)?history$"
+    Caption: Shell command history file
+    Category: sensitive-file
+    Example: bash_secret.history
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4014
+    Pattern: "(?i)\\.mysql_history$"
+    Caption: MySQL client command history file
+    Category: sensitive-file
+    Example: monday.mysql_history
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4015
+    Pattern: "(?i)\\.psql_history$"
+    Caption: PostgreSQL client command history file
+    Category: sensitive-file
+    Example: monday.psql_history
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4016
+    Pattern: "(?i)\\.irb_history$"
+    Caption: Ruby IRB console history file
+    Category: sensitive-file
+    Example: monday.irb_history
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4017
+    Pattern: "(?i)\\.purple/accounts\\.xml$"
+    Caption: Pidgin chat client account configuration file
+    Category: sensitive-file
+    Example: ".purple/accounts.xml"
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4018
+    Pattern: "(?i)\\.xchat2?/servlist_?\\.conf$"
+    Caption: Hexchat/XChat IRC client server list configuration file
+    Category: sensitive-file
+    Example: ".xchat2/servlist_.conf"
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4019
+    Pattern: "(?i)\\.irssi/config$"
+    Caption: Irssi IRC client configuration file
+    Category: sensitive-file
+    Example: ".irssi/config"
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4020
+    Pattern: "(?i)\\.recon-ng/keys\\.db$"
+    Caption: Recon-ng web reconnaissance framework API key database
+    Category: sensitive-file
+    Example: ".recon-ng/keys.db"
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4021
+    Pattern: "(?i)\\.dbeaver-data-sources.xml$"
+    Caption: DBeaver SQL database manager configuration file
+    Category: sensitive-file
+    Example: ".dbeaver-data-sources.xml"
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4022
+    Pattern: "(?i)\\.muttrc$"
+    Caption: Mutt e-mail client configuration file
+    Category: sensitive-file
+    Example: ".muttrc"
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4023
+    Pattern: "(?i)\\.s3cfg$"
+    Caption: S3cmd configuration file
+    Category: sensitive-file
+    Example: ".s3cfg"
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4024
+    Pattern: "(?i)\\.trc$"
+    Caption: T command-line Twitter client configuration file
+    Category: sensitive-file
+    Example: ".trc"
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4025
+    Pattern: "(?i).*\\.ovpn$"
+    Caption: OpenVPN client configuration file
+    Category: sensitive-file
+    Example: ".test.ovpn"
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4026
+    Pattern: "(?i)\\.gitrobrc$"
+    Caption: Gitrob configuration file
+    Category: sensitive-file
+    Example: ".gitrobrc"
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4027
+    Pattern: "(?i)\\.(bash|zsh)rc$"
+    Caption: Shell configuration file
+    Category: sensitive-file
+    Example: ".bashrc"
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4028
+    Pattern: "(?i)\\.(bash_|zsh_)?profile$"
+    Caption: Shell command profile configuration file
+    Category: sensitive-file
+    Example: ".bash_profile"
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4029
+    Pattern: "(?i)\\.(bash_|zsh_)?aliases$"
+    Caption: Shell command alias configuration file
+    Category: sensitive-file
+    Example: ".bash_aliases"
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4030
+    Pattern: "(?i)secret_token.rb$"
+    Caption: Ruby On Rails secret token configuration file
+    Category: sensitive-file
+    Example: secret_token.rb
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4031
+    Pattern: "(?i)omniauth.rb$"
+    Caption: OmniAuth configuration file
+    Category: sensitive-file
+    Example: omniauth.rb
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4032
+    Pattern: "(?i)carrierwave.rb$"
+    Caption: Carrierwave configuration file
+    Category: sensitive-file
+    Example: carrierwave.rb
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4033
+    Pattern: "(?i)schema.rb$"
+    Caption: Ruby On Rails database schema file
+    Category: sensitive-file
+    Example: schema.rb
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4034
+    Pattern: "(?i)database.yml$"
+    Caption: Potential Ruby On Rails database configuration file
+    Category: sensitive-file
+    Example: database.yml
+    SolutionID: 11
+    Severity: 4
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4035
+    Pattern: "(?i)settings.py$"
+    Caption: Django configuration file
+    Category: sensitive-file
+    Example: settings.py
+    SolutionID: 11
+    Severity: 4
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4036
+    Pattern: "(?i)config(\\.inc)?\\.php$"
+    Caption: PHP configuration file
+    Category: sensitive-file
+    Example: config.inc.php
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4037
+    Pattern: "(?i).*\\.kdbx?$"
+    Caption: KeePass password manager database file
+    Category: sensitive-file
+    Example: ".test.kdbx"
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4038
+    Pattern: "(?i).*\\.agilekeychain$"
+    Caption: 1Password password manager database file
+    Category: sensitive-file
+    Example: ".test.agilekeychain"
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4039
+    Pattern: "(?i).*\\.keychain$"
+    Caption: Apple keychain database file
+    Category: sensitive-file
+    Example: ".test.keychain"
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4040
+    Pattern: "(?i)key(store|ring)$"
+    Caption: Keyring database file
+    Category: sensitive-file
+    Example: ".test.keystore"
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4041
+    Pattern: "(?i).*\\.log$"
+    Caption: Log file
+    Category: sensitive-file
+    Example: ".test.log"
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4042
+    Pattern: "(?i).*\\.pcap$"
+    Caption: Network traffic capture file
+    Category: sensitive-file
+    Example: ".test.pcap"
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4043
+    Pattern: "(?i)sql(dump)?$"
+    Caption: SQL dump file
+    Category: sensitive-file
+    Example: file.sqldump
+    SolutionID: 11
+    Severity: 2
+    Confidence: 4
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4044
+    Pattern: "(?i).*\\.gnucash$"
+    Caption: GnuCash database file
+    Category: sensitive-file
+    Example: ".file.gnucash"
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4045
+    Pattern: "(?i).*backup.*"
+    Caption: 'Path contains word: backup'
+    Category: sensitive-file
+    Example: important.backup.txt
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4046
+    Pattern: "(?i).*dump.*"
+    Caption: 'Path contains word: dump'
+    Category: sensitive-file
+    Example: important.dump.txt
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4047
+    Pattern: "(?i).*\\..*password.*"
+    Caption: 'Path contains word: password'
+    Category: sensitive-file
+    Example: file.password.txt
+    SolutionID: 11
+    Severity: 2
+    Confidence: 4
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4048
+    Pattern: "(?i).*private.*key.*"
+    Caption: 'Path contains words: private, key'
+    Category: key
+    Example: silly.private.key.txt
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4049
+    Pattern: "(?i)jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml$"
+    Caption: Jenkins publish over SSH plugin file
+    Category: sensitive-file
+    Example: jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.xml
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4050
+    Pattern: "(?i)credentials.xml$"
+    Caption: Potential Jenkins credentials file
+    Category: sensitive-file
+    Example: credentials.xml
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4051
+    Pattern: "(?i)\\.htpasswd$"
+    Caption: Apache htpasswd file
+    Category: sensitive-file
+    Example: file.htpasswd
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4052
+    Pattern: "(?i)\\.netrc$"
+    Caption: Configuration file for auto-login process
+    Category: sensitive-file
+    Example: file.netrc
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4053
+    Pattern: "(?i).*kwallet$"
+    Caption: KDE Wallet Manager database file
+    Category: sensitive-file
+    Example: file.kwallet
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4054
+    Pattern: "(?i)LocalSettings.php$"
+    Caption: Potential MediaWiki configuration file
+    Category: sensitive-file
+    Example: LocalSettings.php
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4055
+    Pattern: "(?i).*tblk$"
+    Caption: Tunnelblick VPN configuration file
+    Category: sensitive-file
+    Example: spy.tblk
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4056
+    Pattern: "(?i)\\.gem/credentials$"
+    Caption: Rubygems credentials file
+    Category: sensitive-file
+    Example: file.gem/credentials
+    SolutionID: 11
+    Severity: 3
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4057
+    Pattern: "(?i).*\\.pubxml(\\.user)?$"
+    Caption: Potential MSBuild publish profile
+    Category: sensitive-file
+    Example: file.pubxml.user
+    SolutionID: 11
+    Severity: 4
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4058
+    Pattern: "(?i).\\.env$"
+    Caption: PHP dotenv
+    Category: sensitive-file
+    Example: file.\.env
+    SolutionID: 11
+    Severity: 4
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+  - Code: 4059
+    Pattern: "(?i).*\\.jks$"
+    Caption: Java keystore file
+    Category: key
+    Example: file.jks
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321
+  - Code: 4060
+    Pattern: "(?i).*\\.keystore$"
+    Caption: Keystore file
+    Category: key
+    Example: file.keystore
+    SolutionID: 11
+    Severity: 2
+    Confidence: 2
+    Postprocess: ''
+    CWE:
+      - CWE-312
+      - CWE-321

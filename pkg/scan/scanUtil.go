@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,6 +128,17 @@ func getLevelNameFromID(level int, levelMap map[string]int) string {
 	return levelName
 }
 
+// Translate the display severity from string value to int value
+func getIdFromLevelName(displaySeverity string, levelMap map[string]int) int {
+	id := 1
+	for key, value := range levelMap {
+		if key == displaySeverity {
+			id = value
+		}
+	}
+	return id
+}
+
 func getZIPURL(url string) string {
 	splits := strings.SplitAfter(url, ".zip")
 	if len(splits) <= 2 {
@@ -139,7 +150,25 @@ func getZIPURL(url string) string {
 func getFileURL(giturl, filepath string) (fileurl string) {
 	//strip .git at end if link if exists
 	fileurl = strings.Replace(giturl, ".git", "", 1)
-	fileurl = fileurl + "/blob/master/" + filepath
+
+	if strings.Contains(giturl, "github.com/") { //check if github link
+		fileurl = fileurl + "/blob/master/" + filepath
+	} else { //assume it's bitbucket format
+		if strings.Contains(fileurl, "~") { //Check if project or user repository
+			fileurl = strings.Replace(fileurl, "/scm/~", "/users/", 1)
+		} else {
+			fileurl = strings.Replace(fileurl, "/scm/", "/projects/", 1)
+		}
+		//Parse username/project from URL
+		args := strings.Split(fileurl, "/")
+		//replace username/project with x/repos/
+		if len(args) > 5 { //Safety control from nil pointer dereference
+			fileurl = strings.Replace(fileurl, args[5]+"/", args[5]+"/repos/", 1)
+		}
+
+		//Append browse for bitbucket
+		fileurl = fileurl + "/browse/" + filepath
+	}
 
 	//Strip file paths within zip file
 	if strings.Contains(fileurl, ".zip") {

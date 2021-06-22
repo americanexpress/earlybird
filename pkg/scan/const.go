@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,11 @@
 package scan
 
 const (
-	ruleSuffix       string  = ".json"
-	entropyThreshold float64 = 4.7
-	compressRegex    string  = ".(war|jar|zip|ear)$"
-	tempRegex        string  = `(?:ebgit|ebzip)\d+[/\\](.+$)`
-	maskCharacter    string  = "*"
-	overlapLength    int     = 25
+	ruleSuffix        string  = ".json"
+	entropyThreshold  float64 = 4.7
+	compressRegex     string  = ".(war|jar|zip|ear)$"
+	tempRegex         string  = `(?:ebgit|ebzip)\d+[/\\](.+$)`
+	maskCharacter     string  = "*"
+	overlapLength     int     = 25
+	infoLevelSeverity string  = "info"
 )

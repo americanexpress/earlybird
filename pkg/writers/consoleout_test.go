@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express
+ * Copyright 2021 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ func TestWriteConsole(t *testing.T) {
 			Code:       3003,
 			Line:       1,
 			Filename:   "sample.py",
-			MatchValue: "password = '123'",
+			MatchValue: "tomcat_password = '123'",
 		}
 	}()
 	type args struct {
