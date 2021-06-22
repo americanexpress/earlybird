@@ -4,21 +4,27 @@ EarlyBird has a rules engine for excluding false positives from the results.  Ea
 The `Pattern` field is a regular expression that is evaluated against any hit that matches the `Code`, as long as the file containing that hit has an extension matching a value in the `FileExtensions` value (if that value is empty, all file extensions will be considered).
 
 ```
-{
-     "rules": [
-         {
-             "Codes": [3013],
-             "Pattern": "(000-000-0000)",
-             "FileExtensions": [],
-             "Description": "Ignore a false positive phone number"
-         },
-         {
-             "Codes": [3058,3069,3070,3071,3072,3073,3074,3075],
-             "Pattern": ".*",
-             "FileExtensions": [".md", ".txt", ".doc", ".pdf", ".docx", ".csv", ".html", ".htm"],
-             "Description": "Ignore deprecated crypto in documents"
-         },
-         ...
+---
+rules:
+- Codes:
+  - 3013
+  Pattern: "(000-000-0000)"
+  FileExtensions: []
+  Description: Ignore a false positive phone number
+- Codes:
+  - 4005
+  - 3022
+  Pattern: ".*"
+  FileExtensions:
+  - ".md"
+  - ".txt"
+  - ".doc"
+  - ".pdf"
+  - ".docx"
+  - ".csv"
+  - ".html"
+  - ".htm"
+  Description: Ignore deprecated crypto in documents
 ```
 
 ### In the examples above:
