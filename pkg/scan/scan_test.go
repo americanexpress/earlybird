@@ -56,7 +56,21 @@ func init() {
 		panic(err)
 	}
 
-	cfg.AdjustedSeverityCategories = cfgReader.Settings.AdjustedSeverityCategories
+	cfg.AdjustedSeverityCategories = []cfgReader.AdjustedSeverityCategory{
+		{
+			Category: "password-secret",
+			AdjustedDisplaySeverity: "medium",
+			Patterns: []string{
+				"(?i)/lowEnv/",
+				"(?i)/test/",
+				"(?i)/tests/",
+				"(?i)/__tests__/",
+				"(?i)lowEnv\\.(yaml|yml|properties|js|json)",
+			},
+			UseFilename: true,
+		},
+	}
+
 	Init(cfg)
 }
 
@@ -491,33 +505,33 @@ func Test_determineSeverity(t *testing.T) {
 			expectedSeverityId: 3,
 		},
 		{
-			name: "it should reduce severity findings based on e0 dir",
+			name: "it should reduce severity findings based on lowEnv dir",
 			hit: &Hit{
 				Code:       3001,
 				Line:       1,
-				Filename:   "root/of/repo/e0/foo.js",
+				Filename:   "root/of/repo/lowEnv/foo.js",
 				MatchValue: "password = 'aReallyBadPassword'",
 			},
 			expectedSeverity:   "medium",
 			expectedSeverityId: 3,
 		},
 		{
-			name: "it should reduce severity findings for files with e0 in name",
+			name: "it should reduce severity findings for files with lowEnv in name",
 			hit: &Hit{
 				Code:       3001,
 				Line:       1,
-				Filename:   "bar/config-e0.js",
+				Filename:   "bar/config-lowEnv.js",
 				MatchValue: "password = 'aReallyBadPassword'",
 			},
 			expectedSeverity:   "medium",
 			expectedSeverityId: 3,
 		},
 		{
-			name: "it should reduce severity findings for files with e0 in name #2",
+			name: "it should reduce severity findings for files with lowEnv in name #2",
 			hit: &Hit{
 				Code:       3001,
 				Line:       1,
-				Filename:   "bar/latest/e0.js",
+				Filename:   "bar/latest/lowEnv.js",
 				MatchValue: "password = 'aReallyBadPassword'",
 			},
 			expectedSeverity:   "medium",
