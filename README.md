@@ -39,7 +39,7 @@ $ go-earlybird --git=https://github.com/americanexpress/earlybird
  - [False Positives - How are they managed? How do I filter them?](./docs/FALSEPOSITIVES.md)
  - [Labels - What are labels? How do I create my own?](./docs/LABELS.md)
  - [Ignore - How do I skip lines or files intentionally?](./docs/IGNORE.md)
- - [Inclusivity - How do I perform an inclusivity scan?](./docs/IGNORE.md)
+ - [Inclusivity - How do I perform an inclusivity scan?](./docs/INCLUSIVITY.md)
 
 
 ## Why Are We Doing This?
