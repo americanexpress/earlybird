@@ -58,7 +58,7 @@ func init() {
 
 	cfg.AdjustedSeverityCategories = []cfgReader.AdjustedSeverityCategory{
 		{
-			Category: "password-secret",
+			Category:                "password-secret",
 			AdjustedDisplaySeverity: "medium",
 			Patterns: []string{
 				"(?i)/lowEnv/",

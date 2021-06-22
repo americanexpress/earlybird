@@ -28,6 +28,7 @@ import (
 	"mime/multipart"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -304,12 +305,12 @@ func hasCompressionExtension(path string) bool {
 }
 
 // Read in .ge_ignore file and ignore files matching the patterns
-func getIgnorePatterns(path, ignoreFile string, verbose bool) (ignorePatterns []string) {
+func getIgnorePatterns(filePath, ignoreFile string, verbose bool) (ignorePatterns []string) {
 	ignorePatterns = append(ignorePatterns, "*.git/*")
 
 	// Loop through the files defined to contain ignore patterns (.ge_ignore, .gitignore, etc.)
 	for _, ignoreFile := range ignoreFiles {
-		path := path + "/" + ignoreFile
+		path := path.Join(filePath, ignoreFile)
 		if Exists(path) {
 			file, err := os.Open(path)
 			if err != nil {
