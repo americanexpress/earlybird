@@ -17,29 +17,32 @@
 package file
 
 import (
-	"log"
-	"os"
+	"github.com/americanexpress/earlybird/pkg/scan"
 	"reflect"
+
+	"os"
+	"path"
 	"strings"
 	"testing"
-
-	"github.com/americanexpress/earlybird/pkg/scan"
 )
 
-var userHomeDir string
+var projectRoot string
+var workDir string
 
 func init() {
-	var err error
-	userHomeDir, err = os.UserHomeDir()
+	workingDir, err := os.Getwd()
 	if err != nil {
-		log.Fatal("Home directory doesn't exist", err)
+		panic("cannot get working dir")
 	}
-	ignorePatterns = getIgnorePatterns(userHomeDir+string(os.PathSeparator), ".ge_ignore", false)
+
+	workDir = workingDir
+	projectRoot = path.Join(workingDir, "../../")
+	ignorePatterns = getIgnorePatterns(projectRoot, path.Join(projectRoot, ".ge_ignore"), false)
 }
 
 func TestGetFiles(t *testing.T) {
 	searchDir := "test_data"
-	ignoreFile := userHomeDir + string(os.PathSeparator) + ".ge_ignore"
+	ignoreFile := path.Join(projectRoot, ".ge_ignore")
 	verbose := false
 	maxFileSize := int64(1000000)
 
@@ -117,7 +120,7 @@ func Test_getFileSizeOK(t *testing.T) {
 }
 
 func Test_getIgnorePatterns(t *testing.T) {
-	if gotIgnorePatterns := getIgnorePatterns(userHomeDir+string(os.PathSeparator), ".ge_ignore", false); len(ignorePatterns) == 0 {
+	if gotIgnorePatterns := getIgnorePatterns(projectRoot, ".ge_ignore", false); len(ignorePatterns) == 0 {
 		t.Errorf("getIgnorePatterns() = %v, want multiple patterns", gotIgnorePatterns)
 	}
 }
@@ -137,7 +140,7 @@ func Test_isIgnoredFile(t *testing.T) {
 		{
 			name: "Check if file is ignored",
 			args: args{
-				fileName: "ignore.png",
+				fileName: "/npm-shrinkwrap.json",
 			},
 			want: true,
 		},
