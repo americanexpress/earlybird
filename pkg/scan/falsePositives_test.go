@@ -362,7 +362,7 @@ func Test_findFalsePositive(t *testing.T) {
 			hit: Hit{
 				Code:     3001,
 				Filename: "test.json",
-				LineValue: `		"IV_PSK_INPUT_LABEL_GENERIC_PASSWORD": "xxxxxx"`,
+				LineValue: `		"INPUT_LABEL_GENERIC_PASSWORD": "xxxxxx"`,
 			},
 			wantIsFP: false,
 		},
@@ -371,7 +371,7 @@ func Test_findFalsePositive(t *testing.T) {
 			hit: Hit{
 				Code:     3001,
 				Filename: "test.properties",
-				LineValue: `		IV_PSK_INPUT_LABEL_GENERIC_PASSWORD= xxxxxxxx`,
+				LineValue: `		INPUT_LABEL_GENERIC_PASSWORD= xxxxxxxx`,
 			},
 			wantIsFP: false,
 		},
@@ -380,7 +380,7 @@ func Test_findFalsePositive(t *testing.T) {
 			hit: Hit{
 				Code:     3001,
 				Filename: "test.properties",
-				LineValue: `		IV_PSK_INPUT_LABEL_GENERIC_PASSWORD= "xxxxxxxx"`,
+				LineValue: `		INPUT_LABEL_GENERIC_PASSWORD= "xxxxxxxx"`,
 			},
 			wantIsFP: false,
 		},
@@ -443,7 +443,7 @@ func Test_findFalsePositive(t *testing.T) {
 			hit: Hit{
 				Code:      3036,
 				Filename:  "source.txt",
-				LineValue: `client_secret_key : 'e2.apigee.client.secret.key'`,
+				LineValue: `client_secret_key : 'e2.api.client.secret.key'`,
 			},
 			wantIsFP: true,
 		},
@@ -488,7 +488,7 @@ func Test_findFalsePositive(t *testing.T) {
 			hit: Hit{
 				Code:      3057,
 				Filename:  "jsclassinfo.properties",
-				LineValue: `mstrmojo.WH.Password: mojo/js/source/WH/Password.js`,
+				LineValue: `api.auth.Password: /foo/bar/Password.js`,
 			},
 			wantIsFP: true,
 		},
@@ -587,7 +587,7 @@ func Test_findFalsePositive(t *testing.T) {
 			hit: Hit{
 				Code:      3001,
 				Filename:  "source.js",
-				LineValue: `EPASS_ENV_VAR_SSLPASSWORD = 'KEYFILE_PASSWORD'`,
+				LineValue: `ENV_VAR_SSLPASSWORD = 'KEYFILE_PASSWORD'`,
 			},
 			wantIsFP: true,
 		},
@@ -596,7 +596,7 @@ func Test_findFalsePositive(t *testing.T) {
 			hit: Hit{
 				Code:     3057,
 				Filename: "source.scala",
-				LineValue: `		val GPpassword = appConfig.getString("greenplum.jdbc.pwd")`,
+				LineValue: `		val DBpassword = appConfig.getString("db.jdbc.pwd")`,
 			},
 			wantIsFP: true,
 		},
@@ -605,7 +605,7 @@ func Test_findFalsePositive(t *testing.T) {
 			hit: Hit{
 				Code:     3057,
 				Filename: "source.xml",
-				LineValue: `		String password = context.decrypt("%%ARCHIVAL_DB_PWD%%");`,
+				LineValue: `		String password = context.decrypt("%%MONGO_DB_PWD%%");`,
 			},
 			wantIsFP: true,
 		},
@@ -614,7 +614,7 @@ func Test_findFalsePositive(t *testing.T) {
 			hit: Hit{
 				Code:     3057,
 				Filename: "source.xml",
-				LineValue: `		password = generatePolicyPassword(context, identity, "AXP Directory")`,
+				LineValue: `		password = generatePassword(context)`,
 			},
 			wantIsFP: true,
 		},
@@ -623,7 +623,7 @@ func Test_findFalsePositive(t *testing.T) {
 			hit: Hit{
 				Code:     3057,
 				Filename: "source.xml",
-				LineValue: `		logger.debug("Password Rule Library : generateNotAPolicyPassword :hasDigit :" + hasDigit);`,
+				LineValue: `		logger.debug("Password is : generatePassword :data :" + data);`,
 			},
 			wantIsFP: false,
 		},
@@ -660,6 +660,24 @@ func Test_findFalsePositive(t *testing.T) {
 				Code:       3075,
 				Filename:   "source.txt",
 				MatchValue: `CREDENTIALS=2727`,
+			},
+			wantIsFP: false,
+		},
+		{
+			name: "Skip password that is is being read from array",
+			hit: Hit{
+				Code:     3057,
+				Filename: "source.xml",
+				LineValue: `		String password = param[0];`,
+			},
+			wantIsFP: true,
+		},
+		{
+			name: "Do not skip password that is is not being read from array",
+			hit: Hit{
+				Code:     3057,
+				Filename: "source.xml",
+				LineValue: `		String password = pa$$[@ee4@]`,
 			},
 			wantIsFP: false,
 		},
