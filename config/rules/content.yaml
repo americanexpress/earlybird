@@ -213,7 +213,7 @@ rules:
     SolutionID: 5
     Severity: 1
     Confidence: 2
-    Postprocess: ''
+    Postprocess: 'key'
     CWE:
       - CWE-798
       - CWE-321
