@@ -532,7 +532,7 @@ func (hit *Hit) postProcess(cfg *cfgReader.EarlybirdConfig, rule *Rule) (isHit b
 			break
 		}
 		// Skip password as same key/value pair
-		IsPasswordSameKeyValue := postprocess.SkipSameKeyValuePassword(hit.MatchValue, hit.LineValue)
+		IsPasswordSameKeyValue := postprocess.SkipSameKeyValue(hit.MatchValue, hit.LineValue)
 		if IsPasswordSameKeyValue {
 			isHit = false
 			break
@@ -577,6 +577,13 @@ func (hit *Hit) postProcess(cfg *cfgReader.EarlybirdConfig, rule *Rule) (isHit b
 		}
 
 		// No additional validation needed
+	case rule.Postprocess == "key":
+		// Skip same key/value pair
+		IsSameKeyValue := postprocess.SkipSameKeyValue(hit.MatchValue, hit.LineValue)
+		if IsSameKeyValue {
+			isHit = false
+			break
+		}
 	default:
 		isHit = true
 	}
