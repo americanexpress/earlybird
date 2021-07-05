@@ -513,7 +513,7 @@ rules:
       - 3075
       - 6001
       - 6002
-    Pattern: "(?i)((password|secret|credentials|passphrase)['\"]? ?[:=] ?['\"]?([a-z]+[\\._\\s]+)+(password|pass|pwd|pswd|secret|passphrase)['\"]?$)"
+    Pattern: "(?i)((password|secret|credentials|passphrase|token)['\"]? ?[:=] ?['\"]?([a-z]+[\\._\\s]+)+(password|pass|pwd|pswd|secret|passphrase|token)['\"]?[,]?$)"
     FileExtensions: []
     UseFullLine: true
     Description: 'Ignore variable definitions as password values eg: password = mongo.password or password: couchbase_db_password'
