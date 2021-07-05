@@ -681,6 +681,15 @@ func Test_findFalsePositive(t *testing.T) {
 			},
 			wantIsFP: false,
 		},
+		{
+			name: "Skip token as variable definitions",
+			hit: Hit{
+				Code:     3037,
+				Filename: "source.kt",
+				LineValue: `	const val AUTHORIZATION_TOKEN = "Authorization Token",`,
+			},
+			wantIsFP: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
