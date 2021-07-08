@@ -1,5 +1,5 @@
 ![Logo](docs/GoEarlyBird-logo_sm.png)
-
+test
 EarlyBird is a sensitive data detection tool capable of scanning source code repositories for clear text password violations, PII, outdated cryptography methods, key files and more. It can be used to scan remote git repositories, local files or directories or as a pre-commit step.
 
 ## Installation
