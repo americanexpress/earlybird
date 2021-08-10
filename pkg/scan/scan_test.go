@@ -249,6 +249,26 @@ func Test_scanLine(t *testing.T) {
 			},
 			wantIsHit: false,
 		},
+		{
+			name: "Find twitter API key as a password",
+			args: args{
+				line: Line{
+					LineValue: `twitterApiSecret:"111aAa222bBb333cCc444dDd555eEe666fFf777"`,
+				},
+				fileLines: fileLines,
+			},
+			wantIsHit: true,
+		},
+		{
+			name: "Ignore potential twitter API key separated by too many characters",
+			args: args{
+				line: Line{
+					LineValue: `twitter="twitter";//This LineValue emulates extremely long one-liner code files that can cause false positives "111aAa222bBb333cCc444dDd555eEe666fFf777"`,
+				},
+				fileLines: fileLines,
+			},
+			wantIsHit: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
