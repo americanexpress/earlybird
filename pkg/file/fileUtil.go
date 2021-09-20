@@ -197,12 +197,12 @@ func GetFiles(searchDir, ignoreFile string, verbose bool, maxFileSize int64) (fi
 					log.Println("Error checking if path is directory")
 				}
 				if getFileSizeOK(path, maxFileSize) {
-					if verbose {
-						log.Println("Reading file ", curFile.Path)
-					}
 					curFile.Name = f.Name()
 					curFile.Path = path
 					fileList = append(fileList, curFile)
+					if verbose {
+						log.Println("Reading file ", curFile.Path)
+					}
 				} else {
 					fileContext.SkippedFiles = append(fileContext.SkippedFiles, path)
 					if verbose {
