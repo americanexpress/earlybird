@@ -319,7 +319,7 @@ func scanName(file File, rules []Rule, levelMap map[string]int, showSolutions bo
 				hit.Solution = SolutionConfigs[rule.SolutionID].Text
 			}
 			hit.Line = 0
-			hit.Filename = filepath.Base(file.Path)
+			hit.Filename = file.Path
 			hit.MatchValue = file.Name
 			hit.LineValue = file.Name
 			hit.Time = time.Now().UTC().Format(time.RFC3339)
