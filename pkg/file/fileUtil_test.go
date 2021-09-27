@@ -131,6 +131,7 @@ func Test_isIgnoredFile(t *testing.T) {
 	}
 	type args struct {
 		fileName string
+		rootPath string
 	}
 	tests := []struct {
 		name string
@@ -144,10 +145,18 @@ func Test_isIgnoredFile(t *testing.T) {
 			},
 			want: true,
 		},
+		{
+			name: "Check if file is ignored",
+			args: args{
+				fileName: "/test.js",
+				rootPath: "src/node_modules",
+			},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := isIgnoredFile(tt.args.fileName); got != tt.want {
+			if got := isIgnoredFile(tt.args.fileName, tt.args.rootPath); got != tt.want {
 				t.Errorf("isIgnoredFile() = %v, want %v", got, tt.want)
 			}
 		})
@@ -272,6 +281,7 @@ func TestExists(t *testing.T) {
 func TestGetCompressedFiles(t *testing.T) {
 	type args struct {
 		files []scan.File
+		rootPath string
 	}
 	tests := []struct {
 		name string
@@ -291,7 +301,7 @@ func TestGetCompressedFiles(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotNewfiles, gotCompresspaths, err := GetCompressedFiles(tt.args.files)
+			gotNewfiles, gotCompresspaths, err := GetCompressedFiles(tt.args.files, tt.args.rootPath)
 			if err != nil {
 				t.Errorf("GetCompressedFiles() err = %v", err)
 			}

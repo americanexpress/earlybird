@@ -70,7 +70,7 @@ func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.Earlybird
 			fileNameWithPathPrefix = pathSeparator + fileNameWithPathPrefix
 		}
 		//Skip file with extensions Earlybird ignores
-		if isIgnoredFile(fileNameWithPathPrefix) {
+		if isIgnoredFile(fileNameWithPathPrefix, cfg.SearchDir) {
 			continue
 		}
 
@@ -142,7 +142,7 @@ func GetGitFiles(fileType string, cfg *cfgreader.EarlybirdConfig) (fileContext C
 
 	fileList = parseGitFiles(output, cfg.VerboseEnabled, cfg.MaxFileSize)
 	compressList, fileList = separateCompressedAndUncompressed(fileList)
-	compressList, fileContext.CompressPaths, err = GetCompressedFiles(compressList) //Get the files within our compressed list
+	compressList, fileContext.CompressPaths, err = GetCompressedFiles(compressList, cfg.SearchDir) //Get the files within our compressed list
 	if err != nil {
 		return fileContext, err
 	}
@@ -189,7 +189,7 @@ func GetFiles(searchDir, ignoreFile string, verbose bool, maxFileSize int64) (fi
 		if err != nil {
 			log.Println("Error reading directory: ", err)
 		}
-		if !isIgnoredFile(path) {
+		if !isIgnoredFile(path, searchDir) {
 			// Ignore the path if it's a directory
 			pathIsDirectory, isDirErr := isDirectory(path)
 			if !pathIsDirectory {
@@ -224,7 +224,7 @@ func GetFiles(searchDir, ignoreFile string, verbose bool, maxFileSize int64) (fi
 
 	var compressList []scan.File
 	compressList, fileList = separateCompressedAndUncompressed(fileList)
-	compressList, fileContext.CompressPaths, err = GetCompressedFiles(compressList) //Get the files within our compressed list
+	compressList, fileContext.CompressPaths, err = GetCompressedFiles(compressList, searchDir) //Get the files within our compressed list
 	if err != nil {
 		return fileContext, err
 	}
@@ -360,9 +360,11 @@ func getIgnorePatterns(filePath, ignoreFile string, verbose bool) (ignorePattern
 }
 
 // If the file matches a pattern in one of the ignore files, return true
-func isIgnoredFile(fileName string) bool {
+func isIgnoredFile(fileName string, fileRoot string) bool {
+	// ignore root directory when checking ignore matching
+	trimmedName := strings.Replace(fileName, fileRoot, "", 1)
 	for _, pattern := range ignorePatterns {
-		if wildcard.PatternMatch(fileName, pattern) {
+		if wildcard.PatternMatch(trimmedName, pattern) {
 			return true
 		}
 	}
@@ -417,7 +419,7 @@ func separateCompressedAndUncompressed(files []scan.File) (compressed, uncompres
 }
 
 //GetCompressedFiles provides all the files contained within compressed files
-func GetCompressedFiles(files []scan.File) (newfiles []scan.File, compresspaths []string, err error) {
+func GetCompressedFiles(files []scan.File, rootPath string) (newfiles []scan.File, compresspaths []string, err error) {
 	//check if file list contains compressed files, if so, scan their contents
 	for _, file := range files {
 		//Unpack and append to file list
@@ -431,7 +433,7 @@ func GetCompressedFiles(files []scan.File) (newfiles []scan.File, compresspaths 
 			return newfiles, compresspaths, err
 		}
 		for _, subfile := range filenames {
-			if !isIgnoredFile(subfile) && !scan.CompressPattern.MatchString(subfile) {
+			if !isIgnoredFile(subfile, rootPath) && !scan.CompressPattern.MatchString(subfile) {
 				var curFile scan.File
 				curFile.Path = file.Path + "/" + filepath.Base(subfile)
 				curFile.Name = subfile //Build view file name in format: file.zip/contents/file
