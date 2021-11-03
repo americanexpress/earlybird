@@ -18,6 +18,8 @@ package git
 
 import (
 	"context"
+	"fmt"
+	"gopkg.in/src-d/go-git.v4/plumbing"
 	"io/ioutil"
 	"log"
 	"os"
@@ -76,7 +78,7 @@ func ReposPerProject(projectURL, username, password string) (scanRepos []string)
 }
 
 //CloneGitRepos Clones a Git repo into a random temporary folder
-func CloneGitRepos(repoURLs []string, username, password string, json bool) (tmpDir string, err error) {
+func CloneGitRepos(repoURLs []string, username, password string, branch string, json bool) (tmpDir string, err error) {
 	tmpDir, err = ioutil.TempDir("", "ebgit")
 	if err != nil {
 		return "", err
@@ -96,8 +98,15 @@ func CloneGitRepos(repoURLs []string, username, password string, json bool) (tmp
 			options.Auth = auth
 		}
 
+		if branch != "" {
+			options.ReferenceName = plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", branch))
+		}
+
 		if !json {
 			log.Println("Cloning Repository:", repo)
+			if branch != "" {
+				log.Println("Cloning Branch:", branch)
+			}
 			options.Progress = os.Stdout
 		}
 

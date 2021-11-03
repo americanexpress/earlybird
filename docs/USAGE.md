@@ -53,6 +53,8 @@ Usage of go-earlybird:
     	Output format [ console | json | csv ] (default "console")
   -git string
     	Full URL to a git repo to scan e.g. github.com/user/repo
+  -git-branch string
+        Name of branch to be scanned
   -git-commit-stream
     	Use stream IO of Git commit log as input instead of file(s) -- e.g., 'cat secrets.text > go-earlybird'
   -git-project string

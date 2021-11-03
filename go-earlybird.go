@@ -42,6 +42,7 @@ func main() {
 	gitcfg.Project = flag.String("git-project", "", "Full URL to a github organization to scan e.g. github.com/org")
 	gitcfg.Repo = flag.String("git", "", "Full URL to a git repo to scan e.g. github.com/user/repo")
 	gitcfg.RepoUser = flag.String("git-user", os.Getenv("gituser"), "If the git repository is private, enter an authorized username")
+	gitcfg.RepoBranch = flag.String("git-branch", "", "Name of branch to be scanned")
 
 	//Load CLI params and Earlybird config
 	eb.ConfigInit()

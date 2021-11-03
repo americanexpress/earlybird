@@ -97,8 +97,9 @@ func GITScan(cfg cfgreader.EarlybirdConfig) http.HandlerFunc {
 		}
 
 		giturl := giturls[0]
+		gitbranch := r.URL.Query().Get("branch")
 		utils.GetGitURL(&giturl, &blank)
-		mycfg.SearchDir, err = git.CloneGitRepos([]string{giturl}, os.Getenv("gituser"), os.Getenv("gitpassword"), (cfg.OutputFormat == "json"))
+		mycfg.SearchDir, err = git.CloneGitRepos([]string{giturl}, os.Getenv("gituser"), os.Getenv("gitpassword"), gitbranch, (cfg.OutputFormat == "json"))
 		if err != nil {
 			if err == transport.ErrAuthenticationRequired {
 				http.Error(w, "Failed to clone, repository is private. Please enter a public repository URL.", http.StatusInternalServerError)

@@ -71,9 +71,9 @@ func (eb *EarlybirdCfg) GitClone(ptr PTRGitConfig) {
 		}
 		var err error
 		if *ptr.RepoUser != "" { // use auth
-			eb.Config.SearchDir, err = git.CloneGitRepos(scanRepos, *ptr.RepoUser, gitPassword, (eb.Config.OutputFormat == "json"))
+			eb.Config.SearchDir, err = git.CloneGitRepos(scanRepos, *ptr.RepoUser, gitPassword, *ptr.RepoBranch, (eb.Config.OutputFormat == "json"))
 		} else {
-			eb.Config.SearchDir, err = git.CloneGitRepos(scanRepos, "", "", (eb.Config.OutputFormat == "json")) //Blank no auth
+			eb.Config.SearchDir, err = git.CloneGitRepos(scanRepos, "", "", *ptr.RepoBranch, (eb.Config.OutputFormat == "json")) //Blank no auth
 		}
 		if err != nil {
 			log.Println("Failed to clone repository:", err)
