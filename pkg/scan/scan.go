@@ -178,7 +178,7 @@ func contentJobWriter(cfg *cfgReader.EarlybirdConfig, files []File, jobMutex *sy
 func nameScanner(cfg *cfgReader.EarlybirdConfig, files []File, hits chan<- Hit) {
 	for _, file := range files {
 		// Scan the filename based on the Filename rules
-		hitFound, hit := scanName(file, CombinedRules, cfg.LevelMap, cfg.ShowSolutions)
+		hitFound, hit := scanName(file, CombinedRules, cfg)
 		if hitFound {
 
 			// Append the hit to our slice for return
@@ -293,7 +293,7 @@ func scanLine(line Line, fileLines []Line, cfg *cfgReader.EarlybirdConfig) (isHi
 }
 
 // Take a filename and run through the rules, looking for a hit
-func scanName(file File, rules []Rule, levelMap map[string]int, showSolutions bool) (isHit bool, hit Hit) {
+func scanName(file File, rules []Rule, cfg *cfgReader.EarlybirdConfig) (isHit bool, hit Hit) {
 	for _, rule := range rules {
 		if rule.Searcharea == "body" { //Skip rules that do not apply
 			continue
@@ -308,14 +308,14 @@ func scanName(file File, rules []Rule, levelMap map[string]int, showSolutions bo
 		// If we found a match to the Regexp pattern, build a Hit
 		if patternMatch {
 			hit.Code = rule.Code
-			hit.Severity = getLevelNameFromID(rule.Severity, levelMap)
+			hit.Severity = getLevelNameFromID(rule.Severity, cfg.LevelMap)
 			hit.SeverityID = rule.Severity
 			hit.Caption = rule.Caption
 			hit.Category = rule.Category
 			hit.CWE = rule.CWE
-			hit.Confidence = getLevelNameFromID(rule.Confidence, levelMap)
+			hit.Confidence = getLevelNameFromID(rule.Confidence, cfg.LevelMap)
 			hit.ConfidenceID = rule.Confidence
-			if showSolutions {
+			if cfg.ShowSolutions {
 				hit.Solution = SolutionConfigs[rule.SolutionID].Text
 			}
 			hit.Line = 0
@@ -323,6 +323,9 @@ func scanName(file File, rules []Rule, levelMap map[string]int, showSolutions bo
 			hit.MatchValue = file.Name
 			hit.LineValue = file.Name
 			hit.Time = time.Now().UTC().Format(time.RFC3339)
+
+			// Check if the severity needs to be adjusted based on filepath
+			hit.determineSeverity(cfg, &rule)
 			return true, hit
 		}
 	}

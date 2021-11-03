@@ -305,7 +305,7 @@ func Test_scanName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotIsHit, gotHit := scanName(tt.args.file, tt.args.rules, cfg.LevelMap, cfg.ShowSolutions)
+			gotIsHit, gotHit := scanName(tt.args.file, tt.args.rules, &cfg)
 
 			if gotIsHit != tt.wantIsHit {
 				t.Errorf("scanName() gotIsHit = %v, want %v", gotIsHit, tt.wantIsHit)
