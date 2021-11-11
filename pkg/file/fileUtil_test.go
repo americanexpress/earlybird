@@ -109,6 +109,14 @@ func Test_getFileSizeOK(t *testing.T) {
 			},
 			wantResult: true,
 		},
+		{
+			name: "Check if file size is 0",
+			args: args{
+				path:        "test_data/empty.jar",
+				maxFileSize: 100000,
+			},
+			wantResult: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -280,7 +288,7 @@ func TestExists(t *testing.T) {
 
 func TestGetCompressedFiles(t *testing.T) {
 	type args struct {
-		files []scan.File
+		files    []scan.File
 		rootPath string
 	}
 	tests := []struct {
