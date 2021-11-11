@@ -292,7 +292,7 @@ func GetFileSize(path string) (size int64, err error) {
 // Make sure the filesize is lower than the MAX_FILE_SIZE threshold so bufio doesn't fail
 func getFileSizeOK(path string, maxFileSize int64) bool {
 	size, err := GetFileSize(path)
-	return err == nil && (size < maxFileSize || hasCompressionExtension(path))
+	return err == nil && size != 0 && (size < maxFileSize || hasCompressionExtension(path))
 }
 
 func hasCompressionExtension(path string) bool {
@@ -310,9 +310,9 @@ func getIgnorePatterns(filePath, ignoreFile string, verbose bool) (ignorePattern
 
 	// Loop through the files defined to contain ignore patterns (.ge_ignore, .gitignore, etc.)
 	for _, ignoreFile := range ignoreFiles {
-		path := path.Join(filePath, ignoreFile)
-		if Exists(path) {
-			file, err := os.Open(path)
+		actualFilePath := path.Join(filePath, ignoreFile)
+		if Exists(actualFilePath) {
+			file, err := os.Open(actualFilePath)
 			if err != nil {
 				log.Fatal(err)
 			}
