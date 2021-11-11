@@ -93,6 +93,7 @@ func TestScanFiles(t *testing.T) {
 		cfg           *cfgReader.EarlybirdConfig
 		files         []File
 		compressPaths []string
+		convertPaths []string
 		wantCode      int
 	}
 	tests := []struct {
@@ -109,7 +110,7 @@ func TestScanFiles(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			go SearchFiles(tt.args.cfg, tt.args.files, tt.args.compressPaths, hits)
+			go SearchFiles(tt.args.cfg, tt.args.files, tt.args.compressPaths, tt.args.convertPaths, hits)
 			for i := range hits {
 				if i.Code != tt.args.wantCode {
 					t.Errorf("ScanFiles() found code %v, want code %v", i.Code, tt.args.wantCode)

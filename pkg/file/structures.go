@@ -20,6 +20,6 @@ import "github.com/americanexpress/earlybird/pkg/scan"
 
 //Context is the file system context used for the scan process
 type Context struct {
-	Files                                       []scan.File
-	CompressPaths, IgnorePatterns, SkippedFiles []string
+	Files                                                     []scan.File
+	CompressPaths, ConvertPaths, IgnorePatterns, SkippedFiles []string
 }

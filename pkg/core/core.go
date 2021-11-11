@@ -278,7 +278,7 @@ func (eb *EarlybirdCfg) Scan() {
 		log.Fatal("Failed to get FileContext: ", err)
 	}
 	HitChannel := make(chan scan.Hit)
-	go scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, HitChannel)
+	go scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
 
 	// Send output to a writer
 	eb.WriteResults(start, HitChannel, fileContext)

@@ -20,6 +20,7 @@ import (
 	"archive/zip"
 	"bufio"
 	"bytes"
+	"code.sajari.com/docconv"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -126,6 +127,7 @@ func GetGitFiles(fileType string, cfg *cfgreader.EarlybirdConfig) (fileContext C
 	var (
 		output       []byte
 		compressList []scan.File
+		convertList  []scan.File
 		fileList     []scan.File
 	)
 
@@ -147,6 +149,8 @@ func GetGitFiles(fileType string, cfg *cfgreader.EarlybirdConfig) (fileContext C
 		return fileContext, err
 	}
 	fileContext.Files = append(fileList, compressList...)
+	convertList, fileContext.ConvertPaths = GetConvertedFiles(fileContext.Files) //Get the files that need to be converted and convert them to plaintext
+	fileContext.Files = append(fileContext.Files, convertList...)
 	fileContext.IgnorePatterns = ignorePatterns
 	return fileContext, nil
 }
@@ -222,13 +226,15 @@ func GetFiles(searchDir, ignoreFile string, verbose bool, maxFileSize int64) (fi
 		return fileContext, err
 	}
 
-	var compressList []scan.File
+	var compressList, convertList []scan.File
 	compressList, fileList = separateCompressedAndUncompressed(fileList)
 	compressList, fileContext.CompressPaths, err = GetCompressedFiles(compressList, searchDir) //Get the files within our compressed list
 	if err != nil {
 		return fileContext, err
 	}
 	fileContext.Files = append(fileList, compressList...)
+	convertList, fileContext.ConvertPaths = GetConvertedFiles(fileContext.Files) //Get the files that need to be converted and convert them to plaintext
+	fileContext.Files = append(fileContext.Files, convertList...)
 	fileContext.IgnorePatterns = ignorePatterns
 	return fileContext, nil
 }
@@ -500,4 +506,42 @@ func Uncompress(src string, dest string) (filenames []string, err error) {
 		}
 	}
 	return filenames, nil
+}
+
+//GetConvertedFiles converts files into plaintext
+func GetConvertedFiles(files []scan.File) (convertedFiles []scan.File, convertedPaths []string) {
+	var toBeConverted []scan.File
+	for _, f := range files {
+		if scan.ConvertPattern.MatchString(f.Path) {
+			toBeConverted = append(toBeConverted, f)
+		}
+	}
+
+	for _, file := range toBeConverted {
+		tmppath, err := ioutil.TempDir("", "ebconv")
+		fpath := filepath.Join(tmppath, file.Name)
+
+		// Get content from the file as a string
+		content, err := docconv.ConvertPath(file.Path)
+		if err != nil {
+			log.Printf("Error converting %s, file not scanned\n", file.Path)
+			continue
+		}
+
+		// Write content to new temp file
+		err = ioutil.WriteFile(fpath, []byte(content.Body), 0644)
+		if err != nil {
+			log.Printf("Error writing converted file %s, file not scanned\n", file.Path)
+			continue
+		}
+
+		convertedPaths = append(convertedPaths, tmppath)
+		var convertedFile scan.File
+		convertedFile.Path = fpath
+		convertedFile.Name = file.Path
+		convertedFiles = append(convertedFiles, convertedFile)
+	}
+
+	return convertedFiles, convertedPaths
+
 }

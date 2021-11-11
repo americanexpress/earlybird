@@ -52,7 +52,7 @@ func Scan(cfg cfgreader.EarlybirdConfig) http.HandlerFunc {
 		// Define our result objects and start scan process
 		var Hits []scan.Hit
 		HitChannel := make(chan scan.Hit)
-		go scan.SearchFiles(&cfg, fileList, []string{}, HitChannel)
+		go scan.SearchFiles(&cfg, fileList, []string{}, []string{}, HitChannel)
 
 		for hit := range HitChannel {
 			Hits = append(Hits, hit)
@@ -120,7 +120,7 @@ func GITScan(cfg cfgreader.EarlybirdConfig) http.HandlerFunc {
 		var Hits []scan.Hit
 		HitChannel := make(chan scan.Hit)
 		//Create pointer to reduce memory overhead
-		go scan.SearchFiles(&mycfg, fileContext.Files, fileContext.CompressPaths, HitChannel)
+		go scan.SearchFiles(&mycfg, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
 
 		for hit := range HitChannel {
 			Hits = append(Hits, hit)

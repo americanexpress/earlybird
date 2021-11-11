@@ -351,3 +351,48 @@ func TestUncompress(t *testing.T) {
 	//Delete left over file
 	os.Remove("test_data/sample.py")
 }
+
+func TestGetConvertedFiles(t *testing.T) {
+	type args struct {
+		files []scan.File
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "Check if path exists",
+			args: args{
+				files: []scan.File{
+					{
+						Path: "test_data/sample.docx",
+						Name: "sample.docx",
+					},
+					{
+						Path: "test_data/sample.odt",
+						Name: "sample.odt",
+					},
+					{
+						Path: "test_data/sample.pdf",
+						Name: "sample.pdf",
+					},
+					{
+						Path: "test_data/sample.rtf",
+						Name: "sample.odt",
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotNewfiles, gotConvertPaths := GetConvertedFiles(tt.args.files)
+			if len(gotNewfiles) == 0 {
+				t.Errorf("GetConvertedFiles() gotNewfiles = %v, want multiple files", gotNewfiles)
+			}
+			if len(gotConvertPaths) == 0 {
+				t.Errorf("GetConvertedFiles() gotConverpaths = %v, want multiple paths", gotConvertPaths)
+			}
+		})
+	}
+}
