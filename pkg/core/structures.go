@@ -43,7 +43,8 @@ type PTRHTTPConfig struct {
 
 //PTRGitConfig is the configuration definition for Earlybird git scans
 type PTRGitConfig struct {
-	Repo     *string
-	RepoUser *string
-	Project  *string
+	Repo       *string
+	RepoUser   *string
+	RepoBranch *string
+	Project    *string
 }

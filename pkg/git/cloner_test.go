@@ -38,7 +38,7 @@ func TestCloneGitRepos(t *testing.T) {
 		t.Skip("If test cases not running locally, skip cloning external repositories for CI/CD purposes.")
 	}
 
-	SearchDir, err := CloneGitRepos([]string{FakeRepo}, "", "", true)
+	SearchDir, err := CloneGitRepos([]string{FakeRepo}, "", "", "", true)
 	if err != nil {
 		t.Errorf("Failed to clone repository: %s", FakeRepo)
 	}
