@@ -17,6 +17,7 @@
 package postprocess
 
 import (
+	"golang.org/x/net/html"
 	"regexp"
 	"strconv"
 	"strings"
@@ -114,6 +115,21 @@ func SkipPasswordWithUnicode(password string) bool {
 				// Skips early as soon as it finds a non ASCII rune while iterating the string.
 				return true
 			}
+		}
+	}
+	return false
+}
+// SkipPasswordWithHTMLEntities returns true if the password value contains a HTML entities.
+// UseCase: Html entities are used as contents in localized files. ex - "L&#246;senord" is "Lösenord"
+func SkipPasswordWithHTMLEntities(password string) bool {
+	passwords := splitPswdPattern.Split(password, -1)
+	// Check if length = 2 for true key/value pair.
+	if len(passwords) == 2 {
+		// Unescape the html entities into string to compare with original password value
+		passwordStringValue := html.UnescapeString(strings.TrimSpace(passwords[1]))
+		// ex - "L&#246;senord" is "Lösenord" if after html.UnescapeString they are not equal then it has html entities.
+		if passwordStringValue != strings.TrimSpace(passwords[1]){
+			return true
 		}
 	}
 	return false

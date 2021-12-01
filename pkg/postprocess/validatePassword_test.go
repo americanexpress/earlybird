@@ -199,3 +199,56 @@ func TestSkipUnicodeInPasswords(t *testing.T) {
 		})
 	}
 }
+var testSkipHTMLEntitiesInPasswords = []struct {
+	name       string
+	args       args
+	wantIgnore bool
+}{
+	{
+		name: "Skip password with HTML entities",
+		args: args{
+			testPD: `"password": "L&#246;senord"`,
+		},
+		wantIgnore: true,
+	},
+	{
+		name: "Skip secret with HTML entities",
+		args: args{
+			testPD: `"secret": "&#12497;&#12473;&#12527;&#12540;&#12489"`,
+		},
+		wantIgnore: true,
+	},
+	{
+		name: "Do not skip password without HTML entities",
+		args: args{
+			testPD: `"password": "VeryStrong$$\u0049\u0044"`,
+		},
+		wantIgnore: false,
+	},
+	{
+		name: "Do not skip, real password finding",
+		args: args{
+			testPD: "password: VeryStrong857!@$^&*#",
+		},
+		wantIgnore: false,
+	},
+	{
+		name: "Do not skip, real secret finding",
+		args: args{
+			testPD: "secret: VeryStrong857#",
+		},
+		wantIgnore: false,
+	},
+}
+
+func TestSkipHTMLEntitiesInPasswords(t *testing.T) {
+	for _, tt := range testSkipHTMLEntitiesInPasswords {
+		t.Run(tt.name, func(t *testing.T) {
+			gotIgnore := SkipPasswordWithHTMLEntities(tt.args.testPD)
+			if gotIgnore != tt.wantIgnore {
+				t.Errorf("SkipUnicodeInPasswords() gotIgnore = %v, want %v", gotIgnore, tt.wantIgnore)
+			}
+		})
+	}
+}
+
