@@ -547,6 +547,12 @@ func (hit *Hit) postProcess(cfg *cfgReader.EarlybirdConfig, rule *Rule) (isHit b
 			isHit = false
 			break
 		}
+		// Skip password if the value has HTML entities in it
+		passwordContainsHTMLEntities := postprocess.SkipPasswordWithHTMLEntities(hit.MatchValue)
+		if passwordContainsHTMLEntities {
+			isHit = false
+			break
+		}
 
 		hit.Confidence = getLevelNameFromID(Confidence, cfg.LevelMap)
 		hit.ConfidenceID = Confidence
