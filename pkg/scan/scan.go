@@ -44,13 +44,16 @@ var (
 	SolutionConfigs map[int]Solution
 	//CompressPattern is a pattern used to identify compressed zip files
 	CompressPattern = regexp.MustCompile(compressRegex)
+	//ConvertPattern is a pattern used to identify files that need to be converted to plaintext to be scanned
+	ConvertPattern  = regexp.MustCompile(convertRegex)
 	tempPattern     = regexp.MustCompile(tempRegex)
 )
 
-//SearchFiles will use the EarlybirdConfig, the provided file list, decompressed zip files tempoary paths to send found secrets to the Hit channel
-func SearchFiles(cfg *cfgReader.EarlybirdConfig, files []File, compressPaths []string, hits chan<- Hit) {
+//SearchFiles will use the EarlybirdConfig, the provided file list, decompressed zip files and converted files temporary paths to send found secrets to the Hit channel
+func SearchFiles(cfg *cfgReader.EarlybirdConfig, files []File, compressPaths []string, convertPaths []string, hits chan<- Hit) {
 	//Delete tmp file directory when we're done
 	defer DeleteFiles(compressPaths)
+	defer DeleteFiles(convertPaths)
 
 	//Create our channels and mutex
 	var jobMutex = &sync.Mutex{}
@@ -270,7 +273,7 @@ func scanLine(line Line, fileLines []Line, cfg *cfgReader.EarlybirdConfig) (isHi
 		hit.Line = line.LineNum
 		hit.LineValue = strings.TrimSpace(line.LineValue)
 		hit.MatchValue = matchValue
-		if line.FilePath != "buffer" {
+		if line.FilePath != "buffer" && !strings.Contains(line.FilePath, "ebconv") {
 			hit.Filename = removeTempPrefix(line.FilePath)
 		} else {
 			hit.Filename = line.FileName
@@ -601,7 +604,7 @@ func (hit *Hit) postProcess(cfg *cfgReader.EarlybirdConfig, rule *Rule) (isHit b
 
 //removeTempPrefix removes the temp path prefix if it exists
 func removeTempPrefix(path string) string {
-	if strings.Contains(path, "ebzip") || strings.Contains(path, "ebgit") {
+	if strings.Contains(path, "ebzip") || strings.Contains(path, "ebgit") || strings.Contains(path, "ebconv") {
 		if paths := tempPattern.FindStringSubmatch(path); len(paths) > 1 {
 			path = paths[1]
 		}
