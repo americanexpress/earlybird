@@ -35,7 +35,7 @@ $ go-earlybird --git=https://github.com/americanexpress/earlybird
  - [Usage - How do I use Earlybird?](./docs/USAGE.md)
  - [Modules - What is a Module? How do I create one?](./docs/MODULES.md)
  - [Hooks - How do I use Earlybird as Pre-Commit Hook?](./docs/HOOKS.md)
- - [REST API - How do I use Earybird as REST API?](./docs/REST.md)
+ - [REST API - How do I use Earlybird as REST API?](./docs/REST.md)
  - [False Positives - How are they managed? How do I filter them?](./docs/FALSEPOSITIVES.md)
  - [Labels - What are labels? How do I create my own?](./docs/LABELS.md)
  - [Ignore - How do I skip lines or files intentionally?](./docs/IGNORE.md)
