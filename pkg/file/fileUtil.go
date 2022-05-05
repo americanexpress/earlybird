@@ -40,7 +40,7 @@ import (
 )
 
 var (
-	ignoreFiles    = [...]string{".ge_ignore", ".gitignore"} //TODO make this list configurable
+	ignoreFiles    = [...]string{".ge_ignore"}
 	ignorePatterns []string
 )
 
