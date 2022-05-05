@@ -45,8 +45,8 @@ var (
 	//CompressPattern is a pattern used to identify compressed zip files
 	CompressPattern = regexp.MustCompile(compressRegex)
 	//ConvertPattern is a pattern used to identify files that need to be converted to plaintext to be scanned
-	ConvertPattern  = regexp.MustCompile(convertRegex)
-	tempPattern     = regexp.MustCompile(tempRegex)
+	ConvertPattern = regexp.MustCompile(convertRegex)
+	tempPattern    = regexp.MustCompile(tempRegex)
 )
 
 //SearchFiles will use the EarlybirdConfig, the provided file list, decompressed zip files and converted files temporary paths to send found secrets to the Hit channel
@@ -329,6 +329,12 @@ func scanName(file File, rules []Rule, cfg *cfgReader.EarlybirdConfig) (isHit bo
 
 			// Check if the severity needs to be adjusted based on filepath
 			hit.determineSeverity(cfg, &rule)
+
+			// Check if the hit has any false positives
+			fpHit := findFalsePositive(hit)
+			if fpHit {
+				return false, hit
+			}
 			return true, hit
 		}
 	}
