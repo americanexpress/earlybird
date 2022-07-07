@@ -79,7 +79,7 @@ func SearchFiles(cfg *cfgReader.EarlybirdConfig, files []File, compressPaths []s
 func scanPool(cfg *cfgReader.EarlybirdConfig, wg *sync.WaitGroup, jobMutex *sync.Mutex, jobs chan WorkJob, hits chan<- Hit) {
 	//Create duplicate map
 	dupeMap := make(map[string]bool) //HASH:true
-	for w := 1; w <= 100; w++ {
+	for w := 1; w <= cfg.WorkerCount; w++ {
 		wg.Add(1)
 		go func(w int) {
 			for j := range jobs {
