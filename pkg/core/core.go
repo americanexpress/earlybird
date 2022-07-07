@@ -122,6 +122,9 @@ func (eb *EarlybirdCfg) StartHTTP(ptr PTRHTTPConfig) {
 		Handler:      r,
 	}
 
+	// To control whether HTTP keep-alives are enabled or not.
+	srv.SetKeepAlivesEnabled(!*ptrDisableHttpKeepAlives)
+
 	if *ptr.HTTPS != "" {
 		srv.Addr = *ptr.HTTPS
 		err := http2.ConfigureServer(srv, &http2.Server{})
