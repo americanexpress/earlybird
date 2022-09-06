@@ -16,29 +16,37 @@
 # permissions and limitations under the License.
 #
 
-echo "Running Unit Tests"
-tmpfile=/tmp/eb-tmp.log
-if SCRIPT_OUTPUT=$(local=true go test ./pkg/... > ${tmpfile}); then
-    cat ${tmpfile}
-	
-    echo "Running Go FMT"
-    go fmt ./pkg/...
-    
-    mkdir -p binaries
-
-    echo "Building Linux binary"
-    env GOOS=linux GOARCH=amd64 go build -o binaries/go-earlybird-linux
-
-    echo "Building Windows binary"
-    env GOOS=windows GOARCH=amd64 go build -o binaries/go-earlybird.exe
-
-    echo "building MacOS binary"
-    env GOOS=darwin GOARCH=amd64 go build -o binaries/go-earlybird
-
-    echo "Cross-Compilation Complete"
+if [ -z "$1" ]
+then
+      echo "Earlybird version is empty. Setting to default 'dev'"
+      version='dev'
 else
-    echo "Unit Tests FAILED!"
-    cat ${tmpfile}
+      echo "Earlybird version being build $1"
+      version="$1"
 fi
 
-rm $tmpfile
+echo "Running Unit Tests and Building binaries... version: $version"
+echo "-----------------------------------------------------------------"
+echo
+echo "Tidy and Download modules ..."
+go mod tidy && go mod download -x
+
+echo "Running Unit Tests..."
+go test -p 10 ./pkg/** -covermode=count
+testOutput=$? #get the return value of the last executed command
+#exit with non-Zero to stop the build if unit tests fail
+if [ $testOutput -ne 0 ]; then
+  echo "EXIT... Test Failed" >&2
+  exit $testOutput
+fi
+
+echo "Building Linux binary"
+env GOOS=linux GOARCH=amd64 go build -ldflags="-X 'github.com/americanexpress/earlybird/pkg/buildflags.Version=$version'" -o binaries/go-earlybird-linux
+echo "Building Linux binary - Completed!!!"
+echo "Building Windows binary"
+env GOOS=windows GOARCH=amd64 go build -ldflags="-X 'github.com/americanexpress/earlybird/pkg/buildflags.Version=$version'" -o binaries/go-earlybird.exe
+echo "Building Windows binary - Completed!!!"
+echo "Building MacOS binary"
+env GOOS=darwin GOARCH=amd64 go build -ldflags="-X 'github.com/americanexpress/earlybird/pkg/buildflags.Version=$version'" -o binaries/go-earlybird
+echo "Building MacOS binary - Completed!!!"
+echo "Build Completed ..."

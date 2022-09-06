@@ -1,6 +1,6 @@
 module github.com/americanexpress/earlybird
 
-go 1.12
+go 1.18
 
 require (
 	code.sajari.com/docconv v1.2.0
