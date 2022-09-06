@@ -5,103 +5,66 @@ on:
 name: Release EarlyBird
 
 jobs:
-  build:
-    name: Build and Tag
+  get_next_version:
     runs-on: ubuntu-latest
+    name: Get next version
     outputs:
-      new_tag: ${{ steps.bump-version.outputs.new_tag }}
+      earlybird_next_version: ${{ steps.getversion.outputs.earlybird_next_version }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Get version for next release
+        id: getversion
+        run: |
+          echo "::set-output name=earlybird_next_version::$(npx -p @semantic-release/changelog -p @semantic-release/git -p semantic-release@19.0.2 semantic-release --no-ci --dry-run | grep -o 'The next release version is .*' | awk '{print $NF}')"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build:
+    needs: get_next_version
+    name: Build
+    runs-on: ubuntu-latest
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
-          go-version: ^1.15
+          go-version: ^1.18
       - name: Checkout repo
         uses: actions/checkout@v2
       - name: Build project
-        run: ./build.sh
+        run: ./build.sh ${{ needs.get_next_version.outputs.earlybird_next_version }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: earlybird-binaries
           path: ./binaries/
           if-no-files-found: error
-      - name: Bump version and push tag
-        id: bump-version
-        uses: anothrNick/github-tag-action@1.34.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-          RELEASE_BRANCHES: .*
-          INITIAL_VERSION: 2.0.0
   release:
-    needs: build
+    needs:
+    - get_next_version
+    - build
     name: Release
     runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.create-release.outputs.upload_url }}
     steps:
-      - name: Create Release
-        id: create-release
-        uses: ncipollo/release-action@v1
+      - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ needs.build.outputs.new_tag }}
-          draft: false
-          prerelease: false
-  publishLinux:
-    needs: [build, release]
-    name: Publish Linux Asset
-    runs-on: ubuntu-latest
-    steps:
+          token: ${{ secrets.GITHUB_TOKEN}}
       - name: Download earlybird artifacts
         uses: actions/download-artifact@v2
+      - name: Copy artifacts to current directory
+        run: mv earlybird-binaries/* .
+      - name: Print current directory
+        run: ls -lah
+      - name: Rename macOS binary
+        run: mv go-earlybird go-earlybird-macos
+
+      - uses: actions/setup-node@v2
         with:
-          name: earlybird-binaries
-      - name: Upload Linux Release Asset
-        id: upload-linux
-        uses: actions/upload-release-asset@v1
+          node-version: '16'
+      - name: Create a release with Semantic Release
+        run: npx -p @semantic-release/changelog -p @semantic-release/git -p semantic-release@19.0.2 semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: go-earlybird-linux
-          asset_name: go-earlybird-linux
-          asset_content_type: application/octet-stream
-  publishmacOS:
-    needs: [build, release]
-    name: Publish MacOS Asset
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download earlybird artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: earlybird-binaries
-      - name: Upload macOS Release Asset
-        id: upload-macos
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: go-earlybird
-          asset_name: go-earlybird-macos
-          asset_content_type: application/octet-stream
-  publishWindows:
-    needs: [build, release]
-    name: Publish Windows Asset
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download earlybird artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: earlybird-binaries
-      - name: Upload Windows Release Asset
-        id: upload-windows
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: go-earlybird.exe
-          asset_name: go-earlybird.exe
-          asset_content_type: application/x-msdownload
