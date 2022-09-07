@@ -1,6 +1,6 @@
 {
   "branches": [
-    "fix/version-issue"
+    "main"
   ],
   "plugins": [
     ["@semantic-release/github", {
