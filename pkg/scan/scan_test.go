@@ -48,6 +48,7 @@ var cfg = cfgReader.EarlybirdConfig{
 		"low":      4,
 		"medium":   3,
 	},
+	WorkerCount: 100,
 }
 
 func init() {
@@ -93,7 +94,7 @@ func TestScanFiles(t *testing.T) {
 		cfg           *cfgReader.EarlybirdConfig
 		files         []File
 		compressPaths []string
-		convertPaths []string
+		convertPaths  []string
 		wantCode      int
 	}
 	tests := []struct {

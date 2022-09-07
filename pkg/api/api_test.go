@@ -45,6 +45,7 @@ var cfg = cfgreader.EarlybirdConfig{
 	MaxFileSize:             10240000,
 	WorkLength:              2500,
 	EnabledModulesMap:       map[string]string{"content": "content.yaml", "password-secret": "password-secret.yaml"},
+	WorkerCount:             100,
 }
 
 func init() {

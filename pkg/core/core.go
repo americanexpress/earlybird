@@ -20,6 +20,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"github.com/americanexpress/earlybird/pkg/buildflags"
 	"log"
 	"net/http"
 	"os"
@@ -164,6 +165,8 @@ func (eb *EarlybirdCfg) GetRuleModulesMap() (err error) {
 
 //ConfigInit loads in the earlybird configuration and CLI flags
 func (eb *EarlybirdCfg) ConfigInit() {
+	// Set the version from ldflags
+	eb.Config.Version = buildflags.Version
 	//Load CLI arguments and parse
 	flag.Var(&enableFlags, "enable", "Enable individual scanning modules "+utils.GetDisplayList(eb.Config.AvailableModules))
 	flag.Parse()
@@ -214,7 +217,6 @@ func (eb *EarlybirdCfg) ConfigInit() {
 		doUpdate(eb.Config.ConfigDir, eb.Config.RulesConfigDir, earlybirdConfigPath, cfgreader.Settings.ConfigFileURL, eb.Config.RuleModulesFilenameMap)
 	}
 
-	eb.Config.Version = cfgreader.Settings.Version
 	// Set the skip options (what not to scan) from configs
 	eb.Config.AnnotationsToSkipLine = cfgreader.Settings.AnnotationsToSkip
 	eb.Config.ExtensionsToSkipScan = cfgreader.Settings.ExtensionsToSkipTextScan

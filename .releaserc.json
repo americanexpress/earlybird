@@ -1,0 +1,24 @@
+{
+  "branches": [
+    "fix/version-issue"
+  ],
+  "plugins": [
+    ["@semantic-release/github", {
+      "assets": ["go-earlybird-linux", "go-earlybird-macos", "go-earlybird.exe"],
+      "proxy": false
+    }],
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogFile": "CHANGELOG.md"
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["CHANGELOG.md"]
+      }
+    ]
+  ]  
+}

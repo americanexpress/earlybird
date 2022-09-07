@@ -57,6 +57,6 @@
   "display_threshold_level": 3,
   "display_confidence_threshold_level": 2,
   "earlybird_config_url": "https://raw.githubusercontent.com/americanexpress/earlybird/main/config/earlybird.json",
-  "version": "2.0.0",
+  "version": "3",
   "name": "earlybird"
 }
