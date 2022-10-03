@@ -1,3 +1,10 @@
+## [3.13.1](https://github.com/americanexpress/earlybird/compare/v3.13.0...v3.13.1) (2022-10-03)
+
+
+### Bug Fixes
+
+* scan failure provision for info level hits ([1174e45](https://github.com/americanexpress/earlybird/commit/1174e45400dd375d0f6555e042d8ce7959b52e61))
+
 # [3.13.0](https://github.com/americanexpress/earlybird/compare/v3.12.0...v3.13.0) (2022-09-07)
 
 
