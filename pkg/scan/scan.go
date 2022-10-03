@@ -116,10 +116,6 @@ func scanPool(cfg *cfgReader.EarlybirdConfig, wg *sync.WaitGroup, jobMutex *sync
 
 // determine if we should fail scan based on severity and confidence
 func determineScanFail(cfg *cfgReader.EarlybirdConfig, hit *Hit) bool {
-	if hit.Severity == infoLevelSeverity {
-		return false
-	}
-
 	return hit.SeverityID <= cfg.SeverityFailLevel && hit.ConfidenceID <= cfg.ConfidenceFailLevel
 }
 
