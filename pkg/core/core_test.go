@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,10 @@ import (
 var eb EarlybirdCfg
 
 func setup() {
-	wd := utils.MustGetWD()
-	eb.Config.LabelsConfigDir = filepath.Join(wd, "../../config/labels")
-	eb.Config.SolutionsConfigDir = filepath.Join(wd, "../../config/solutions")
-	eb.Config.FalsePositivesConfigDir = filepath.Join(wd, "../../config/falsepositives")
+	eb.Config.ConfigDir = filepath.Join(utils.MustGetWD(), "..", "..", "config")
+	eb.Config.LabelsConfigDir = filepath.Join(utils.MustGetWD(), "..", "..", "config", "labels")
+	eb.Config.SolutionsConfigDir = filepath.Join(utils.MustGetWD(), "..", "..", "config", "solutions")
+	eb.Config.FalsePositivesConfigDir = filepath.Join(utils.MustGetWD(), "..", "..", "config", "falsepositives")
 }
 
 func cleanup() {

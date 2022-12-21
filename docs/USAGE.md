@@ -15,6 +15,10 @@ Using the `-stream` flag, users can stream or pipe file contents to 'go-earlybir
 ```
 ᐅ cat /path/to/file | go-earlybird -stream
 ```
+... or:
+```bash
+echo "#TODO FIXME hack" | go-earlybird -stream
+```
 
 ### HTTP API
 ```

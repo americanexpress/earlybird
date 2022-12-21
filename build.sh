@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# Copyright 2021 American Express
+# Copyright 2023 American Express
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,37 +16,79 @@
 # permissions and limitations under the License.
 #
 
+# Change to directory of build script to support relative paths
+cd $(dirname "$0")
+
+# Build Version
 if [ -z "$1" ]
 then
-      echo "Earlybird version is empty. Setting to default 'dev'"
-      version='dev'
+      EBVERSION='dev'
 else
-      echo "Earlybird version being build $1"
-      version="$1"
+      EBVERSION="$1"
 fi
 
-echo "Running Unit Tests and Building binaries... version: $version"
+# Start
+echo
+echo "Building EarlyBird - version ${EBVERSION}"
 echo "-----------------------------------------------------------------"
 echo
-echo "Tidy and Download modules ..."
-go mod tidy && go mod download -x
 
-echo "Running Unit Tests..."
-go test -p 10 ./pkg/** -covermode=count
+# Tidy up and download depdendencies
+echo "[x] Running go mod tidy for dependency maintenance"
+go mod tidy
+echo "COMPLETE"
+echo
+
+
+# Run Unit Tests
+############################
+# Unit test outcomes are stored to a file that is read for falures, then deleted afterwards.
+
+echo "[x] Running Unit Tests"
+
+# Set log location for unit test outcomes
+log_file="${HOME}/eb-build-log.log"
+
+# Run Unit Tests
+go test -p 10 ./pkg/... -covermode=count > ${log_file}
+
+# Check Unit Test Outcomes; exit 1 if failure detected!
 testOutput=$? #get the return value of the last executed command
-#exit with non-Zero to stop the build if unit tests fail
-if [ $testOutput -ne 0 ]; then
-  echo "EXIT... Test Failed" >&2
-  exit $testOutput
+if [ ${testOutput} -ne 0 ]; then
+  echo "FAILED"
+  echo
+  echo "********************LOG********************"
+  cat ${log_file}
+  echo "********************LOG********************"
+  echo
+  echo "exit 1"
+  rm -rf ${log_file}
+  exit 1
+else 
+  cat ${log_file}
+  rm -rf ${log_file}
+  echo "PASSED"
 fi
+echo
+############################
 
-echo "Building Linux binary"
-env GOOS=linux GOARCH=amd64 go build -ldflags="-X 'github.com/americanexpress/earlybird/pkg/buildflags.Version=$version'" -o binaries/go-earlybird-linux
-echo "Building Linux binary - Completed!!!"
-echo "Building Windows binary"
-env GOOS=windows GOARCH=amd64 go build -ldflags="-X 'github.com/americanexpress/earlybird/pkg/buildflags.Version=$version'" -o binaries/go-earlybird.exe
-echo "Building Windows binary - Completed!!!"
-echo "Building MacOS binary"
-env GOOS=darwin GOARCH=amd64 go build -ldflags="-X 'github.com/americanexpress/earlybird/pkg/buildflags.Version=$version'" -o binaries/go-earlybird
-echo "Building MacOS binary - Completed!!!"
-echo "Build Completed ..."
+# If the above check went okay, test cases have passed and the script can now proceed to build binaries
+echo "[x] Building Linux binary"
+env GOOS=linux GOARCH=amd64 go build -ldflags="-X 'github.com/americanexpress/earlybird/pkg/buildflags.Version=${EBVERSION}'" -o binaries/go-earlybird-linux
+echo "COMPLETE"
+echo
+
+echo "[x] Building MacOS binary"
+env GOOS=darwin GOARCH=amd64 go build -ldflags="-X 'github.com/americanexpress/earlybird/pkg/buildflags.Version=${EBVERSION}'" -o binaries/go-earlybird-mac
+echo "COMPLETE"
+echo
+
+echo "[x] Building Windows binary"
+env GOOS=windows GOARCH=amd64 go build -ldflags="-X 'github.com/americanexpress/earlybird/pkg/buildflags.Version=${EBVERSION}'" -o binaries/go-earlybird.exe
+echo "COMPLETE"
+echo
+
+# Completion
+echo "-----------------------------------------------------------------"
+echo "Build Finished. Binary location: $(pwd)/binaries"
+echo

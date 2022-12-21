@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ const (
 	errInvalidPath   string = "Invalid Path. Exiting."
 	ebConfFileDir    string = ".go-earlybird"
 	ebConfFileName   string = "earlybird.json"
-	ebWinConfFileDir string = "\\AppData\\go-earlybird\\"
+	ebWinConfFileDir string = "\\AppData\\Roaming\\go-earlybird"
 	gitHTTP          string = "http://"
 	gitHTTPS         string = "https://"
 	gitPasswdPrompt  string = "Enter your git password: "

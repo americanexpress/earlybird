@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +52,8 @@ func PathMustExist(path string) {
 
 // GetConfigDir Determine the operating system and pull the path to the go-earlybird config directory
 func GetConfigDir() (configDir string) {
-	if strings.HasSuffix(os.Args[0], ".test") { // Return repository config directory when testing ../../config
-		return ".." + string(os.PathSeparator) + ".." + string(os.PathSeparator) + "config" + string(os.PathSeparator)
+	if strings.HasSuffix(os.Args[0], ".test") || strings.HasSuffix(os.Args[0], ".test.exe") { // Return repository config directory when testing
+		return filepath.Join(MustGetWD(), "..", "..", "config", string(os.PathSeparator))
 	}
 
 	userHomeDir, err := os.UserHomeDir()
@@ -61,8 +61,7 @@ func GetConfigDir() (configDir string) {
 		log.Fatal("Home directory doesn't exist", err)
 	}
 	cwd := MustGetED()
-
-	overrideDir := string(os.PathSeparator) + ebConfFileDir + string(os.PathSeparator)
+	overrideDir := filepath.Join(string(os.PathSeparator), ebConfFileDir, string(os.PathSeparator))
 	localOverrideDir := cwd + overrideDir
 	localOverrideFileCheck := localOverrideDir + ebConfFileName
 	if fe, _ := Exists(localOverrideFileCheck); fe {
@@ -71,7 +70,7 @@ func GetConfigDir() (configDir string) {
 	} else {
 		switch runtime.GOOS {
 		case "windows":
-			configDir += ebWinConfFileDir
+			configDir = ebWinConfFileDir
 		case "linux": // also can be specified to FreeBSD
 			configDir += overrideDir
 		case "darwin":

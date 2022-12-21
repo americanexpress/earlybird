@@ -2,34 +2,168 @@
 
 EarlyBird is a sensitive data detection tool capable of scanning source code repositories for clear text password violations, PII, outdated cryptography methods, key files and more. It can be used to scan remote git repositories, local files or directories or as a pre-commit step.
 
+<br />
+
 ## Installation
+
+### Docker
+**Running `docker build -t earlybird .` will automate the following steps**
+- Pull `golang:1.18-alpine` image used to build EarlyBird binary.
+- Install packages neccissary to compile EarlyBird binary (`gcc`/`libc-dev`)
+- Update `mod.go` and download required dependencies (`go mod tidy`)
+- Run unit tests found in `./pkg/...` aborting with exit code `1 ` if a failure is detected.
+- Generate a `Linux` binary in `./binaries/`
+- Pull `alpine:latest` image used to run EarlyBird
+- Copy `./config/*` to configuration directory `/root/.go-earlybird`
+- Copy `.ge_ignore` to configuration directory `/root/.go-earlybird`
+- Copy `./binaries/go-earlybird` binary to install directory
+
+> Note: If environment variable `EBVERSION`is defined, it's used as version tag of the binary, otherwise `dev` will be used (`buildflags.Version=%EBVERSION%`)
+
+<br />
+
+**Build image and run scan against local filesystem**
+
+```bash
+docker build -t earlybird .
+docker run --rm -it -v /local/filesystem/path/:/app/ earlybird 
+```
+**Make full use of command line arguments by changing the entrypoint and including custom configs**
+
+```bash
+docker run --rm -it -v /local/filesystem/path:/app/ -v /path/to/local/config:/root/.go-earlybird/config --entrypoint go-earlybird earlybird "-display-severity=high -fail-severity=high"
+```
+
+> Note: THe EarlyBird container will run against its local `/app/` directory. Mount filesystems to the `/app/` directory to make use of this.
+
+> Note: To customize the default arguments within the EarlyBird docker image, alter the `CMD` line at the end of the `Dockerfile` with desired arguments.
+
+
+<br />
+
+
+
 ### Linux & Mac
-Running the `build.sh` script will produce a binary for each OS, while the `install.sh` script will install Earlybird on your system. This will create a `.go-earlybird` directory in your home directory with all the configuration files. Finally installing `go-earlybird` as an executable in `/usr/local/bin/`.
+**Running `build.sh` will automate the following steps**
+- Update `mod.go` and download required dependencies (`go mod tidy`)
+- Run unit tests found in `./pkg/...` aborting with exit code `1 ` if a failure is detected.
+- Generate a `Linux` binary in `./binaries/`
+- Generate a `MacOS` binary in `./binaries/`
+- Generate a `Windows` binary in `./binaries/`
+> Note: If an argument is specified, it is used as the version tag, otherwise `dev` will be used (`buildflags.Version=${EBVERSION}`)
+
+<br />
+
+**Running `install.sh` will automate the following steps**
+- Create install directory if it doesn't already exist (`${HOME}\.go-earlybird`)
+- Copy `./config/*` to install directory
+- Copy `.ge_ignore` to install directory
+- Copy `go-earlybird` binary to `/usr/local/bin/`
+- Ensure `go-earlybird` binary in `/usr/local/bin/` is executable
+
+<br />
+
+**Build binaries and install as current user**
+> Note: User must have write access to /usr/local/bin/
 ```
 ./build.sh && ./install.sh
 ```
 
-### Windows
-Running `build.bat` will produce your binaries while the `install.bat` script will create a 'go-earlybird' directory in `C:\Users\[my user]\App Data\`, and copy the required configurations there.  This script will also install `go-earlybird.exe` as an executable in the App Data directory (which should be in your path).
+<br />
 
+### Windows
+**Running `build.bat` will automate the following steps**
+- Update `mod.go` and download required dependencies (`go mod tidy`)
+- Run unit tests found in `./pkg/...` aborting with exit code `1 ` if a failure is detected.
+- Generate a `Linux` binary in `./binaries/`
+- Generate a `MacOS` binary in `./binaries/`
+- Generate a `Windows` binary in `./binaries/`
+> Note: If an argument is specified, it is used as the version tag, otherwise `dev` will be used (`buildflags.Version=%EBVERSION%`)
+
+<br />
+
+**Running `install.bat` will automate the following steps**
+- Create install directory if it doesn't already exist (`%APPDATA%\go-earlybird`)
+- Copy `.\config\*` to install directory
+- Copy `.ge_ignore` to install directory
+- Copy `go-earlybird` binary to install directory
+- Add install directory to user `PATH` variable (`HKEY_CURRENT_USER\Environment`)
+
+<br />
+
+
+**Build binaries and install as current user**
 ```
-build.bat && install.bat
+.\build.bat && .\install.bat
 ```
+
+<br />
+
+## Uninstallation
+
+### Docker
+**Uninstall EarlyBird image**
+```
+docker image rm earlybird
+```
+
+<br />
+
+
+### Linux & Mac
+**Running `uninstall.sh` will automate the following steps**
+- Remove build logs potentially left over from `build.bat` (`${HOME}/eb-build-log.log`)
+- Remove install directory (`${HOME}/.go-earlybird`)
+- Remove binary (`/usr/local/bin/go-earlybird`)
+
+<br />
+
+**Uninstall EarlyBird**
+```
+./uninstall.sh
+```
+<br />
+
+### Windows
+**Running `uninstall.bat` will automate the following steps**
+- Remove build logs potentially left over from `build.bat` (`%APPDATA%\eb-build-log.log`)
+- Remove install directory (`%APPDATA%\go-earlybird`)
+- Remove install directory from user `PATH` variable (`HKEY_CURRENT_USER\Environment`)
+
+<br />
+
+**Uninstall EarlyBird**
+```
+.\uninstall.bat
+```
+
+<br />
 
 ## Usage
-To launch a basic EarlyBird scan against a directory:
+Launch a basic EarlyBird scan against a directory:
+```bash
+# Linux
+go-earlybird --path=/path/to/directory
+
+# Windows
+go-earlybird.exe --path=C:\path\to\directory
 ```
-$ go-earlybird --path=/path/to/directory
+Launch a basic EarlyBird scan against a file:
+```bash
+# Linux
+go-earlybird --path=/path/to/file.txt
+
+# Windows
+go-earlybird.exe --path=C:\path\to\file.txt
 ```
+
+Scan a remote git repo:
 ```
-$ go-earlybird.exe --path=C:\path\to\directory
-```
-or to scan a remote git repo:
-```
-$ go-earlybird --git=https://github.com/americanexpress/earlybird
+go-earlybird --git=https://github.com/americanexpress/earlybird
 ```
 [Click here for Detailed Usage instructions.](./docs/USAGE.md)
 
+<br />
 
 ## Documentation
  - [Usage - How do I use Earlybird?](./docs/USAGE.md)
@@ -41,6 +175,7 @@ $ go-earlybird --git=https://github.com/americanexpress/earlybird
  - [Ignore - How do I skip lines or files intentionally?](./docs/IGNORE.md)
  - [Inclusivity - How do I perform an inclusivity scan?](./docs/INCLUSIVITY.md)
 
+<br />
 
 ## Why Are We Doing This?
 The MITRE Corporation provides a catalog of [Common Weakness Enumerations](https://cwe.mitre.org/index.html) (CWE), documenting issues that should be avoided.  Some of the relevant CWEs that are handled by the use of EarlyBird include:
@@ -55,7 +190,7 @@ The MITRE Corporation provides a catalog of [Common Weakness Enumerations](https
  - [CWE-546 - Suspicious Comments](https://cwe.mitre.org/data/definitions/546.html)
  - [CWE-521 - Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)
 
----
+<br />
 
 ## Contributing
 We welcome your interest in the American Express Open Source Community on Github. Any Contributor to
@@ -65,8 +200,12 @@ Agreement to American Express and to recipients of software distributed by Ameri
 reserve all right, title, and interest, if any, in and to your contributions. Please
 [fill out the Agreement](https://cla-assistant.io/americanexpress/earlybird).
 
+<br />
+
 ## License
 Any contributions made under this project will be governed by the [Apache License 2.0](./LICENSE.txt).
+
+<br />
 
 ## Code of Conduct
 This project adheres to the [American Express Community Guidelines](./CODE_OF_CONDUCT.md). By participating, you are expected to honor these guidelines.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/americanexpress/earlybird/pkg/buildflags"
 	"log"
 	"net/http"
 	"os"
@@ -28,6 +27,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/americanexpress/earlybird/pkg/buildflags"
 
 	"github.com/americanexpress/earlybird/pkg/api"
 	cfgreader "github.com/americanexpress/earlybird/pkg/config"
@@ -42,7 +43,7 @@ import (
 	"golang.org/x/net/http2"
 )
 
-//GitClone clones git repositories into a temporary directory
+// GitClone clones git repositories into a temporary directory
 func (eb *EarlybirdCfg) GitClone(ptr PTRGitConfig) {
 	var scanRepos []string
 	gitPassword := os.Getenv("gitpassword")
@@ -53,7 +54,7 @@ func (eb *EarlybirdCfg) GitClone(ptr PTRGitConfig) {
 
 	if *ptr.Project != "" {
 		if *ptr.RepoUser == "" {
-			fmt.Println("Please use the -git-user flag to scan a Git Project or Organisation ")
+			fmt.Println("Please use the -git-user flag to scan a Git Project or Organization ")
 			os.Exit(1)
 		}
 
@@ -87,7 +88,7 @@ func (eb *EarlybirdCfg) GitClone(ptr PTRGitConfig) {
 	}
 }
 
-//StartHTTP spins up the Earlybird REST API server
+// StartHTTP spins up the Earlybird REST API server
 func (eb *EarlybirdCfg) StartHTTP(ptr PTRHTTPConfig) {
 	// Set up http server
 	r := mux.NewRouter()
@@ -97,11 +98,10 @@ func (eb *EarlybirdCfg) StartHTTP(ptr PTRHTTPConfig) {
 	r.HandleFunc("/categorylabels", api.LabelsPerCategory(eb.Config.Version, scan.Labels)).Methods("GET")
 	r.HandleFunc("/categories", api.Categories(eb.Config.Version, scan.CombinedRules)).Methods("GET")
 	// Catch-all: Serve our JavaScript application's entry-point (index.html) and static assets directly.
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir(userHomeDir + string(os.PathSeparator) + ".eb-wa-build" + string(os.PathSeparator))))
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir(path.Join(userHomeDir, ".eb-wa-build", "/"))))
 
-	var serverconfig cfgreader.ServerConfig
 	//Default time out settings
-	serverconfig = cfgreader.ServerConfig{
+	serverconfig := cfgreader.ServerConfig{
 		WriteTimeout: 60,
 		ReadTimeout:  60,
 		IdleTimeout:  120,
@@ -163,7 +163,7 @@ func (eb *EarlybirdCfg) GetRuleModulesMap() (err error) {
 	return err
 }
 
-//ConfigInit loads in the earlybird configuration and CLI flags
+// ConfigInit loads in the earlybird configuration and CLI flags
 func (eb *EarlybirdCfg) ConfigInit() {
 	// Set the version from ldflags
 	eb.Config.Version = buildflags.Version
@@ -173,10 +173,10 @@ func (eb *EarlybirdCfg) ConfigInit() {
 
 	// Load Earlybird config
 	eb.Config.ConfigDir = *ptrConfigDir
-	earlybirdConfigPath := path.Join(eb.Config.ConfigDir, "earlybird.json")
+	earlybirdConfigPath := filepath.Join(eb.Config.ConfigDir, "earlybird.json")
 	err := cfgreader.LoadConfig(&cfgreader.Settings, earlybirdConfigPath)
 	if err != nil {
-		log.Fatal("failed to load Earlybird config", err)
+		log.Fatal("failed to load Earlybird config ", err)
 	}
 
 	err = eb.GetRuleModulesMap()
@@ -202,10 +202,10 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	eb.Config.IgnoreFPRules = *ptrIgnoreFPRules
 	eb.Config.ShowSolutions = *ptrShowSolutions
 
-	eb.Config.RulesConfigDir = path.Join(eb.Config.ConfigDir, rulesDir)
-	eb.Config.FalsePositivesConfigDir = path.Join(eb.Config.ConfigDir, falsePositivesDir)
-	eb.Config.LabelsConfigDir = path.Join(eb.Config.ConfigDir, labelsDir)
-	eb.Config.SolutionsConfigDir = path.Join(eb.Config.ConfigDir, solutionsDir)
+	eb.Config.RulesConfigDir = filepath.Join(eb.Config.ConfigDir, rulesDir)
+	eb.Config.FalsePositivesConfigDir = filepath.Join(eb.Config.ConfigDir, falsePositivesDir)
+	eb.Config.LabelsConfigDir = filepath.Join(eb.Config.ConfigDir, labelsDir)
+	eb.Config.SolutionsConfigDir = filepath.Join(eb.Config.ConfigDir, solutionsDir)
 
 	// If the streaming IO flag was specified, accept the streaming input
 	if *ptrStreamInput || eb.Config.GitStream {
@@ -274,7 +274,7 @@ func (eb *EarlybirdCfg) getDefaultModuleSettings() {
 	}
 }
 
-//Scan Runs the scan by kicking off the different modules as go routines
+// Scan Runs the scan by kicking off the different modules as go routines
 func (eb *EarlybirdCfg) Scan() {
 	// Validate the path passed in as the target directory to scan
 	start := time.Now()
@@ -284,7 +284,6 @@ func (eb *EarlybirdCfg) Scan() {
 	}
 	HitChannel := make(chan scan.Hit)
 	go scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
-
 	// Send output to a writer
 	eb.WriteResults(start, HitChannel, fileContext)
 
@@ -297,7 +296,7 @@ func (eb *EarlybirdCfg) Scan() {
 	}
 }
 
-//FileContext provides an inclusive file system context of our scan
+// FileContext provides an inclusive file system context of our scan
 func (eb *EarlybirdCfg) FileContext() (fileContext file.Context, err error) {
 	cfg := eb.Config
 	if cfg.SearchDir != "" {
@@ -322,7 +321,7 @@ func (eb *EarlybirdCfg) FileContext() (fileContext file.Context, err error) {
 	return fileContext, nil
 }
 
-//WriteResults reads hits from the channel to the console or target file
+// WriteResults reads hits from the channel to the console or target file
 func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, fileContext file.Context) {
 	// Send output to a writer
 	var err error

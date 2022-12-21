@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package cfgreader
 import (
 	"bytes"
 	"fmt"
+	"path/filepath"
 	"testing"
 
 	"github.com/americanexpress/earlybird/pkg/utils"
@@ -26,7 +27,7 @@ import (
 
 var (
 	config     Configs
-	configPath = utils.GetConfigDir() + "earlybird.json"
+	configPath = filepath.Join(utils.MustGetWD(), "..", "..", "config", "earlybird.json")
 )
 
 func init() {

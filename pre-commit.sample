@@ -1,5 +1,6 @@
+#!/bin/sh
 #
-# Copyright 2021 American Express
+# Copyright 2023 American Express
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,10 +14,9 @@
 # or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 #
-#!/usr/bin/env bash
 
 echo "Running Go-EarlyBird pre-commit hook"
-go-earlybird -display-severity=high -fail-severity=critical -git-staged
+go-earlybird -display-severity=high -fail-severity=high -git-staged
 
 # $? stores exit value of the last command
 if [ $? -ne 0 ]; then

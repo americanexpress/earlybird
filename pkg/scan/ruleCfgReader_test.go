@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,11 @@
 package scan
 
 import (
+	"path/filepath"
+	"testing"
+
 	cfgreader "github.com/americanexpress/earlybird/pkg/config"
 	"github.com/americanexpress/earlybird/pkg/utils"
-	"path"
-	"testing"
 )
 
 var (
@@ -28,8 +29,8 @@ var (
 )
 
 func init() {
-	config.ConfigDir = path.Join(utils.MustGetWD(), utils.GetConfigDir())
-	config.RulesConfigDir = path.Join(config.ConfigDir, "rules")
+	config.ConfigDir = filepath.Join(utils.MustGetWD(), "..", "..", "config")
+	config.RulesConfigDir = filepath.Join(config.ConfigDir, "rules")
 	// low severity
 	config.SeverityDisplayLevel = 4
 	// low confidence
@@ -40,12 +41,12 @@ func Test_loadRuleConfigs(t *testing.T) {
 	rules := loadRuleConfigs(config, "content", "content.yaml")
 
 	if len(rules) == 0 {
-		t.Errorf("loadRuleConfigs() = %v, failed to load rules", rules)
+		t.Errorf("loadRuleconfigs() = %v, failed to load rules", rules)
 	}
 }
 
 func Test_loadLabelConfigs(t *testing.T) {
-	gotLabelConfigRules, err := loadLabelConfigs(path.Join(config.ConfigDir, "labels"))
+	gotLabelConfigRules, err := loadLabelConfigs(filepath.Join(config.ConfigDir, "labels"))
 
 	if err != nil {
 		t.Fatal(err)
@@ -57,7 +58,7 @@ func Test_loadLabelConfigs(t *testing.T) {
 }
 
 func Test_loadFalsePositives(t *testing.T) {
-	gotFalsePositiveRules, err := loadFalsePositives(path.Join(config.ConfigDir, "falsepositives"))
+	gotFalsePositiveRules, err := loadFalsePositives(filepath.Join(config.ConfigDir, "falsepositives"))
 
 	if err != nil {
 		t.Fatal(err)
@@ -69,7 +70,7 @@ func Test_loadFalsePositives(t *testing.T) {
 }
 
 func Test_loadSolutions(t *testing.T) {
-	gotSolutionConfigs, err := loadSolutions(path.Join(config.ConfigDir, "solutions"))
+	gotSolutionConfigs, err := loadSolutions(filepath.Join(config.ConfigDir, "solutions"))
 
 	if err != nil {
 		t.Fatal(err)

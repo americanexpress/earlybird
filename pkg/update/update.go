@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,23 +23,24 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"path/filepath"
 
 	cfgreader "github.com/americanexpress/earlybird/pkg/config"
 )
 
-//UpdateConfigFiles updates all of the modules via the defined module URL in earlybird.json
+// UpdateConfigFiles updates all of the modules via the defined module URL in earlybird.json
 func UpdateConfigFiles(configDir, rulesConfigDir, appConfigPath, appConfigURL string, ruleModulesFilenameMap map[string]string) error {
 	for _, fileName := range ruleModulesFilenameMap {
-		moduleFilePath := path.Join(rulesConfigDir, fileName)
+		moduleFilePath := filepath.Join(rulesConfigDir, fileName)
 		log.Println("Updating ", moduleFilePath)
 
 		parsedUrl, err := url.Parse(cfgreader.Settings.ConfigBaseUrl)
-
 		if err != nil {
 			return err
 		}
 
 		parsedUrl.Path = path.Join(parsedUrl.Path, fileName)
+		log.Println("URL: ", parsedUrl.String())
 
 		err = downloadFile(moduleFilePath, parsedUrl.String())
 
@@ -49,7 +50,7 @@ func UpdateConfigFiles(configDir, rulesConfigDir, appConfigPath, appConfigURL st
 	}
 
 	log.Println("Updating ", appConfigPath)
-	return downloadFile(path.Join(configDir, "earlybird.json"), appConfigURL)
+	return downloadFile(filepath.Join(configDir, "earlybird.json"), appConfigURL)
 }
 
 func downloadFile(path string, url string) error {

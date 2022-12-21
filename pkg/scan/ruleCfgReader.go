@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,16 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
 	"regexp"
 
 	cfgreader "github.com/americanexpress/earlybird/pkg/config"
 )
 
-//Init loads in all the Earlybird rules into the CombinedRules global variable
+// Init loads in all the Earlybird rules into the CombinedRules global variable
 func Init(cfg cfgreader.EarlybirdConfig) {
 	if cfg.OutputFormat != "json" && !cfg.HideMeta {
-		log.Println("Go-EarlyBird version: ", cfg.Version)
+		log.Println("Starting Go-EarlyBird version: ", cfg.Version)
 		// Display options
 		fmt.Println("Severity Fail threshold (at or above): ", cfgreader.Settings.TranslateLevelID(cfg.SeverityFailLevel))
 		fmt.Println("Confidence Fail threshold (at or above): ", cfgreader.Settings.TranslateLevelID(cfg.ConfidenceFailLevel))
@@ -41,7 +40,7 @@ func Init(cfg cfgreader.EarlybirdConfig) {
 
 	// Init rule set for modules
 	for moduleName, fileName := range cfg.EnabledModulesMap {
-		log.Println("loading module: ", moduleName)
+		log.Println("Loading module: ", moduleName)
 		CombinedRules = append(CombinedRules, loadRuleConfigs(cfg, moduleName, fileName)...)
 	}
 
@@ -113,10 +112,10 @@ func Init(cfg cfgreader.EarlybirdConfig) {
 	}
 }
 
-//loadRuleConfigs loads the rules from the JSON config file, compiles the rules and defines the search area
+// loadRuleConfigs loads the rules from the JSON config file, compiles the rules and defines the search area
 func loadRuleConfigs(cfg cfgreader.EarlybirdConfig, moduleName, fileName string) []Rule {
 	var rules, tmpRules Rules
-	rulePath := path.Join(cfg.RulesConfigDir, fileName)
+	rulePath := filepath.Join(cfg.RulesConfigDir, fileName)
 
 	err := cfgreader.LoadConfig(&tmpRules, rulePath)
 	if err != nil {
@@ -137,7 +136,7 @@ func loadRuleConfigs(cfg cfgreader.EarlybirdConfig, moduleName, fileName string)
 	return rules.Rules
 }
 
-//loadLabelConfigs loads the labels from the config file
+// loadLabelConfigs loads the labels from the config file
 func loadLabelConfigs(dirPath string) (LabelConfigRules map[int]LabelConfigs, err error) {
 	LabelConfigRules = make(map[int]LabelConfigs)
 
@@ -166,7 +165,7 @@ func loadLabelConfigs(dirPath string) (LabelConfigRules map[int]LabelConfigs, er
 	return LabelConfigRules, err
 }
 
-//loadFalsePositives loads in and compiles all the false positive rules for Earlybird
+// loadFalsePositives loads in and compiles all the false positive rules for Earlybird
 func loadFalsePositives(dirPath string) (FalsePositiveRules map[int]FalsePositives, err error) {
 	FalsePositiveRules = make(map[int]FalsePositives)
 
@@ -196,7 +195,7 @@ func loadFalsePositives(dirPath string) (FalsePositiveRules map[int]FalsePositiv
 	return FalsePositiveRules, err
 }
 
-//loadSolutions loads in solutions from the json config file
+// loadSolutions loads in solutions from the json config file
 func loadSolutions(dirPath string) (solutionConfigs map[int]Solution, err error) {
 	solutionConfigs = make(map[int]Solution)
 

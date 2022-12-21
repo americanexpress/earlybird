@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package core
 import (
 	"flag"
 	"os"
+	"path/filepath"
 
 	cfgreader "github.com/americanexpress/earlybird/pkg/config"
 	"github.com/americanexpress/earlybird/pkg/utils"
@@ -46,9 +47,9 @@ func (i *arrayFlags) Set(value string) error {
 var (
 	userHomeDir, _                = os.UserHomeDir()
 	levelOptions                  = utils.GetDisplayList(cfgreader.Settings.GetLevelNames())
-	ptrStreamInput                = flag.Bool("stream", false, "Use stream IO as input instead of file(s)")
+	ptrStreamInput                = flag.Bool("stream", false, "Use stream IO as input instead of file(s). (e.g. cat file.txt > go-earlybird -stream)")
 	enableFlags                   arrayFlags
-	ptrUpdateFlag                 = flag.Bool("update", false, "Update module configurations")
+	ptrUpdateFlag                 = flag.Bool("update", false, "Update module configurations from remote server then exit script. (downloaded from config_base_url defined in earlybird.json)")
 	ptrGitStreamInput             = flag.Bool("git-commit-stream", false, "Use stream IO of Git commit log as input instead of file(s) -- e.g., 'cat secrets.text > go-earlybird'")
 	ptrVerbose                    = flag.Bool("verbose", false, "Reports details about file reads")
 	ptrSuppressSecret             = flag.Bool("suppress", false, "Suppress reporting of the secret found (important if output is going to Slack or other logs)")
@@ -66,11 +67,11 @@ var (
 	ptrPath                       = flag.String("path", utils.MustGetWD(), "Directory to scan (defaults to CWD) -- ABSOLUTE PATH ONLY")
 	ptrOutputFormat               = flag.String("format", "console", "Output format [ console | json | csv ]")
 	ptrOutputFile                 = flag.String("file", "", "Output file -- e.g., 'go-earlybird --file=/home/jdoe/myfile.csv'")
-	ptrIgnoreFile                 = flag.String("ignorefile", userHomeDir+string(os.PathSeparator)+".ge_ignore", "Patterns File (including wildcards) for files to ignore.  (e.g. *.jpg)")
+	ptrIgnoreFile                 = flag.String("ignorefile", filepath.Join(utils.GetConfigDir(), ".ge_ignore"), "Patterns File (including wildcards) for files to ignore.  (e.g. *.jpg)")
 	ptrFailSeverityThreshold      = flag.String("fail-severity", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.FailThreshold), "Lowest severity level at which to fail "+levelOptions)
 	ptrDisplaySeverityThreshold   = flag.String("display-severity", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.DisplayThreshold), "Lowest severity level to display "+levelOptions)
 	ptrDisplayConfidenceThreshold = flag.String("display-confidence", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.DisplayConfidenceThreshold), "Lowest confidence level to display "+levelOptions)
 	ptrFailConfidenceThreshold    = flag.String("fail-confidence", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.FailThreshold), "Lowest confidence level at which to fail "+levelOptions)
-	ptrModuleConfigFile           = flag.String("module-config-file", "", "Path to file with per module config settings")
+	ptrModuleConfigFile           = flag.String("module-config-file", "", "Absolute path to a json or yaml file for \"per module\" level configuration (e.g. {\"modules\": { \"aModule\": { \"display_severity\": \"medium\" } } })")
 	ptrDisableHttpKeepAlives      = flag.Bool("disable-keep-alives", false, "To disable keep-alives when running as http Server. By default, keep-alives are always enabled")
 )

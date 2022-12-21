@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 package file
 
 import (
-	"github.com/americanexpress/earlybird/pkg/scan"
-	"reflect"
-
 	"os"
-	"path"
+	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/americanexpress/earlybird/pkg/scan"
 )
 
 var projectRoot string
@@ -36,13 +36,13 @@ func init() {
 	}
 
 	workDir = workingDir
-	projectRoot = path.Join(workingDir, "../../")
-	ignorePatterns = getIgnorePatterns(projectRoot, path.Join(projectRoot, ".ge_ignore"), false)
+	projectRoot = filepath.Join(workingDir, "..", "..", string(os.PathSeparator))
+	ignorePatterns = getIgnorePatterns(projectRoot, filepath.Join(projectRoot, ".ge_ignore"), false)
 }
 
 func TestGetFiles(t *testing.T) {
 	searchDir := "test_data"
-	ignoreFile := path.Join(projectRoot, ".ge_ignore")
+	ignoreFile := filepath.Join(projectRoot, ".ge_ignore")
 	verbose := false
 	maxFileSize := int64(1000000)
 
@@ -110,12 +110,12 @@ func Test_getFileSizeOK(t *testing.T) {
 			wantResult: true,
 		},
 		{
-			name: "Check if file size is 0",
+			name: "Check if file size 0 is valid",
 			args: args{
 				path:        "test_data/empty.jar",
 				maxFileSize: 100000,
 			},
-			wantResult: false,
+			wantResult: true,
 		},
 	}
 	for _, tt := range tests {
@@ -192,11 +192,7 @@ func Test_isDirectory(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := isDirectory(tt.args.path)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("isDirectory() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			got := isDirectory(tt.args.path)
 			if got != tt.want {
 				t.Errorf("isDirectory() = %v, want %v", got, tt.want)
 			}
@@ -210,7 +206,8 @@ func TestGetWD(t *testing.T) {
 		t.Errorf("GetWD() error = %v, wantErr nil", err)
 		return
 	}
-	if !strings.Contains(got, "pkg/file") {
+
+	if !strings.Contains(got, filepath.Join("pkg", string(os.PathSeparator), "file")) {
 		t.Errorf("GetWD() = %v, want pkg/file directory", got)
 	}
 
@@ -340,7 +337,7 @@ func TestUncompress(t *testing.T) {
 				src:  "test_data/sample.zip",
 				dest: "test_data",
 			},
-			wantFilenames: []string{"test_data/sample.py"},
+			wantFilenames: []string{filepath.Join("test_data", "sample.py")},
 			wantErr:       false,
 		},
 	}

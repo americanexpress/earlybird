@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,21 +19,22 @@ package scan
 import (
 	"bufio"
 	"crypto/sha1"
-	cfgReader "github.com/americanexpress/earlybird/pkg/config"
-	"github.com/americanexpress/earlybird/pkg/utils"
-	"path"
+	"path/filepath"
 	"reflect"
 	"strconv"
 	"strings"
 	"testing"
+
+	cfgReader "github.com/americanexpress/earlybird/pkg/config"
+	"github.com/americanexpress/earlybird/pkg/utils"
 )
 
 var cfg = cfgReader.EarlybirdConfig{
-	ConfigDir:               path.Join(utils.MustGetWD(), utils.GetConfigDir()),
-	LabelsConfigDir:         path.Join(utils.MustGetWD(), utils.GetConfigDir(), "labels"),
-	FalsePositivesConfigDir: path.Join(utils.MustGetWD(), utils.GetConfigDir(), "falsepositives"),
-	RulesConfigDir:          path.Join(utils.MustGetWD(), utils.GetConfigDir(), "rules"),
-	IgnoreFile:              path.Join(utils.MustGetWD(), "../../.ge_ignore"),
+	ConfigDir:               filepath.Join(utils.GetConfigDir()),
+	LabelsConfigDir:         filepath.Join(utils.GetConfigDir(), "labels"),
+	FalsePositivesConfigDir: filepath.Join(utils.GetConfigDir(), "falsepositives"),
+	RulesConfigDir:          filepath.Join(utils.GetConfigDir(), "rules"),
+	IgnoreFile:              filepath.Join(utils.GetConfigDir(), ".ge_ignore"),
 	SeverityDisplayLevel:    4,
 	SeverityFailLevel:       4,
 	ConfidenceDisplayLevel:  4,
@@ -52,7 +53,7 @@ var cfg = cfgReader.EarlybirdConfig{
 }
 
 func init() {
-	err := cfgReader.LoadConfig(&cfgReader.Settings, path.Join(utils.MustGetWD(), utils.GetConfigDir(), "earlybird.json"))
+	err := cfgReader.LoadConfig(&cfgReader.Settings, filepath.Join(utils.GetConfigDir(), "earlybird.json"))
 	if err != nil {
 		panic(err)
 	}
