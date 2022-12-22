@@ -143,23 +143,23 @@ docker image rm earlybird
 Launch a basic EarlyBird scan against a directory:
 ```bash
 # Linux
-go-earlybird --path=/path/to/directory
+go-earlybird -path=/path/to/directory
 
 # Windows
-go-earlybird.exe --path=C:\path\to\directory
+go-earlybird.exe -path=C:\path\to\directory
 ```
 Launch a basic EarlyBird scan against a file:
 ```bash
 # Linux
-go-earlybird --path=/path/to/file.txt
+go-earlybird -path=/path/to/file.txt
 
 # Windows
-go-earlybird.exe --path=C:\path\to\file.txt
+go-earlybird.exe -path=C:\path\to\file.txt
 ```
 
 Scan a remote git repo:
 ```
-go-earlybird --git=https://github.com/americanexpress/earlybird
+go-earlybird -git=https://github.com/americanexpress/earlybird
 ```
 [Click here for Detailed Usage instructions.](./docs/USAGE.md)
 
