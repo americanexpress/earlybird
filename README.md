@@ -34,7 +34,7 @@ docker run --rm -it -v /local/filesystem/path/:/app/ earlybird
 docker run --rm -it -v /local/filesystem/path:/app/ -v /path/to/local/config:/root/.go-earlybird/config --entrypoint go-earlybird earlybird "-display-severity=high -fail-severity=high"
 ```
 
-> Note: THe EarlyBird container will run against its local `/app/` directory. Mount filesystems to the `/app/` directory to make use of this.
+> Note: The EarlyBird container will run against its local `/app/` directory. Mount filesystems to the `/app/` directory to make use of this.
 
 > Note: To customize the default arguments within the EarlyBird docker image, alter the `CMD` line at the end of the `Dockerfile` with desired arguments.
 
