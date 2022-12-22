@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,19 @@
 
 package api
 
-//CategoryLabelsResponse is the format of API results from label per category end point
+// CategoryLabelsResponse is the format of API results from label per category end point
 type CategoryLabelsResponse struct {
 	Version        string              `json:"version"`
 	CategoryLabels map[string][]string `json:"categorylabels"`
 }
 
-//CategoriesResponse is the format of API results from categories end point
+// CategoriesResponse is the format of API results from categories end point
 type CategoriesResponse struct {
 	Version    string   `json:"version"`
 	Categories []string `json:"categories"`
 }
 
-//LabelsResponse is the format of API results from label end point
+// LabelsResponse is the format of API results from label end point
 type LabelsResponse struct {
 	Version string   `json:"version"`
 	Labels  []string `json:"labels"`

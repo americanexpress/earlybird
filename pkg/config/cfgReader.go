@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,10 @@ import (
 	"github.com/ghodss/yaml"
 )
 
-//Settings contains imported earlybird.json configuration
+// Settings contains imported earlybird.json configuration
 var Settings Configs
 
-//LoadConfig parses json configuration file into structure
+// LoadConfig parses json configuration file into structure
 func LoadConfig(cfg interface{}, path string) (err error) {
 	file, err := os.Open(path)
 	// if we os.Open returns an error then handle it
@@ -83,7 +83,7 @@ func hasPrefix(data, prefix []byte) bool {
 	return bytes.HasPrefix(trimmed, prefix)
 }
 
-//TranslateLevelID returns the text value of a level integer (e.g., 2 --> high)
+// TranslateLevelID returns the text value of a level integer (e.g., 2 --> high)
 func (cfg *Configs) TranslateLevelID(level int) string {
 	for _, levelConfig := range cfg.LevelConfigs {
 		if levelConfig.ID == level {
@@ -93,7 +93,7 @@ func (cfg *Configs) TranslateLevelID(level int) string {
 	return "low"
 }
 
-//TranslateLevelName returns the int level of a string value (e.g., high --> 2)
+// TranslateLevelName returns the int level of a string value (e.g., high --> 2)
 func (cfg *Configs) TranslateLevelName(level string) int {
 	for _, levelConfig := range cfg.LevelConfigs {
 		if levelConfig.Name == level {
@@ -103,7 +103,7 @@ func (cfg *Configs) TranslateLevelName(level string) int {
 	return 4
 }
 
-//GetLevelNames returns a slice of strings for the level names
+// GetLevelNames returns a slice of strings for the level names
 func (cfg *Configs) GetLevelNames() (levels []string) {
 	for _, levelConfig := range cfg.LevelConfigs {
 		levels = append(levels, levelConfig.Name)
@@ -111,7 +111,7 @@ func (cfg *Configs) GetLevelNames() (levels []string) {
 	return levels
 }
 
-//GetLevelMap returns a map of severity levels
+// GetLevelMap returns a map of severity levels
 func (cfg *Configs) GetLevelMap() (levelMap map[string]int) {
 	levelMap = make(map[string]int)
 	for _, levelConfig := range cfg.LevelConfigs {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,12 @@ package git
 import (
 	"context"
 	"fmt"
-	"gopkg.in/src-d/go-git.v4/plumbing"
 	"io/ioutil"
 	"log"
 	"os"
 	"strings"
+
+	"gopkg.in/src-d/go-git.v4/plumbing"
 
 	"github.com/americanexpress/earlybird/pkg/utils"
 
@@ -32,7 +33,7 @@ import (
 	"gopkg.in/src-d/go-git.v4/plumbing/transport/http"
 )
 
-//ReposPerProject returns all the repositories contained within a  bitbucket or github project
+// ReposPerProject returns all the repositories contained within a  bitbucket or github project
 func ReposPerProject(projectURL, username, password string) (scanRepos []string) {
 	if strings.Contains(projectURL, "github.com/") { //Scan Github
 		var basicauth github.BasicAuthTransport
@@ -77,7 +78,7 @@ func ReposPerProject(projectURL, username, password string) (scanRepos []string)
 	return scanRepos
 }
 
-//CloneGitRepos Clones a Git repo into a random temporary folder
+// CloneGitRepos Clones a Git repo into a random temporary folder
 func CloneGitRepos(repoURLs []string, username, password string, branch string, json bool) (tmpDir string, err error) {
 	tmpDir, err = ioutil.TempDir("", "ebgit")
 	if err != nil {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import (
 	"gopkg.in/src-d/go-git.v4/plumbing/transport"
 )
 
-//Scan uses the Earlybird config to search uploaded multipart files for secrets
+// Scan uses the Earlybird config to search uploaded multipart files for secrets
 func Scan(cfg cfgreader.EarlybirdConfig) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(1024 << 20) // 1GB upload limit
@@ -82,7 +82,7 @@ func Scan(cfg cfgreader.EarlybirdConfig) http.HandlerFunc {
 	}
 }
 
-//GITScan searches for secrets in git repositories based off the Earlybird config, supports authentication via env variables "gituser" and "gitpassword"
+// GITScan searches for secrets in git repositories based off the Earlybird config, supports authentication via env variables "gituser" and "gitpassword"
 func GITScan(cfg cfgreader.EarlybirdConfig) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
@@ -151,7 +151,7 @@ func GITScan(cfg cfgreader.EarlybirdConfig) http.HandlerFunc {
 	}
 }
 
-//Labels returns all the available Earlybird labels in "LabelsReponse" format
+// Labels returns all the available Earlybird labels in "LabelsReponse" format
 func Labels(version string, scanLabels map[int]scan.LabelConfigs) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//Build label list
@@ -178,7 +178,7 @@ func Labels(version string, scanLabels map[int]scan.LabelConfigs) http.HandlerFu
 	}
 }
 
-//Categories returns all the available Earlybird categories in "CategoriesReponse" format
+// Categories returns all the available Earlybird categories in "CategoriesReponse" format
 func Categories(version string, rules []scan.Rule) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var categories []string
@@ -202,7 +202,7 @@ func Categories(version string, rules []scan.Rule) http.HandlerFunc {
 	}
 }
 
-//LabelsPerCategory returns all the available Earlybird labels per categories in "CategoryLabelsResponse" format
+// LabelsPerCategory returns all the available Earlybird labels per categories in "CategoryLabelsResponse" format
 func LabelsPerCategory(version string, scanLabels map[int]scan.LabelConfigs) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		categorylabels := labelsToLabelsPerCategory(scanLabels)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,19 @@ import (
 	cfgReader "github.com/americanexpress/earlybird/pkg/config"
 )
 
-//EarlybirdCore is the main interface for interacting with Earlybird as a package
+// EarlybirdCore is the main interface for interacting with Earlybird as a package
 type EarlybirdCore interface {
 	ConfigInit() cfgReader.EarlybirdConfig
 	StartHTTP()
 	Scan()
 }
 
-//EarlybirdCfg is the global Earlybird configuration
+// EarlybirdCfg is the global Earlybird configuration
 type EarlybirdCfg struct {
 	Config cfgReader.EarlybirdConfig
 }
 
-//PTRHTTPConfig is the configuration for the Earlybird REST API
+// PTRHTTPConfig is the configuration for the Earlybird REST API
 type PTRHTTPConfig struct {
 	HTTP       *string
 	HTTPConfig *string
@@ -41,7 +41,7 @@ type PTRHTTPConfig struct {
 	HTTPSKey   *string
 }
 
-//PTRGitConfig is the configuration definition for Earlybird git scans
+// PTRGitConfig is the configuration definition for Earlybird git scans
 type PTRGitConfig struct {
 	Repo       *string
 	RepoUser   *string

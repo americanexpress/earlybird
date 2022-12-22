@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ var (
 	tempPattern    = regexp.MustCompile(tempRegex)
 )
 
-//SearchFiles will use the EarlybirdConfig, the provided file list, decompressed zip files and converted files temporary paths to send found secrets to the Hit channel
+// SearchFiles will use the EarlybirdConfig, the provided file list, decompressed zip files and converted files temporary paths to send found secrets to the Hit channel
 func SearchFiles(cfg *cfgReader.EarlybirdConfig, files []File, compressPaths []string, convertPaths []string, hits chan<- Hit) {
 	//Delete tmp file directory when we're done
 	defer DeleteFiles(compressPaths)
@@ -75,7 +75,7 @@ func SearchFiles(cfg *cfgReader.EarlybirdConfig, files []File, compressPaths []s
 	close(hits)
 }
 
-//scanPool searches incoming jobs for secrets and write findings to hits channel
+// scanPool searches incoming jobs for secrets and write findings to hits channel
 func scanPool(cfg *cfgReader.EarlybirdConfig, wg *sync.WaitGroup, jobMutex *sync.Mutex, jobs chan WorkJob, hits chan<- Hit) {
 	//Create duplicate map
 	dupeMap := make(map[string]bool) //HASH:true
@@ -119,7 +119,7 @@ func determineScanFail(cfg *cfgReader.EarlybirdConfig, hit *Hit) bool {
 	return hit.SeverityID <= cfg.SeverityFailLevel && hit.ConfidenceID <= cfg.ConfidenceFailLevel
 }
 
-//contentJobWriter creates work based off file content for scanning
+// contentJobWriter creates work based off file content for scanning
 func contentJobWriter(cfg *cfgReader.EarlybirdConfig, files []File, jobMutex *sync.Mutex, jobs chan WorkJob) {
 	var e error
 	// Loop through each File
@@ -173,7 +173,7 @@ func contentJobWriter(cfg *cfgReader.EarlybirdConfig, files []File, jobMutex *sy
 	}
 }
 
-//nameScanner scans file names for sensitive values
+// nameScanner scans file names for sensitive values
 func nameScanner(cfg *cfgReader.EarlybirdConfig, files []File, hits chan<- Hit) {
 	for _, file := range files {
 		// Scan the filename based on the Filename rules
@@ -199,7 +199,7 @@ func nameScanner(cfg *cfgReader.EarlybirdConfig, files []File, hits chan<- Hit) 
 
 }
 
-//DeleteFiles removes files and folders in target path array
+// DeleteFiles removes files and folders in target path array
 func DeleteFiles(paths []string) {
 	for _, p := range paths {
 		err := os.RemoveAll(p)
@@ -354,7 +354,7 @@ func readln(r *bufio.Reader) (string, error) {
 	return string(ln), err
 }
 
-//IsIgnoreAnnotation Checks for ignore annotation
+// IsIgnoreAnnotation Checks for ignore annotation
 func IsIgnoreAnnotation(cfg *cfgReader.EarlybirdConfig, line string) bool {
 	for _, annotation := range cfg.AnnotationsToSkipLine {
 		if strings.Contains(line, annotation) {
@@ -376,7 +376,7 @@ func jobFileName(gitRepo, fileName string) string {
 	return fileName
 }
 
-//splitJob splits up the job into an array of jobs if too long otherwise returns a single job
+// splitJob splits up the job into an array of jobs if too long otherwise returns a single job
 func splitJob(inJob WorkJob, worklength int) (work []WorkJob) {
 	//If line isn't too long, just push job to work channel
 	if len(inJob.WorkLine.LineValue) <= worklength {
@@ -400,7 +400,7 @@ func splitJob(inJob WorkJob, worklength int) (work []WorkJob) {
 	return work
 }
 
-//splitSubN Create the overlap string when splitting long strings
+// splitSubN Create the overlap string when splitting long strings
 func splitSubN(s string, n int) []string {
 	runes := []rune(s)
 	chunks := make([]string, 0, len(runes)/n)
@@ -604,7 +604,7 @@ func (hit *Hit) postProcess(cfg *cfgReader.EarlybirdConfig, rule *Rule) (isHit b
 	return isHit
 }
 
-//removeTempPrefix removes the temp path prefix if it exists
+// removeTempPrefix removes the temp path prefix if it exists
 func removeTempPrefix(path string) string {
 	if strings.Contains(path, "ebzip") || strings.Contains(path, "ebgit") || strings.Contains(path, "ebconv") {
 		if paths := tempPattern.FindStringSubmatch(path); len(paths) > 1 {

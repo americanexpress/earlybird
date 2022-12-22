@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ func findHit(target string, CompiledPattern *regexp.Regexp) (isHit bool, retMatc
 	return false, ""
 }
 
-//substringExistsInLines Search for a regexp pattern occurring anywhere in a file
+// substringExistsInLines Search for a regexp pattern occurring anywhere in a file
 func substringExistsInLines(fileLines []Line, str string) bool {
 	reg := regexp.MustCompile("(?i)" + str)
 	for _, line := range fileLines {
@@ -46,7 +46,7 @@ func substringExistsInLines(fileLines []Line, str string) bool {
 	return false
 }
 
-//substringExistsInString check if sub exists in string
+// substringExistsInString check if sub exists in string
 func substringExistsInString(str string, substr string) bool {
 	m := search.New(language.English, search.IgnoreCase)
 	start, _ := m.IndexString(str, substr)

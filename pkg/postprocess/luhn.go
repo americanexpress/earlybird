@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ var (
 	delta  = []int{0, 1, 2, 3, 4, -4, -3, -2, -1, 0}
 )
 
-//IsCard Run a mod10 check on a potential card number
+// IsCard Run a mod10 check on a potential card number
 func IsCard(cc string) bool {
 	cc = isolateNumber(cc)
 	checksum := 0

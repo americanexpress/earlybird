@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ func initLookupTable(row, column int) [][]bool {
 	return lookup
 }
 
-//PatternMatch Function that matches input str with given wildcard pattern
+// PatternMatch Function that matches input str with given wildcard pattern
 func PatternMatch(str, pattern string) bool {
 	s := []rune(strings.ToLower(str))
 	p := []rune(strings.ToLower(pattern))

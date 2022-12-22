@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,6 +57,7 @@ func main() {
 
 	//Clone the repository we're scanning when param provided
 	eb.GitClone(gitcfg)
+
 	//Scan delete anything
 	eb.Scan()
 

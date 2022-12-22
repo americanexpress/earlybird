@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import (
 	"os"
 )
 
-//WriteJSON Outputs an object as a JSON blob to an output file or console
+// WriteJSON Outputs an object as a JSON blob to an output file or console
 func WriteJSON(v interface{}, fileName string) (s string, err error) {
 	b, err := json.MarshalIndent(v, "", "\t")
 	if err != nil {

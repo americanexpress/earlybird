@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ type issue struct {
 
 var issues = make(map[string]int)
 
-//WriteConsole streams hits from the result channel to the command line or target file
+// WriteConsole streams hits from the result channel to the command line or target file
 func WriteConsole(hits <-chan scan.Hit, fileName string, showFullLine bool) error {
 	// If no filename was passed in, just print to stdout
 	if fileName == "" {

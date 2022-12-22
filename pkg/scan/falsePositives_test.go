@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,8 +117,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip JSON same key same value",
 			hit: Hit{
-				Code:     3026,
-				Filename: "test.json",
+				Code:      3026,
+				Filename:  "test.json",
 				LineValue: `		"secret" : "secret"`,
 			},
 			wantIsFP: true,
@@ -126,8 +126,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip JS same key same value",
 			hit: Hit{
-				Code:     3026,
-				Filename: "test.json",
+				Code:      3026,
+				Filename:  "test.json",
 				LineValue: `		'secret' : 'secret'`,
 			},
 			wantIsFP: true,
@@ -135,8 +135,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual secret",
 			hit: Hit{
-				Code:     3026,
-				Filename: "test.json",
+				Code:      3026,
+				Filename:  "test.json",
 				LineValue: `		"secret" : "do_not_use_this_in_production"`,
 			},
 			wantIsFP: false,
@@ -144,8 +144,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual client-secret",
 			hit: Hit{
-				Code:     3033,
-				Filename: "test.yaml",
+				Code:      3033,
+				Filename:  "test.yaml",
 				LineValue: `		client-secret: do_not_use_this_in_production`,
 			},
 			wantIsFP: false,
@@ -153,8 +153,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual clientSecret",
 			hit: Hit{
-				Code:     3033,
-				Filename: "test.json",
+				Code:      3033,
+				Filename:  "test.json",
 				LineValue: `		clientSecret: do_not_use_this_in_production`,
 			},
 			wantIsFP: false,
@@ -162,8 +162,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual 'clientSecret'",
 			hit: Hit{
-				Code:     3034,
-				Filename: "test.json",
+				Code:      3034,
+				Filename:  "test.json",
 				LineValue: `		"clientSecret": "do_not_use_this_in_production"`,
 			},
 			wantIsFP: false,
@@ -171,8 +171,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual client-secret",
 			hit: Hit{
-				Code:     3034,
-				Filename: "test.json",
+				Code:      3034,
+				Filename:  "test.json",
 				LineValue: `		"client-secret": "do_not_use_this_in_production"`,
 			},
 			wantIsFP: false,
@@ -198,8 +198,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual auth-key",
 			hit: Hit{
-				Code:     3035,
-				Filename: "test.yaml",
+				Code:      3035,
+				Filename:  "test.yaml",
 				LineValue: `		auth-key: do_not_use_this_in_production`,
 			},
 			wantIsFP: false,
@@ -207,8 +207,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual auth-key",
 			hit: Hit{
-				Code:     3035,
-				Filename: "test.json",
+				Code:      3035,
+				Filename:  "test.json",
 				LineValue: `		"auth-key": "do_not_use_this_in_production"`,
 			},
 			wantIsFP: false,
@@ -216,8 +216,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual secret-key",
 			hit: Hit{
-				Code:     3036,
-				Filename: "test.json",
+				Code:      3036,
+				Filename:  "test.json",
 				LineValue: `		secret-key: do_not_use_this_in_production`,
 			},
 			wantIsFP: false,
@@ -225,8 +225,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual secret-key",
 			hit: Hit{
-				Code:     3036,
-				Filename: "test.json",
+				Code:      3036,
+				Filename:  "test.json",
 				LineValue: `		"secret-key": "do_not_use_this_in_production"`,
 			},
 			wantIsFP: false,
@@ -234,8 +234,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip credenitals placeholder",
 			hit: Hit{
-				Code:     3075,
-				Filename: "test.yaml",
+				Code:       3075,
+				Filename:   "test.yaml",
 				MatchValue: `		credentials: ******`,
 			},
 			wantIsFP: true,
@@ -243,8 +243,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual credentials in yaml",
 			hit: Hit{
-				Code:     3075,
-				Filename: "test.yaml",
+				Code:       3075,
+				Filename:   "test.yaml",
 				MatchValue: `		credentials: do_not_use_this_in_production`,
 			},
 			wantIsFP: false,
@@ -252,8 +252,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual credential in json",
 			hit: Hit{
-				Code:     3075,
-				Filename: "test.json",
+				Code:       3075,
+				Filename:   "test.json",
 				MatchValue: `		"credential": "do_not_use_this_in_production"`,
 			},
 			wantIsFP: false,
@@ -261,8 +261,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual credential in yaml",
 			hit: Hit{
-				Code:     3075,
-				Filename: "test.yaml",
+				Code:       3075,
+				Filename:   "test.yaml",
 				MatchValue: `		credential: do_not_use_this_in_production`,
 			},
 			wantIsFP: false,
@@ -306,8 +306,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip false positive predefined credentials (include) from Fetch API",
 			hit: Hit{
-				Code:     3075,
-				Filename: "source.js",
+				Code:       3075,
+				Filename:   "source.js",
 				MatchValue: `		credentials=include`,
 			},
 			wantIsFP: true,
@@ -315,8 +315,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip predefined credentials [omit] from Fetch API",
 			hit: Hit{
-				Code:     3075,
-				Filename: "test.ts",
+				Code:      3075,
+				Filename:  "test.ts",
 				LineValue: `		"credentials" : "omit"`,
 			},
 			wantIsFP: true,
@@ -324,8 +324,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip predefined credentials (same-origin) from Fetch API",
 			hit: Hit{
-				Code:     3075,
-				Filename: "test.ts",
+				Code:      3075,
+				Filename:  "test.ts",
 				LineValue: `		'credentials' : 'same-origin'`,
 			},
 			wantIsFP: true,
@@ -333,8 +333,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Donot Skip predefined credentials (same-origin) from Fetch API in java file",
 			hit: Hit{
-				Code:     3075,
-				Filename: "test.java",
+				Code:      3075,
+				Filename:  "test.java",
 				LineValue: `		'credentials' : 'same-origin'`,
 			},
 			wantIsFP: false,
@@ -360,8 +360,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual secret",
 			hit: Hit{
-				Code:     3001,
-				Filename: "test.json",
+				Code:      3001,
+				Filename:  "test.json",
 				LineValue: `		"INPUT_LABEL_GENERIC_PASSWORD": "xxxxxx"`,
 			},
 			wantIsFP: false,
@@ -369,8 +369,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual secret",
 			hit: Hit{
-				Code:     3001,
-				Filename: "test.properties",
+				Code:      3001,
+				Filename:  "test.properties",
 				LineValue: `		INPUT_LABEL_GENERIC_PASSWORD= xxxxxxxx`,
 			},
 			wantIsFP: false,
@@ -378,8 +378,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual secret",
 			hit: Hit{
-				Code:     3001,
-				Filename: "test.properties",
+				Code:      3001,
+				Filename:  "test.properties",
 				LineValue: `		INPUT_LABEL_GENERIC_PASSWORD= "xxxxxxxx"`,
 			},
 			wantIsFP: false,
@@ -387,8 +387,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual .swift secret",
 			hit: Hit{
-				Code:     3057,
-				Filename: "test.swift",
+				Code:      3057,
+				Filename:  "test.swift",
 				LineValue: `		let password = "do_not_use_this_in_production"`,
 			},
 			wantIsFP: false,
@@ -396,8 +396,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't skip actual .swift secret",
 			hit: Hit{
-				Code:     3057,
-				Filename: "test.swift",
+				Code:      3057,
+				Filename:  "test.swift",
 				LineValue: `		let password: String! = "do_not_use_this_in_production"`,
 			},
 			wantIsFP: false,
@@ -405,8 +405,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip .swift FP",
 			hit: Hit{
-				Code:     3057,
-				Filename: "test.swift",
+				Code:       3057,
+				Filename:   "test.swift",
 				MatchValue: `		var txtFieldPassword: UITextField! = nil`,
 			},
 			wantIsFP: true,
@@ -414,8 +414,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip swedish for password(Lösenord) as value",
 			hit: Hit{
-				Code:     3001,
-				Filename: "source.json",
+				Code:      3001,
+				Filename:  "source.json",
 				LineValue: `		"Password": "Lösenord"`,
 			},
 			wantIsFP: true,
@@ -423,8 +423,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip swedish for password(Lösenord) as value in properties file",
 			hit: Hit{
-				Code:     3001,
-				Filename: "source.properties",
+				Code:      3001,
+				Filename:  "source.properties",
 				LineValue: `		"Password"= "Lösenord"`,
 			},
 			wantIsFP: true,
@@ -549,8 +549,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip private Key as string",
 			hit: Hit{
-				Code:     3023,
-				Filename: "source.java",
+				Code:      3023,
+				Filename:  "source.java",
 				LineValue: `		"'{{' .Data.data.privateKey | regexReplaceAll \"-----BEGIN RSA PRIVATE KEY-----\"`,
 			},
 			wantIsFP: true,
@@ -558,8 +558,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Don't Skip real private Key",
 			hit: Hit{
-				Code:     3023,
-				Filename: "source.java",
+				Code:       3023,
+				Filename:   "source.java",
 				MatchValue: `		-----BEGIN RSA PRIVATE KEY-----`,
 			},
 			wantIsFP: false,
@@ -594,8 +594,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip password using getString",
 			hit: Hit{
-				Code:     3057,
-				Filename: "source.scala",
+				Code:      3057,
+				Filename:  "source.scala",
 				LineValue: `		val DBpassword = appConfig.getString("db.jdbc.pwd")`,
 			},
 			wantIsFP: true,
@@ -603,8 +603,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip password that is a function",
 			hit: Hit{
-				Code:     3057,
-				Filename: "source.xml",
+				Code:      3057,
+				Filename:  "source.xml",
 				LineValue: `		String password = context.decrypt("%%MONGO_DB_PWD%%");`,
 			},
 			wantIsFP: true,
@@ -612,8 +612,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip password that is a function",
 			hit: Hit{
-				Code:     3057,
-				Filename: "source.xml",
+				Code:      3057,
+				Filename:  "source.xml",
 				LineValue: `		password = generatePassword(context)`,
 			},
 			wantIsFP: true,
@@ -621,8 +621,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Do not skip password in logger",
 			hit: Hit{
-				Code:     3057,
-				Filename: "source.xml",
+				Code:      3057,
+				Filename:  "source.xml",
 				LineValue: `		logger.debug("Password is : generatePassword :data :" + data);`,
 			},
 			wantIsFP: false,
@@ -666,8 +666,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip password that is is being read from array",
 			hit: Hit{
-				Code:     3057,
-				Filename: "source.xml",
+				Code:      3057,
+				Filename:  "source.xml",
 				LineValue: `		String password = param[0];`,
 			},
 			wantIsFP: true,
@@ -675,8 +675,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Do not skip password that is is not being read from array",
 			hit: Hit{
-				Code:     3057,
-				Filename: "source.xml",
+				Code:      3057,
+				Filename:  "source.xml",
 				LineValue: `		String password = pa$$[@ee4@]`,
 			},
 			wantIsFP: false,
@@ -684,8 +684,8 @@ func Test_findFalsePositive(t *testing.T) {
 		{
 			name: "Skip token as variable definitions",
 			hit: Hit{
-				Code:     3037,
-				Filename: "source.kt",
+				Code:      3037,
+				Filename:  "source.kt",
 				LineValue: `	const val AUTHORIZATION_TOKEN = "Authorization Token",`,
 			},
 			wantIsFP: true,

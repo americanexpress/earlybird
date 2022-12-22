@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@ import (
 	"regexp"
 )
 
-//Rules is the exported definition of the Rules structure for Earlybird
+// Rules is the exported definition of the Rules structure for Earlybird
 type Rules struct {
 	Rules      []Rule `json:"rules"`
 	Searcharea string `json:"Searcharea"`
 }
 
-//Rule Each module config is a set of rules
+// Rule Each module config is a set of rules
 type Rule struct {
 	Code, Severity, Confidence, SolutionID            int
 	Pattern, Caption, Category, Solution, Postprocess string
@@ -36,7 +36,7 @@ type Rule struct {
 	Example                                           string
 }
 
-//Hit is a match in a file against a specific rule
+// Hit is a match in a file against a specific rule
 type Hit struct {
 	Code         int      `json:"code"`
 	Filename     string   `json:"filename"`
@@ -84,7 +84,7 @@ type Report struct {
 	Duration      string   `json:"duration"`
 }
 
-//WorkJob As we add jobs to the pool, they need to contain the line being scanned and the file content (in Lines)
+// WorkJob As we add jobs to the pool, they need to contain the line being scanned and the file content (in Lines)
 type WorkJob struct {
 	WorkLine  Line
 	FileLines []Line
@@ -95,7 +95,7 @@ type FalsePositives struct {
 	FalsePositives []FalsePositive `json:"rules"`
 }
 
-//FalsePositive is a rule to match false positives post process
+// FalsePositive is a rule to match false positives post process
 type FalsePositive struct {
 	Codes           []int
 	Pattern         string
@@ -109,13 +109,13 @@ type Solutions struct {
 	Solutions []Solution `json:"solutions"`
 }
 
-//Solution display text for a solution
+// Solution display text for a solution
 type Solution struct {
 	ID   int    `json:"id"`
 	Text string `json:"text"`
 }
 
-//LabelConfig Rule for applying labels to hits based on context
+// LabelConfig Rule for applying labels to hits based on context
 type LabelConfig struct {
 	Label     string   `json:"label"`
 	Keys      []string `json:"keys"`
@@ -124,7 +124,7 @@ type LabelConfig struct {
 	Codes     []int    `json:"codes"`
 }
 
-//LabelConfigs Rules for applying labels to hits based on context
+// LabelConfigs Rules for applying labels to hits based on context
 type LabelConfigs struct {
 	Labels []LabelConfig `json:"Labels"`
 }

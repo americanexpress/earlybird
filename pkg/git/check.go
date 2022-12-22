@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import (
 	"github.com/americanexpress/earlybird/pkg/scan"
 )
 
-//ParseGitLog parses the git log into the earlybird file format
+// ParseGitLog parses the git log into the earlybird file format
 func ParseGitLog(r io.Reader) (fileList []scan.File, err error) {
 	diff := Diff{}
 	err = splitDiffs(r, &diff)

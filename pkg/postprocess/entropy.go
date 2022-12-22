@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import (
 	"math"
 )
 
-//Shannon is an algorithm used to calculate the complexity of the string
+// Shannon is an algorithm used to calculate the complexity of the string
 func Shannon(s string) float64 {
 	// count as integers to maintain precision case we have a very large (>10**24 byte) string.
 	var freq [256]int

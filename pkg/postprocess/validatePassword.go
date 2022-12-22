@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,11 @@
 package postprocess
 
 import (
-	"golang.org/x/net/html"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"golang.org/x/net/html"
 )
 
 var (
@@ -119,6 +120,7 @@ func SkipPasswordWithUnicode(password string) bool {
 	}
 	return false
 }
+
 // SkipPasswordWithHTMLEntities returns true if the password value contains a HTML entities.
 // UseCase: Html entities are used as contents in localized files. ex - "L&#246;senord" is "Lösenord"
 func SkipPasswordWithHTMLEntities(password string) bool {
@@ -128,7 +130,7 @@ func SkipPasswordWithHTMLEntities(password string) bool {
 		// Unescape the html entities into string to compare with original password value
 		passwordStringValue := html.UnescapeString(strings.TrimSpace(passwords[1]))
 		// ex - "L&#246;senord" is "Lösenord" if after html.UnescapeString they are not equal then it has html entities.
-		if passwordStringValue != strings.TrimSpace(passwords[1]){
+		if passwordStringValue != strings.TrimSpace(passwords[1]) {
 			return true
 		}
 	}

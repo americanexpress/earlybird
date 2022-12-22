@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import (
 
 const baseURI = "/rest/api/1.0"
 
-//BBCommitAPIURL formats multiple values into the bitbucket REST API URL
+// BBCommitAPIURL formats multiple values into the bitbucket REST API URL
 func BBCommitAPIURL(host, source, project, repository, commitid string) (url string) {
 	//default protocol is https unless server is local
 	protocol := "https://"
@@ -36,7 +36,7 @@ func BBCommitAPIURL(host, source, project, repository, commitid string) (url str
 	return protocol + host + "/" + source + "/rest/api/latest/projects/" + project + "/repos/" + repository + "/commits/" + commitid
 }
 
-//BBCommitURL formats multiple values into the bitbucket commit URL
+// BBCommitURL formats multiple values into the bitbucket commit URL
 func BBCommitURL(host, source, project, repository, commitid string) (url string) {
 	return "https://" + host + "/" + source + "/projects/" + project + "/repos/" + repository + "/commits/" + commitid
 }

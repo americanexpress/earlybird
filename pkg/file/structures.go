@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package file
 
 import "github.com/americanexpress/earlybird/pkg/scan"
 
-//Context is the file system context used for the scan process
+// Context is the file system context used for the scan process
 type Context struct {
 	Files                                                     []scan.File
 	CompressPaths, ConvertPaths, IgnorePatterns, SkippedFiles []string

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 American Express
+ * Copyright 2023 American Express
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package cfgreader
 
 import "regexp"
 
-//ServerConfig is the timeout configuration for the Earlybird REST API server
+// ServerConfig is the timeout configuration for the Earlybird REST API server
 type ServerConfig struct {
 	WriteTimeout int `json:"write-timeout"`
 	ReadTimeout  int `json:"read-timeout"`
@@ -37,7 +37,7 @@ type AdjustedSeverityCategory struct {
 	// If UseFileName and UseLine value are either both false or undefined the match defaults to hit.MatchValue
 }
 
-//Configs is the result of earlybird.json
+// Configs is the result of earlybird.json
 type Configs struct {
 	LevelConfigs []struct {
 		Name string `json:"level_name"`
@@ -66,7 +66,7 @@ type ModuleConfigs struct {
 	Modules map[string]ModuleConfig `json:"modules"`
 }
 
-//EarlybirdConfig is the overall scan configs from config file and cli params
+// EarlybirdConfig is the overall scan configs from config file and cli params
 type EarlybirdConfig struct {
 	AvailableModules           []string
 	RuleModulesFilenameMap     map[string]string
