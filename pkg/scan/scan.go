@@ -103,9 +103,14 @@ func scanPool(cfg *cfgReader.EarlybirdConfig, wg *sync.WaitGroup, jobMutex *sync
 							continue
 						}
 						jobMutex.Unlock()
-						hits <- hit //Push hits to channel
 
-						cfg.FailScan = determineScanFail(cfg, &hit)
+						if hit.ConfidenceID <= cfg.ConfidenceDisplayLevel {
+							hits <- hit //Push hits to channel
+						}
+
+						if !cfg.FailScan {
+							cfg.FailScan = determineScanFail(cfg, &hit)
+						}
 					}
 				}
 			}

@@ -121,7 +121,7 @@ var tests = []struct {
 		args: args{
 			testPD: "\"my.property\": \"sample%3YmlPassword\"",
 		},
-		wantConfidence: 3,
+		wantConfidence: 2,
 		wantIgnore:     false,
 	},
 }
@@ -199,6 +199,7 @@ func TestSkipUnicodeInPasswords(t *testing.T) {
 		})
 	}
 }
+
 var testSkipHTMLEntitiesInPasswords = []struct {
 	name       string
 	args       args
@@ -251,4 +252,3 @@ func TestSkipHTMLEntitiesInPasswords(t *testing.T) {
 		})
 	}
 }
-

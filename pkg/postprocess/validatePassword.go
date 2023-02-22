@@ -85,8 +85,8 @@ func PasswordFalse(password string) (confidence int, ignore bool) {
 		if strings.Contains(password, "(") && strings.Contains(password, ")") {
 			return confidence, true
 		}
-		confidence = 2 // Mark confidence high if passes all the following
 	}
+	confidence = 2 // Mark confidence high if passes all the following
 
 	return confidence, false
 }
@@ -119,6 +119,7 @@ func SkipPasswordWithUnicode(password string) bool {
 	}
 	return false
 }
+
 // SkipPasswordWithHTMLEntities returns true if the password value contains a HTML entities.
 // UseCase: Html entities are used as contents in localized files. ex - "L&#246;senord" is "Lösenord"
 func SkipPasswordWithHTMLEntities(password string) bool {
@@ -128,7 +129,7 @@ func SkipPasswordWithHTMLEntities(password string) bool {
 		// Unescape the html entities into string to compare with original password value
 		passwordStringValue := html.UnescapeString(strings.TrimSpace(passwords[1]))
 		// ex - "L&#246;senord" is "Lösenord" if after html.UnescapeString they are not equal then it has html entities.
-		if passwordStringValue != strings.TrimSpace(passwords[1]){
+		if passwordStringValue != strings.TrimSpace(passwords[1]) {
 			return true
 		}
 	}
