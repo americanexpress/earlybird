@@ -1,3 +1,10 @@
+## [3.13.2](https://github.com/americanexpress/earlybird/compare/v3.13.1...v3.13.2) (2023-02-23)
+
+
+### Bug Fixes
+
+* **config:** updated config based display and failure ([#55](https://github.com/americanexpress/earlybird/issues/55)) ([5247ccf](https://github.com/americanexpress/earlybird/commit/5247ccf4f438f9b3086ff7c16e70f2e46d0ff9a6))
+
 ## [3.13.1](https://github.com/americanexpress/earlybird/compare/v3.13.0...v3.13.1) (2022-10-03)
 
 
