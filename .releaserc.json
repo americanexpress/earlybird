@@ -4,7 +4,7 @@
   ],
   "plugins": [
     ["@semantic-release/github", {
-      "assets": ["go-earlybird-linux", "go-earlybird-macos", "go-earlybird.exe"],
+      "assets": ["go-earlybird-linux", "go-earlybird-macos", "go-earlybird.exe", "go-earlybird-arm64-macos"],
       "proxy": false
     }],
     "@semantic-release/release-notes-generator",

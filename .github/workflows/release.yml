@@ -60,6 +60,8 @@ jobs:
         run: ls -lah
       - name: Rename macOS binary
         run: mv go-earlybird go-earlybird-macos
+      - name: Rename arm64 macOS binary
+        run: mv go-earlybird-arm64 go-earlybird-arm64-macos
 
       - uses: actions/setup-node@v2
         with:
