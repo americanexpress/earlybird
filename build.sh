@@ -49,4 +49,7 @@ echo "Building Windows binary - Completed!!!"
 echo "Building MacOS binary"
 env GOOS=darwin GOARCH=amd64 go build -ldflags="-X 'github.com/americanexpress/earlybird/pkg/buildflags.Version=$version'" -o binaries/go-earlybird
 echo "Building MacOS binary - Completed!!!"
+echo "Building MacOS Silicon binary"
+env GOOS=darwin GOARCH=arm64 go build -ldflags="-X 'github.com/americanexpress/earlybird/pkg/buildflags.Version=$version'" -o binaries/go-earlybird-arm64
+echo "Building MacOS Silicon binary - Completed!!!"
 echo "Build Completed ..."
