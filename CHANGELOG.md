@@ -1,3 +1,10 @@
+# [3.14.0](https://github.com/americanexpress/earlybird/compare/v3.13.2...v3.14.0) (2023-03-16)
+
+
+### Features
+
+* add arm64 binary for use on M1 hardware ([23c4ff0](https://github.com/americanexpress/earlybird/commit/23c4ff0b79180f8cff141c7e5c38101de5958e31))
+
 ## [3.13.2](https://github.com/americanexpress/earlybird/compare/v3.13.1...v3.13.2) (2023-02-23)
 
 
