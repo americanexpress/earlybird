@@ -65,6 +65,7 @@ var (
 	ptrGitTrackedFlag             = flag.Bool("git-tracked", false, "Scan only git tracked files")
 	ptrPath                       = flag.String("path", utils.MustGetWD(), "Directory to scan (defaults to CWD) -- ABSOLUTE PATH ONLY")
 	ptrOutputFormat               = flag.String("format", "console", "Output format [ console | json | csv ]")
+	ptrWithConsole                = flag.Bool("withConsole", false, "While using --format, this flag will help to print findings in console")
 	ptrOutputFile                 = flag.String("file", "", "Output file -- e.g., 'go-earlybird --file=/home/jdoe/myfile.csv'")
 	ptrIgnoreFile                 = flag.String("ignorefile", userHomeDir+string(os.PathSeparator)+".ge_ignore", "Patterns File (including wildcards) for files to ignore.  (e.g. *.jpg)")
 	ptrFailSeverityThreshold      = flag.String("fail-severity", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.FailThreshold), "Lowest severity level at which to fail "+levelOptions)

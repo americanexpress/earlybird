@@ -18,12 +18,42 @@ package writers
 
 import (
 	"encoding/json"
+	"fmt"
+	cfgReader "github.com/americanexpress/earlybird/pkg/config"
+	"github.com/americanexpress/earlybird/pkg/file"
+	"github.com/americanexpress/earlybird/pkg/scan"
 	"io/ioutil"
 	"os"
+	"time"
 )
 
+func WriteJSON(hits <-chan scan.Hit, config cfgReader.EarlybirdConfig, fileContext file.Context, fileName string) (err error) {
+	start := time.Now()
+	var Hits []scan.Hit
+	for hit := range hits {
+		Hits = append(Hits, hit)
+	}
+
+	report := scan.Report{
+		Hits:          Hits,
+		HitCount:      len(Hits),
+		Skipped:       fileContext.SkippedFiles,
+		Ignore:        fileContext.IgnorePatterns,
+		Version:       config.Version,
+		Modules:       config.EnabledModules,
+		Threshold:     config.SeverityDisplayLevel,
+		FilesScanned:  len(fileContext.Files),
+		RulesObserved: len(scan.CombinedRules),
+		StartTime:     start.UTC().Format(time.RFC3339),
+		EndTime:       time.Now().UTC().Format(time.RFC3339),
+		Duration:      fmt.Sprintf("%d ms", time.Since(start)/time.Millisecond),
+	}
+	_, err = reportToJSONWriter(report, fileName)
+	return err
+}
+
 //WriteJSON Outputs an object as a JSON blob to an output file or console
-func WriteJSON(v interface{}, fileName string) (s string, err error) {
+func reportToJSONWriter(v interface{}, fileName string) (s string, err error) {
 	b, err := json.MarshalIndent(v, "", "\t")
 	if err != nil {
 		return "", err
