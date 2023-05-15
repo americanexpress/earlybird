@@ -62,7 +62,7 @@ func TestWriteJSON(t *testing.T) {
 	for _, myTest := range tests {
 		tt := myTest
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := WriteJSON(tt.args.report, tt.args.fileName)
+			got, err := reportToJSONWriter(tt.args.report, tt.args.fileName)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("WriteJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return
