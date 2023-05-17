@@ -27,6 +27,7 @@ import (
 	"time"
 )
 
+// WriteJSON takes the hits, converts them into JSON report and passing report to reportToJSONWriter().
 func WriteJSON(hits <-chan scan.Hit, config cfgReader.EarlybirdConfig, fileContext file.Context, fileName string) (err error) {
 	start := time.Now()
 	var Hits []scan.Hit
@@ -52,7 +53,7 @@ func WriteJSON(hits <-chan scan.Hit, config cfgReader.EarlybirdConfig, fileConte
 	return err
 }
 
-//WriteJSON Outputs an object as a JSON blob to an output file or console
+//reportToJSONWriter Outputs an object as a JSON blob to an output file or console
 func reportToJSONWriter(v interface{}, fileName string) (s string, err error) {
 	b, err := json.MarshalIndent(v, "", "\t")
 	if err != nil {

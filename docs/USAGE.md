@@ -50,7 +50,7 @@ Usage of go-earlybird:
   -file string
     	Output file -- e.g., 'go-earlybird --file=/home/jdoe/myfile.csv'
   -format string
-    	Output format [ console | json | csv ] (default "console"). To print finding in console with json format, use `-withConsole`
+    	Output format [ console | json | csv ] (default "console").
   -git string
     	Full URL to a git repo to scan e.g. github.com/user/repo
   -git-branch string
@@ -97,7 +97,7 @@ Usage of go-earlybird:
     	Update module configurations
   -verbose
     	Reports details about file reads
-  -wihtConsole
+  -with-console
         Prints findings in console with JSON format report
   -workers int
     	Set number of workers. (default 100)

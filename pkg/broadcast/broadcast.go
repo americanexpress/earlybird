@@ -1,3 +1,24 @@
+/*
+ * Copyright 2023 American Express
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
+/*
+ * Broadcast package is used to create multiple channel reader.
+ * Since once we read data from channel, it empties out it self.
+ * this package provides a way to broadcast the data and assign listern to that data.
+ */
 package broadcast
 
 import (
@@ -17,16 +38,19 @@ type broadcastServer struct {
 	removeListener chan (<-chan scan.Hit)
 }
 
+// Subscribe() creates a subcribtion on broadcastServer.
 func (s *broadcastServer) Subscribe() <-chan scan.Hit {
 	newListener := make(chan scan.Hit)
 	s.addListener <- newListener
 	return newListener
 }
 
+// CancelSubscription() cancel a subcribtion on broadcastServer.
 func (s *broadcastServer) CancelSubscription(channel <-chan scan.Hit) {
 	s.removeListener <- channel
 }
 
+// NewBroadcastServer() create a broadcast server and starts new routine.
 func NewBroadcastServer(ctx context.Context, source <-chan scan.Hit) BroadcastServer {
 	service := &broadcastServer{
 		source:         source,
@@ -38,6 +62,7 @@ func NewBroadcastServer(ctx context.Context, source <-chan scan.Hit) BroadcastSe
 	return service
 }
 
+// serve() run the server and manages listener counts.
 func (s *broadcastServer) serve(ctx context.Context) {
 	defer func() {
 		for _, listener := range s.listeners {
