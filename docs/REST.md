@@ -8,11 +8,16 @@ Here's an example on how to start the API from the command line.
 ```
 
 ## REST API Endpoints
-`/scan` will accept a multi-part upload and scan the contents, returning JSON output.
-`/scan/git?url=https://example.com/repo.git` will accept a git repository URL, clone and scan the contents, returning JSON output.
-`/labels` will return all of the labels from the config files as a JSON output
-`/categories` will return all of the rule categories from the config files as a JSON output
-`/categorylabels` will return all of the labels per category from the config files as a JSON output
+- `/scan` will accept a multi-part upload and scan the contents, returning JSON output.
+    ```shell
+    curl -L -X POST 'http://localhost:3000/scan' -F 'scan=@/example/myfile.txt'
+    ```
+- `/scan/git?url=https://example.com/repo.git` will accept a git repository URL, clone and scan the contents, returning JSON output.
 
+- `/labels` will return all of the labels from the config files as a JSON output
+
+- `/categories` will return all of the rule categories from the config files as a JSON output
+
+- `/categorylabels` will return all of the labels per category from the config files as a JSON output
 
 The simple webserver configuration file can be found in the local config directory (`~/.go-earlybird/webserver.json` or `C:\Users\[user]\AppData\go-earlybird\webserver.json`).  A separate config file can be specified using the `--http-config [/path/to/configfile]` flag.

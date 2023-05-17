@@ -10,7 +10,7 @@ require (
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/gorilla/mux v1.7.4
 	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
-	golang.org/x/net v0.0.0-20200602114024-627f9648deb9
+	golang.org/x/net v0.0.0-20220722155237-a158d28d115b
 	golang.org/x/text v0.7.0
 	gopkg.in/src-d/go-git.v4 v4.13.1
 )
@@ -42,8 +42,9 @@ require (
 	github.com/src-d/gcfg v1.4.0 // indirect
 	github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf // indirect
 	github.com/xanzy/ssh-agent v0.2.1 // indirect
-	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/sys v0.0.0-20220906165534-d0df966e6959 // indirect
+	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	google.golang.org/protobuf v1.23.0 // indirect
 	gopkg.in/src-d/go-billy.v4 v4.3.2 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
@@ -51,6 +52,7 @@ require (
 )
 
 replace (
-	golang.org/x/text v0.3.0 => golang.org/x/text v0.3.3
-	golang.org/x/text v0.3.2 => golang.org/x/text v0.3.3
+	golang.org/x/text v0.3.0 => golang.org/x/text v0.3.8
+	golang.org/x/text v0.3.2 => golang.org/x/text v0.3.8
+	golang.org/x/text v0.3.3 => golang.org/x/text v0.3.8
 )
