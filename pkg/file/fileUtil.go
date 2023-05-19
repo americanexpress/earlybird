@@ -303,7 +303,7 @@ func getFileSizeOK(path string, maxFileSize int64) bool {
 
 func hasCompressionExtension(path string) bool {
 	switch filepath.Ext(path) {
-	case "war", "jar", "zip", "ear":
+	case ".war", ".jar", ".zip", ".ear":
 		return true
 	default:
 		return false
