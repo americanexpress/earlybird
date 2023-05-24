@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	code.sajari.com/docconv v1.2.0
-	github.com/dghubble/sling v1.3.0
+	github.com/dghubble/sling v1.4.1
 	github.com/ghodss/yaml v1.0.0
 	github.com/gocarina/gocsv v0.0.0-20200330101823-46266ca37bd3
 	github.com/google/go-github v17.0.0+incompatible
@@ -26,7 +26,7 @@ require (
 	github.com/gigawattio/window v0.0.0-20180317192513-0f5467e35573 // indirect
 	github.com/go-resty/resty/v2 v2.3.0 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
-	github.com/google/go-querystring v1.0.0 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/jaytaylor/html2text v0.0.0-20200412013138-3577fbdbcff7 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20190725054713-01f96b0aa0cd // indirect
