@@ -1,3 +1,10 @@
+# [3.15.0](https://github.com/americanexpress/earlybird/compare/v3.14.0...v3.15.0) (2023-06-01)
+
+
+### Features
+
+* **file-with-console:** updated code based to broadcast and write it… ([#60](https://github.com/americanexpress/earlybird/issues/60)) ([92e6123](https://github.com/americanexpress/earlybird/commit/92e6123fec5a7d6046f8c5914796550050522df5))
+
 # [3.14.0](https://github.com/americanexpress/earlybird/compare/v3.13.2...v3.14.0) (2023-03-16)
 
 
