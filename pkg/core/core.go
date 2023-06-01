@@ -18,8 +18,10 @@ package core
 
 import (
 	"bufio"
+	"context"
 	"flag"
 	"fmt"
+	"github.com/americanexpress/earlybird/pkg/broadcast"
 	"github.com/americanexpress/earlybird/pkg/buildflags"
 	"log"
 	"net/http"
@@ -27,6 +29,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/americanexpress/earlybird/pkg/api"
@@ -193,6 +196,7 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	eb.Config.VerboseEnabled = *ptrVerbose
 	eb.Config.Suppress = *ptrSuppressSecret
 	eb.Config.OutputFormat = *ptrOutputFormat
+	eb.Config.WithConsole = *ptrWithConsole
 	eb.Config.OutputFile = *ptrOutputFile
 	eb.Config.SearchDir = *ptrPath
 	eb.Config.IgnoreFile = *ptrIgnoreFile
@@ -326,34 +330,37 @@ func (eb *EarlybirdCfg) FileContext() (fileContext file.Context, err error) {
 func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, fileContext file.Context) {
 	// Send output to a writer
 	var err error
-	switch {
-	case eb.Config.OutputFormat == "json":
-		var Hits []scan.Hit
-		for hit := range HitChannel {
-			Hits = append(Hits, hit)
-		}
 
-		report := scan.Report{
-			Hits:          Hits,
-			HitCount:      len(Hits),
-			Skipped:       fileContext.SkippedFiles,
-			Ignore:        fileContext.IgnorePatterns,
-			Version:       eb.Config.Version,
-			Modules:       eb.Config.EnabledModules,
-			Threshold:     eb.Config.SeverityDisplayLevel,
-			FilesScanned:  len(fileContext.Files),
-			RulesObserved: len(scan.CombinedRules),
-			StartTime:     start.UTC().Format(time.RFC3339),
-			EndTime:       time.Now().UTC().Format(time.RFC3339),
-			Duration:      fmt.Sprintf("%d ms", time.Since(start)/time.Millisecond),
+	if eb.Config.WithConsole && eb.Config.OutputFormat == "json" {
+		var wg sync.WaitGroup
+		wg.Add(2)
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+		broadcaster := broadcast.NewBroadcastServer(ctx, HitChannel)
+		listener1 := broadcaster.Subscribe()
+		listener2 := broadcaster.Subscribe()
+		go func() {
+			defer wg.Done()
+			err = writers.WriteConsole(listener1, "", eb.Config.ShowFullLine)
+			log.Printf("\n%d files scanned in %s", len(fileContext.Files), time.Since(start))
+			log.Printf("\n%d rules observed\n", len(scan.CombinedRules))
+		}()
+		go func() {
+			defer wg.Done()
+			err = writers.WriteJSON(listener2, eb.Config, fileContext, eb.Config.OutputFile)
+		}()
+		wg.Wait()
+	} else {
+		switch {
+		case eb.Config.OutputFormat == "json":
+			err = writers.WriteJSON(HitChannel, eb.Config, fileContext, eb.Config.OutputFile)
+		case eb.Config.OutputFormat == "csv":
+			err = writers.WriteCSV(HitChannel, eb.Config.OutputFile)
+		default:
+			err = writers.WriteConsole(HitChannel, eb.Config.OutputFile, eb.Config.ShowFullLine)
+			log.Printf("\n%d files scanned in %s", len(fileContext.Files), time.Since(start))
+			log.Printf("\n%d rules observed\n", len(scan.CombinedRules))
 		}
-		_, err = writers.WriteJSON(report, eb.Config.OutputFile)
-	case eb.Config.OutputFormat == "csv":
-		err = writers.WriteCSV(HitChannel, eb.Config.OutputFile)
-	default:
-		err = writers.WriteConsole(HitChannel, eb.Config.OutputFile, eb.Config.ShowFullLine)
-		log.Printf("\n%d files scanned in %s", len(fileContext.Files), time.Since(start))
-		log.Printf("\n%d rules observed\n", len(scan.CombinedRules))
 	}
 	if err != nil {
 		log.Println("Writing Results failed:", err)

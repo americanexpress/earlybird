@@ -75,6 +75,7 @@ type EarlybirdConfig struct {
 	TargetType                 string
 	EnabledModulesMap          map[string]string
 	EnabledModules             []string
+	WithConsole                bool
 	OutputFormat               string
 	OutputFile                 string
 	IgnoreFile                 string
