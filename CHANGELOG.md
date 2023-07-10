@@ -1,3 +1,10 @@
+# [3.16.0](https://github.com/americanexpress/earlybird/compare/v3.15.0...v3.16.0) (2023-07-10)
+
+
+### Features
+
+* **config:** not exiting process after update and reloading config ([#74](https://github.com/americanexpress/earlybird/issues/74)) ([a96d2a2](https://github.com/americanexpress/earlybird/commit/a96d2a2567ab3cf186e3309da20031dc749e241f))
+
 # [3.15.0](https://github.com/americanexpress/earlybird/compare/v3.14.0...v3.15.0) (2023-06-01)
 
 
