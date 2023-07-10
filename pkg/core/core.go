@@ -215,10 +215,14 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	if *ptrStreamInput || eb.Config.GitStream {
 		eb.Config.SearchDir = ""
 	}
-	// Check to see if the user opted to update.  If they choose this option
-	// the configuration files will be updated and the program will exit.
+	// Check to see if the user opted to update config.  If they choose this option
+	// the configuration files will be updated and load config again.
 	if *ptrUpdateFlag {
 		doUpdate(eb.Config.ConfigDir, eb.Config.RulesConfigDir, earlybirdConfigPath, cfgreader.Settings.ConfigFileURL, eb.Config.RuleModulesFilenameMap)
+		err = cfgreader.LoadConfig(&cfgreader.Settings, earlybirdConfigPath)
+		if err != nil {
+			log.Fatal("failed to load Earlybird config", err)
+		}
 	}
 
 	// Set the skip options (what not to scan) from configs
@@ -374,5 +378,4 @@ func doUpdate(configDir, rulesConfigDir, configPath, appConfigURL string, ruleMo
 		log.Fatal("Failed to update config:", err)
 	}
 	log.Println("Configurations updated.  Exiting")
-	os.Exit(0)
 }
