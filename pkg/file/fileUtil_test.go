@@ -17,7 +17,7 @@
 package file
 
 import (
-	"github.com/americanexpress/earlybird/pkg/scan"
+	"github.com/americanexpress/earlybird/v4/pkg/scan"
 	"reflect"
 
 	"os"

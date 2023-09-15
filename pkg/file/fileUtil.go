@@ -33,10 +33,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	cfgreader "github.com/americanexpress/earlybird/pkg/config"
-	"github.com/americanexpress/earlybird/pkg/scan"
-	"github.com/americanexpress/earlybird/pkg/utils"
-	"github.com/americanexpress/earlybird/pkg/wildcard"
+	cfgreader "github.com/americanexpress/earlybird/v4/pkg/config"
+	"github.com/americanexpress/earlybird/v4/pkg/scan"
+	"github.com/americanexpress/earlybird/v4/pkg/utils"
+	"github.com/americanexpress/earlybird/v4/pkg/wildcard"
 )
 
 var (

@@ -23,11 +23,11 @@ import (
 	"os"
 	"time"
 
-	cfgreader "github.com/americanexpress/earlybird/pkg/config"
-	"github.com/americanexpress/earlybird/pkg/file"
-	"github.com/americanexpress/earlybird/pkg/git"
-	"github.com/americanexpress/earlybird/pkg/scan"
-	"github.com/americanexpress/earlybird/pkg/utils"
+	cfgreader "github.com/americanexpress/earlybird/v4/pkg/config"
+	"github.com/americanexpress/earlybird/v4/pkg/file"
+	"github.com/americanexpress/earlybird/v4/pkg/git"
+	"github.com/americanexpress/earlybird/v4/pkg/scan"
+	"github.com/americanexpress/earlybird/v4/pkg/utils"
 	"gopkg.in/src-d/go-git.v4/plumbing/transport"
 )
 

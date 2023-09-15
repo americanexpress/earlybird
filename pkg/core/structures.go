@@ -17,7 +17,7 @@
 package core
 
 import (
-	cfgReader "github.com/americanexpress/earlybird/pkg/config"
+	cfgReader "github.com/americanexpress/earlybird/v4/pkg/config"
 )
 
 //EarlybirdCore is the main interface for interacting with Earlybird as a package

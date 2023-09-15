@@ -19,7 +19,7 @@ package writers
 import (
 	"testing"
 
-	"github.com/americanexpress/earlybird/pkg/scan"
+	"github.com/americanexpress/earlybird/v4/pkg/scan"
 )
 
 func TestWriteCSV(t *testing.T) {

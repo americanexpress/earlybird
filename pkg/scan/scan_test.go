@@ -19,8 +19,8 @@ package scan
 import (
 	"bufio"
 	"crypto/sha1"
-	cfgReader "github.com/americanexpress/earlybird/pkg/config"
-	"github.com/americanexpress/earlybird/pkg/utils"
+	cfgReader "github.com/americanexpress/earlybird/v4/pkg/config"
+	"github.com/americanexpress/earlybird/v4/pkg/utils"
 	"path"
 	"reflect"
 	"strconv"

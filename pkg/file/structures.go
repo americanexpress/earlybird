@@ -16,7 +16,7 @@
 
 package file
 
-import "github.com/americanexpress/earlybird/pkg/scan"
+import "github.com/americanexpress/earlybird/v4/pkg/scan"
 
 //Context is the file system context used for the scan process
 type Context struct {

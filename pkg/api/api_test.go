@@ -27,9 +27,9 @@ import (
 	"path"
 	"testing"
 
-	cfgreader "github.com/americanexpress/earlybird/pkg/config"
-	"github.com/americanexpress/earlybird/pkg/scan"
-	"github.com/americanexpress/earlybird/pkg/utils"
+	cfgreader "github.com/americanexpress/earlybird/v4/pkg/config"
+	"github.com/americanexpress/earlybird/v4/pkg/scan"
+	"github.com/americanexpress/earlybird/v4/pkg/utils"
 )
 
 var cfg = cfgreader.EarlybirdConfig{

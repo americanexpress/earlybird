@@ -24,7 +24,7 @@ import (
 	"net/url"
 	"path"
 
-	cfgreader "github.com/americanexpress/earlybird/pkg/config"
+	cfgreader "github.com/americanexpress/earlybird/v4/pkg/config"
 )
 
 //UpdateConfigFiles updates all of the modules via the defined module URL in earlybird.json

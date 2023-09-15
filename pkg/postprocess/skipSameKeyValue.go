@@ -1,7 +1,7 @@
 package postprocess
 
 import (
-	"github.com/americanexpress/earlybird/pkg/utils"
+	"github.com/americanexpress/earlybird/v4/pkg/utils"
 	"regexp"
 	"strings"
 )

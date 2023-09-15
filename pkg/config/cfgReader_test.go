@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/americanexpress/earlybird/pkg/utils"
+	"github.com/americanexpress/earlybird/v4/pkg/utils"
 )
 
 var (

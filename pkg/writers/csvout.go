@@ -23,7 +23,7 @@ import (
 
 	"github.com/gocarina/gocsv"
 
-	"github.com/americanexpress/earlybird/pkg/scan"
+	"github.com/americanexpress/earlybird/v4/pkg/scan"
 )
 
 //WriteCSV outputs Earlybird hit findings from the worker channel to files or console
