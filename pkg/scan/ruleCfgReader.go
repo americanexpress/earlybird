@@ -24,10 +24,10 @@ import (
 	"path/filepath"
 	"regexp"
 
-	cfgreader "github.com/americanexpress/earlybird/pkg/config"
+	cfgreader "github.com/americanexpress/earlybird/v4/pkg/config"
 )
 
-//Init loads in all the Earlybird rules into the CombinedRules global variable
+// Init loads in all the Earlybird rules into the CombinedRules global variable
 func Init(cfg cfgreader.EarlybirdConfig) {
 	if cfg.OutputFormat != "json" && !cfg.HideMeta {
 		log.Println("Go-EarlyBird version: ", cfg.Version)
@@ -113,7 +113,7 @@ func Init(cfg cfgreader.EarlybirdConfig) {
 	}
 }
 
-//loadRuleConfigs loads the rules from the JSON config file, compiles the rules and defines the search area
+// loadRuleConfigs loads the rules from the JSON config file, compiles the rules and defines the search area
 func loadRuleConfigs(cfg cfgreader.EarlybirdConfig, moduleName, fileName string) []Rule {
 	var rules, tmpRules Rules
 	rulePath := path.Join(cfg.RulesConfigDir, fileName)
@@ -137,7 +137,7 @@ func loadRuleConfigs(cfg cfgreader.EarlybirdConfig, moduleName, fileName string)
 	return rules.Rules
 }
 
-//loadLabelConfigs loads the labels from the config file
+// loadLabelConfigs loads the labels from the config file
 func loadLabelConfigs(dirPath string) (LabelConfigRules map[int]LabelConfigs, err error) {
 	LabelConfigRules = make(map[int]LabelConfigs)
 
@@ -166,7 +166,7 @@ func loadLabelConfigs(dirPath string) (LabelConfigRules map[int]LabelConfigs, er
 	return LabelConfigRules, err
 }
 
-//loadFalsePositives loads in and compiles all the false positive rules for Earlybird
+// loadFalsePositives loads in and compiles all the false positive rules for Earlybird
 func loadFalsePositives(dirPath string) (FalsePositiveRules map[int]FalsePositives, err error) {
 	FalsePositiveRules = make(map[int]FalsePositives)
 
@@ -196,7 +196,7 @@ func loadFalsePositives(dirPath string) (FalsePositiveRules map[int]FalsePositiv
 	return FalsePositiveRules, err
 }
 
-//loadSolutions loads in solutions from the json config file
+// loadSolutions loads in solutions from the json config file
 func loadSolutions(dirPath string) (solutionConfigs map[int]Solution, err error) {
 	solutionConfigs = make(map[int]Solution)
 

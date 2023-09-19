@@ -23,7 +23,7 @@ package broadcast
 
 import (
 	"context"
-	"github.com/americanexpress/earlybird/pkg/scan"
+	"github.com/americanexpress/earlybird/v4/pkg/scan"
 )
 
 type BroadcastServer interface {

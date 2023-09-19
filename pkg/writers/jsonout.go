@@ -19,9 +19,9 @@ package writers
 import (
 	"encoding/json"
 	"fmt"
-	cfgReader "github.com/americanexpress/earlybird/pkg/config"
-	"github.com/americanexpress/earlybird/pkg/file"
-	"github.com/americanexpress/earlybird/pkg/scan"
+	cfgReader "github.com/americanexpress/earlybird/v4/pkg/config"
+	"github.com/americanexpress/earlybird/v4/pkg/file"
+	"github.com/americanexpress/earlybird/v4/pkg/scan"
 	"io/ioutil"
 	"os"
 	"time"

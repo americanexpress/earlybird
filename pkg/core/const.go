@@ -20,8 +20,8 @@ import (
 	"flag"
 	"os"
 
-	cfgreader "github.com/americanexpress/earlybird/pkg/config"
-	"github.com/americanexpress/earlybird/pkg/utils"
+	cfgreader "github.com/americanexpress/earlybird/v4/pkg/config"
+	"github.com/americanexpress/earlybird/v4/pkg/utils"
 )
 
 const (

@@ -20,9 +20,9 @@ import (
 	"flag"
 	"os"
 
-	"github.com/americanexpress/earlybird/pkg/core"
-	"github.com/americanexpress/earlybird/pkg/scan"
-	"github.com/americanexpress/earlybird/pkg/utils"
+	"github.com/americanexpress/earlybird/v4/pkg/core"
+	"github.com/americanexpress/earlybird/v4/pkg/scan"
+	"github.com/americanexpress/earlybird/v4/pkg/utils"
 )
 
 var (

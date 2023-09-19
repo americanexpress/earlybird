@@ -25,7 +25,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/americanexpress/earlybird/pkg/utils"
+	"github.com/americanexpress/earlybird/v4/pkg/utils"
 
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-git.v4"
