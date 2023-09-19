@@ -1,3 +1,18 @@
+# [4.0.0](https://github.com/americanexpress/earlybird/compare/v3.16.0...v4.0.0) (2023-09-19)
+
+
+### Bug Fixes
+
+* **nameScanner:** updated logic to fail a scan to respect severity and confidence ([a7b9a56](https://github.com/americanexpress/earlybird/commit/a7b9a5684eab2b429dc9698e48cbf1816bf82fe4))
+
+
+* Merge pull request #82 from americanexpress/feat/version-upgrade ([810b7fb](https://github.com/americanexpress/earlybird/commit/810b7fb6c0c66a8ea77deb05df4777f732d8ac6e)), closes [#82](https://github.com/americanexpress/earlybird/issues/82)
+
+
+### BREAKING CHANGES
+
+* Deps update for Vulnerability fixes, version update to go 1.20 and module update
+
 # [3.16.0](https://github.com/americanexpress/earlybird/compare/v3.15.0...v3.16.0) (2023-07-10)
 
 
