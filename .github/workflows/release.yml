@@ -37,7 +37,7 @@ jobs:
       - name: Build project
         run: ./build.sh ${{ needs.get_next_version.outputs.earlybird_next_version }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: earlybird-binaries
           path: ./binaries/
