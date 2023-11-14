@@ -18,10 +18,11 @@ package configupdate
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"path"
 
 	cfgreader "github.com/americanexpress/earlybird/v4/pkg/config"
@@ -70,16 +71,16 @@ func downloadFile(path string, url string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		b, _ := ioutil.ReadAll(resp.Body)
+		b, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("received non 200 status code: status=%d, response=%v", resp.StatusCode, string(b))
 	}
 
-	b, err := ioutil.ReadAll(resp.Body)
+	b, err := io.ReadAll(resp.Body)
 
 	if err != nil {
 		return fmt.Errorf("reading response body: %v", err)
 	}
-	err = ioutil.WriteFile(path, b, 0666)
+	err = os.WriteFile(path, b, 0666)
 	if err != nil {
 		return fmt.Errorf("writing file at %s: %v", path, err)
 	}

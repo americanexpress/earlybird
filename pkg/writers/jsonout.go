@@ -22,7 +22,6 @@ import (
 	cfgReader "github.com/americanexpress/earlybird/v4/pkg/config"
 	"github.com/americanexpress/earlybird/v4/pkg/file"
 	"github.com/americanexpress/earlybird/v4/pkg/scan"
-	"io/ioutil"
 	"os"
 	"time"
 )
@@ -62,7 +61,7 @@ func reportToJSONWriter(v interface{}, fileName string) (s string, err error) {
 	if fileName == "" {
 		_, err = os.Stdout.Write(b)
 	} else {
-		err = ioutil.WriteFile(fileName, b, 0666)
+		err = os.WriteFile(fileName, b, 0666)
 	}
 	return string(b), err
 
