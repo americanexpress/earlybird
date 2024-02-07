@@ -68,6 +68,7 @@ var (
 	ptrWithConsole                = flag.Bool("with-console", false, "While using --format, this flag will help to print findings in console")
 	ptrOutputFile                 = flag.String("file", "", "Output file -- e.g., 'go-earlybird --file=/home/jdoe/myfile.csv'")
 	ptrIgnoreFile                 = flag.String("ignorefile", userHomeDir+string(os.PathSeparator)+".ge_ignore", "Patterns File (including wildcards) for files to ignore.  (e.g. *.jpg)")
+	ptrIgnoreFailure              = flag.Bool("ignore-failure", false, "Avoid the exit code 1 in case of scanner finds valid findings and meets fail threshold")
 	ptrFailSeverityThreshold      = flag.String("fail-severity", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.FailThreshold), "Lowest severity level at which to fail "+levelOptions)
 	ptrDisplaySeverityThreshold   = flag.String("display-severity", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.DisplayThreshold), "Lowest severity level to display "+levelOptions)
 	ptrDisplayConfidenceThreshold = flag.String("display-confidence", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.DisplayConfidenceThreshold), "Lowest confidence level to display "+levelOptions)

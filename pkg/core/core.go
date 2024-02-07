@@ -45,7 +45,7 @@ import (
 	"golang.org/x/net/http2"
 )
 
-//GitClone clones git repositories into a temporary directory
+// GitClone clones git repositories into a temporary directory
 func (eb *EarlybirdCfg) GitClone(ptr PTRGitConfig) {
 	var scanRepos []string
 	gitPassword := os.Getenv("gitpassword")
@@ -90,7 +90,7 @@ func (eb *EarlybirdCfg) GitClone(ptr PTRGitConfig) {
 	}
 }
 
-//StartHTTP spins up the Earlybird REST API server
+// StartHTTP spins up the Earlybird REST API server
 func (eb *EarlybirdCfg) StartHTTP(ptr PTRHTTPConfig) {
 	// Set up http server
 	r := mux.NewRouter()
@@ -166,7 +166,7 @@ func (eb *EarlybirdCfg) GetRuleModulesMap() (err error) {
 	return err
 }
 
-//ConfigInit loads in the earlybird configuration and CLI flags
+// ConfigInit loads in the earlybird configuration and CLI flags
 func (eb *EarlybirdCfg) ConfigInit() {
 	// Set the version from ldflags
 	eb.Config.Version = buildflags.Version
@@ -200,6 +200,7 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	eb.Config.OutputFile = *ptrOutputFile
 	eb.Config.SearchDir = *ptrPath
 	eb.Config.IgnoreFile = *ptrIgnoreFile
+	eb.Config.IgnoreFailure = *ptrIgnoreFailure
 	eb.Config.GitStream = *ptrGitStreamInput
 	eb.Config.RulesOnly = *ptrRulesOnly
 	eb.Config.SkipComments = *ptrSkipComments
@@ -282,7 +283,7 @@ func (eb *EarlybirdCfg) getDefaultModuleSettings() {
 	}
 }
 
-//Scan Runs the scan by kicking off the different modules as go routines
+// Scan Runs the scan by kicking off the different modules as go routines
 func (eb *EarlybirdCfg) Scan() {
 	// Validate the path passed in as the target directory to scan
 	start := time.Now()
@@ -301,11 +302,13 @@ func (eb *EarlybirdCfg) Scan() {
 		if eb.Config.OutputFormat == "console" {
 			fmt.Fprintln(os.Stderr, "Scan detected findings above the accepted threshold -- Failing.")
 		}
-		os.Exit(1)
+		if !eb.Config.IgnoreFailure {
+			os.Exit(1)
+		}
 	}
 }
 
-//FileContext provides an inclusive file system context of our scan
+// FileContext provides an inclusive file system context of our scan
 func (eb *EarlybirdCfg) FileContext() (fileContext file.Context, err error) {
 	cfg := eb.Config
 	if cfg.SearchDir != "" {
@@ -330,7 +333,7 @@ func (eb *EarlybirdCfg) FileContext() (fileContext file.Context, err error) {
 	return fileContext, nil
 }
 
-//WriteResults reads hits from the channel to the console or target file
+// WriteResults reads hits from the channel to the console or target file
 func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, fileContext file.Context) {
 	// Send output to a writer
 	var err error
