@@ -1,3 +1,10 @@
+## [4.1.1](https://github.com/americanexpress/earlybird/compare/v4.1.0...v4.1.1) (2024-02-12)
+
+
+### Bug Fixes
+
+* the extension regex was not reading the dot ([53cf2c8](https://github.com/americanexpress/earlybird/commit/53cf2c8b28c75160494784f12d574df24f996159))
+
 # [4.1.0](https://github.com/americanexpress/earlybird/compare/v4.0.0...v4.1.0) (2024-02-07)
 
 
