@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/americanexpress/earlybird/compare/v4.0.0...v4.1.0) (2024-02-07)
+
+
+### Features
+
+* **config:** added config to avoid exit code 1 for scan failure ([5b0e14a](https://github.com/americanexpress/earlybird/commit/5b0e14a039bf5d2eeebc71867864a96f2d9dd3d0))
+
 # [4.0.0](https://github.com/americanexpress/earlybird/compare/v3.16.0...v4.0.0) (2023-09-19)
 
 

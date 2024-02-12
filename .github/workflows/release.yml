@@ -14,13 +14,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: '16'
       - name: Get version for next release
         id: getversion
         run: |
-          echo "::set-output name=earlybird_next_version::$(npx -p @semantic-release/changelog -p @semantic-release/git -p semantic-release@19.0.2 semantic-release --no-ci --dry-run | grep -o 'The next release version is .*' | awk '{print $NF}')"
+          echo "earlybird_next_version=$(npx -p @semantic-release/changelog -p @semantic-release/git -p semantic-release@19.0.2 semantic-release --no-ci --dry-run | grep -o 'The next release version is .*' | awk '{print $NF}')" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build:
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go 1.x
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: ^1.18
       - name: Checkout repo
@@ -37,7 +37,7 @@ jobs:
       - name: Build project
         run: ./build.sh ${{ needs.get_next_version.outputs.earlybird_next_version }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: earlybird-binaries
           path: ./binaries/
@@ -53,7 +53,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN}}
       - name: Download earlybird artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
       - name: Copy artifacts to current directory
         run: mv earlybird-binaries/* .
       - name: Print current directory
@@ -63,7 +63,7 @@ jobs:
       - name: Rename arm64 macOS binary
         run: mv go-earlybird-arm64 go-earlybird-arm64-macos
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: '16'
       - name: Create a release with Semantic Release

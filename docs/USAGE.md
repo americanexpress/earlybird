@@ -75,6 +75,8 @@ Usage of go-earlybird:
     	Certificate file for TLS
   -https-key string
     	Private key file for TLS
+  -ignore-failure
+        Avoid the exit code 1 in case of scanner finds valid findings and meets fail threshold
   -ignore-fp-rules
     	Ignore the false positive post-process rules
   -ignorefile string
