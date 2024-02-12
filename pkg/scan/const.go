@@ -17,12 +17,12 @@
 package scan
 
 const (
-	ruleSuffix        string  = ".json"
-	entropyThreshold  float64 = 4.7
-	compressRegex     string  = ".(war|jar|zip|ear)$"
-	convertRegex      string  = ".(docx|odt|pdf|rtf)$"
-	tempRegex         string  = `(?:ebgit|ebzip|ebconv)\d+[/\\](.+$)`
-	maskCharacter     string  = "*"
-	overlapLength     int     = 25
-	infoLevelSeverity string  = "info"
+    ruleSuffix        string  = ".json"
+    entropyThreshold  float64 = 4.7
+    compressRegex     string  = "\\.(war|jar|zip|ear)$"
+    convertRegex      string  = "\\.(docx|odt|pdf|rtf)$"
+    tempRegex         string  = `(?:ebgit|ebzip|ebconv)\d+[/\\](.+$)`
+    maskCharacter     string  = "*"
+    overlapLength     int     = 25
+    infoLevelSeverity string  = "info"
 )
