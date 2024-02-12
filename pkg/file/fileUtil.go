@@ -24,7 +24,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"mime/multipart"
 	"os"
@@ -429,7 +428,7 @@ func GetCompressedFiles(files []scan.File, rootPath string) (newfiles []scan.Fil
 	//check if file list contains compressed files, if so, scan their contents
 	for _, file := range files {
 		//Unpack and append to file list
-		tmppath, err := ioutil.TempDir("", "ebzip")
+		tmppath, err := os.MkdirTemp("", "ebzip")
 		if err != nil {
 			return newfiles, compresspaths, err
 		}
@@ -488,11 +487,11 @@ func Uncompress(src string, dest string) (filenames []string, err error) {
 				if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
 					return filenames, err
 				}
-				body, err := ioutil.ReadAll(rc)
+				body, err := io.ReadAll(rc)
 				if err != nil {
 					return filenames, err
 				}
-				err = ioutil.WriteFile(fpath, body, 0644)
+				err = os.WriteFile(fpath, body, 0644)
 				if err != nil {
 					return filenames, err
 				}
@@ -518,7 +517,7 @@ func GetConvertedFiles(files []scan.File) (convertedFiles []scan.File, converted
 	}
 
 	for _, file := range toBeConverted {
-		tmppath, err := ioutil.TempDir("", "ebconv")
+		tmppath, err := os.MkdirTemp("", "ebconv")
 		fpath := filepath.Join(tmppath, file.Name)
 
 		// Get content from the file as a string
@@ -529,7 +528,7 @@ func GetConvertedFiles(files []scan.File) (convertedFiles []scan.File, converted
 		}
 
 		// Write content to new temp file
-		err = ioutil.WriteFile(fpath, []byte(content.Body), 0644)
+		err = os.WriteFile(fpath, []byte(content.Body), 0644)
 		if err != nil {
 			log.Printf("Error writing converted file %s, file not scanned\n", file.Path)
 			continue
