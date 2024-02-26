@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	code.sajari.com/docconv v1.3.8
-	github.com/dghubble/sling v1.4.1
+	github.com/dghubble/sling v1.4.2
 	github.com/ghodss/yaml v1.0.0
 	github.com/gocarina/gocsv v0.0.0-20200330101823-46266ca37bd3
 	github.com/google/go-github v17.0.0+incompatible
