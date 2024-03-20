@@ -53,6 +53,11 @@ func TestIsCard(t *testing.T) {
 			"100000000000000",
 			false,
 		},
+		{
+			"No digits in value - not a card number",
+			"ABCDEFG",
+			false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
