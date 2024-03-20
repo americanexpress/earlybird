@@ -28,6 +28,9 @@ var (
 //IsCard Run a mod10 check on a potential card number
 func IsCard(cc string) bool {
 	cc = isolateNumber(cc)
+	if len(cc) == 0 {
+		return false
+	}
 	checksum := 0
 	bOdd := false
 	card := []byte(cc)
