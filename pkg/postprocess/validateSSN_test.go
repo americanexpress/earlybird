@@ -47,6 +47,16 @@ func TestValidSSN(t *testing.T) {
 			ssn:  "666-000-0000",
 			want: false,
 		},
+		{
+			name: "Test invalid SSN",
+			ssn:  "900-000-0000",
+			want: false,
+		},
+		{
+			name: "Test invalid SSN",
+			ssn:  "999-000-0000",
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
