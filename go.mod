@@ -11,7 +11,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
 	golang.org/x/net v0.21.0
-	golang.org/x/text v0.14.0
+	golang.org/x/text v0.15.0
 	gopkg.in/src-d/go-git.v4 v4.13.1
 )
 
