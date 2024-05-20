@@ -1,3 +1,11 @@
+## [4.1.2](https://github.com/americanexpress/earlybird/compare/v4.1.1...v4.1.2) (2024-05-20)
+
+
+### Bug Fixes
+
+* require digits for card mod10 check ([0462806](https://github.com/americanexpress/earlybird/commit/04628068e642a3c23754e8f3085469968870e09c))
+* **ssn:** updated ssn rule to ignore flaging 9xx in third group ([2230817](https://github.com/americanexpress/earlybird/commit/2230817baa0ef6de3918219d9b789b17d4228346))
+
 ## [4.1.1](https://github.com/americanexpress/earlybird/compare/v4.1.0...v4.1.1) (2024-02-12)
 
 
