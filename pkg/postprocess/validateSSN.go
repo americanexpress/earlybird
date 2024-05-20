@@ -28,7 +28,7 @@ func ValidSSN(ssn string) bool {
 	if len(groups) != 3 {
 		return false
 	}
-	if first, _ := strconv.Atoi(groups[0]); first == 666 || first <= 0 || first > 999 {
+	if first, _ := strconv.Atoi(groups[0]); first == 666 || first <= 0 || first > 900 {
 		return false
 	} else if second, _ := strconv.Atoi(groups[1]); second <= 0 || second > 99 {
 		return false
