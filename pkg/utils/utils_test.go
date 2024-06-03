@@ -17,7 +17,6 @@
 package utils
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -128,7 +127,7 @@ func TestDeleteGit(t *testing.T) {
 	}
 
 	testRepo := "test-repo"
-	tmpDir, err := ioutil.TempDir("", "ebgit")
+	tmpDir, err := os.MkdirTemp("", "ebgit")
 	if err != nil {
 		t.Errorf("Failed to create temporoary directory: %v", err)
 	}
