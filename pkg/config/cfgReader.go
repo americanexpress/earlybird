@@ -19,7 +19,7 @@ package cfgreader
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"os"
 	"unicode"
 
@@ -40,7 +40,7 @@ func LoadConfig(cfg interface{}, path string) (err error) {
 	defer file.Close()
 
 	// read our opened json file as a byte array.
-	data, readErr := ioutil.ReadAll(file)
+	data, readErr := io.ReadAll(file)
 	if readErr != nil {
 		return readErr
 	}
