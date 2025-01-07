@@ -43,7 +43,7 @@ var (
 	ignorePatterns []string
 )
 
-//MultipartToScanFiles converts the multipart file upload into Earlybird files
+// MultipartToScanFiles converts the multipart file upload into Earlybird files
 func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.EarlybirdConfig) (fileList []scan.File, err error) {
 	ignorePatterns = getIgnorePatterns(cfg.SearchDir, cfg.IgnoreFile, cfg.VerboseEnabled)
 
@@ -119,7 +119,7 @@ func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.Earlybird
 	return
 }
 
-//GetGitFiles Builds the list of staged or tracked files
+// GetGitFiles Builds the list of staged or tracked files
 func GetGitFiles(fileType string, cfg *cfgreader.EarlybirdConfig) (fileContext Context, err error) {
 	ignorePatterns = getIgnorePatterns(cfg.SearchDir, cfg.IgnoreFile, cfg.VerboseEnabled)
 
@@ -128,6 +128,7 @@ func GetGitFiles(fileType string, cfg *cfgreader.EarlybirdConfig) (fileContext C
 		compressList []scan.File
 		convertList  []scan.File
 		fileList     []scan.File
+		skipList     []string
 	)
 
 	if fileType == utils.Tracked {
@@ -141,7 +142,7 @@ func GetGitFiles(fileType string, cfg *cfgreader.EarlybirdConfig) (fileContext C
 		return fileContext, err
 	}
 
-	fileList = parseGitFiles(output, cfg.VerboseEnabled, cfg.MaxFileSize)
+	fileList, skipList = parseGitFiles(output, cfg.VerboseEnabled, cfg.MaxFileSize, cfg.SearchDir)
 	compressList, fileList = separateCompressedAndUncompressed(fileList)
 	compressList, fileContext.CompressPaths, err = GetCompressedFiles(compressList, cfg.SearchDir) //Get the files within our compressed list
 	if err != nil {
@@ -151,10 +152,11 @@ func GetGitFiles(fileType string, cfg *cfgreader.EarlybirdConfig) (fileContext C
 	convertList, fileContext.ConvertPaths = GetConvertedFiles(fileContext.Files) //Get the files that need to be converted and convert them to plaintext
 	fileContext.Files = append(fileContext.Files, convertList...)
 	fileContext.IgnorePatterns = ignorePatterns
+	fileContext.SkippedFiles = skipList
 	return fileContext, nil
 }
 
-func parseGitFiles(out []byte, verbose bool, maxFileSize int64) (fileList []scan.File) {
+func parseGitFiles(out []byte, verbose bool, maxFileSize int64, searchDir string) (fileList []scan.File, skipList []string) {
 	var curFile scan.File
 	// Convert byteArray to string
 	gitFiles := string(out)
@@ -165,25 +167,42 @@ func parseGitFiles(out []byte, verbose bool, maxFileSize int64) (fileList []scan
 		scanner := bufio.NewScanner(strings.NewReader(gitFiles))
 		for scanner.Scan() {
 			curFile.Path = scanner.Text()
+			// add slash to make the path absolute this is used to match the ignore patterns
+			absolutePath := "/" + scanner.Text()
+			// if the path is absolute, set the absolute path to the current path
+			if strings.HasPrefix(scanner.Text(), "/") {
+				absolutePath = scanner.Text()
+			}
+
 			curFile.Name = filepath.Base(scanner.Text())
-			if fileExists := Exists(curFile.Path); fileExists {
-				pathIsDirectory, dirErr := isDirectory(curFile.Path)
-				if dirErr != nil {
-					log.Println(dirErr)
-				}
-				if !pathIsDirectory && getFileSizeOK(curFile.Path, maxFileSize) {
-					if verbose {
-						log.Println("Reading file ", curFile.Path)
+			//Skip file with extensions Earlybird ignores
+			if !isIgnoredFile(absolutePath, searchDir) {
+				if fileExists := Exists(curFile.Path); fileExists {
+					pathIsDirectory, dirErr := isDirectory(curFile.Path)
+					if dirErr != nil {
+						log.Println(dirErr)
 					}
-					fileList = append(fileList, curFile)
+
+					if !pathIsDirectory && getFileSizeOK(curFile.Path, maxFileSize) {
+						if verbose {
+							log.Println("Reading file ", curFile.Path)
+						}
+						fileList = append(fileList, curFile)
+					}
+				}
+			} else {
+				skipList = append(skipList, curFile.Path)
+				if verbose {
+					log.Println("Ignoring", curFile.Path, ". File blacklisted.")
 				}
 			}
 		}
 	}
-	return fileList
+
+	return fileList, skipList
 }
 
-//GetFiles Build the list of files
+// GetFiles Build the list of files
 func GetFiles(searchDir, ignoreFile string, verbose bool, maxFileSize int64) (fileContext Context, err error) {
 	ignorePatterns = getIgnorePatterns(searchDir, ignoreFile, verbose)
 	fileList := make([]scan.File, 0)
@@ -238,7 +257,7 @@ func GetFiles(searchDir, ignoreFile string, verbose bool, maxFileSize int64) (fi
 	return fileContext, nil
 }
 
-//GetFileFromStream Builds a file as a collection of lines from the input stream.
+// GetFileFromStream Builds a file as a collection of lines from the input stream.
 // This will be fed to the scan modules.
 func GetFileFromStream(cfg *cfgreader.EarlybirdConfig) []scan.File {
 	// Read Stdin
@@ -285,7 +304,7 @@ func GetFileFromStream(cfg *cfgreader.EarlybirdConfig) []scan.File {
 	return fileList
 }
 
-//GetFileSize returns the file size of target file
+// GetFileSize returns the file size of target file
 func GetFileSize(path string) (size int64, err error) {
 	stat, err := os.Stat(path)
 	if err != nil {
@@ -385,7 +404,7 @@ func isDirectory(path string) (bool, error) {
 	return fileInfo.IsDir(), nil
 }
 
-//GetWD Gets the current working directory
+// GetWD Gets the current working directory
 func GetWD() (string, error) {
 	dir, err := os.Getwd()
 	if err != nil {
@@ -394,7 +413,7 @@ func GetWD() (string, error) {
 	return dir, err
 }
 
-//IsEmpty Check to see if a directory is empty
+// IsEmpty Check to see if a directory is empty
 func IsEmpty(path string) (bool, error) {
 	fileHandle, err := os.Open(path)
 	if err != nil {
@@ -406,7 +425,7 @@ func IsEmpty(path string) (bool, error) {
 	return err == io.EOF, err
 }
 
-//Exists Check to see if a path exists
+// Exists Check to see if a path exists
 func Exists(path string) bool {
 	_, err := os.Stat(path)
 	return !os.IsNotExist(err)
@@ -423,7 +442,7 @@ func separateCompressedAndUncompressed(files []scan.File) (compressed, uncompres
 	return compressed, uncompressed
 }
 
-//GetCompressedFiles provides all the files contained within compressed files
+// GetCompressedFiles provides all the files contained within compressed files
 func GetCompressedFiles(files []scan.File, rootPath string) (newfiles []scan.File, compresspaths []string, err error) {
 	//check if file list contains compressed files, if so, scan their contents
 	for _, file := range files {
@@ -449,7 +468,7 @@ func GetCompressedFiles(files []scan.File, rootPath string) (newfiles []scan.Fil
 	return newfiles, compresspaths, nil
 }
 
-//Uncompress decompresses zip files safely
+// Uncompress decompresses zip files safely
 func Uncompress(src string, dest string) (filenames []string, err error) {
 	r, err := zip.OpenReader(src)
 	if err != nil {
@@ -507,7 +526,7 @@ func Uncompress(src string, dest string) (filenames []string, err error) {
 	return filenames, nil
 }
 
-//GetConvertedFiles converts files into plaintext
+// GetConvertedFiles converts files into plaintext
 func GetConvertedFiles(files []scan.File) (convertedFiles []scan.File, convertedPaths []string) {
 	var toBeConverted []scan.File
 	for _, f := range files {

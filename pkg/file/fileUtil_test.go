@@ -18,6 +18,7 @@ package file
 
 import (
 	"github.com/americanexpress/earlybird/v4/pkg/scan"
+	"os/exec"
 	"reflect"
 
 	"os"
@@ -402,5 +403,20 @@ func TestGetConvertedFiles(t *testing.T) {
 				t.Errorf("GetConvertedFiles() gotConverpaths = %v, want multiple paths", gotConvertPaths)
 			}
 		})
+	}
+}
+
+func Test_parseGitFiles(t *testing.T) {
+	output, err := exec.Command("git", "-C", projectRoot, "ls-tree", "--full-tree", "-r", "--name-only", "HEAD").Output()
+	if err != nil {
+		t.Errorf("parseGitFiles() error = %v", err)
+	}
+	if len(output) == 0 {
+		t.Errorf("parseGitFiles() output = %v, want multiple files", output)
+	}
+	_, skipFiles := parseGitFiles(output, true, int64(1000000), projectRoot)
+
+	if len(skipFiles) == 0 {
+		t.Errorf("parseGitFiles() skipFiles = %v, want multiple files", skipFiles)
 	}
 }
