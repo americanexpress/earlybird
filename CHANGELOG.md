@@ -1,3 +1,10 @@
+## [4.1.3](https://github.com/americanexpress/earlybird/compare/v4.1.2...v4.1.3) (2025-01-07)
+
+
+### Bug Fixes
+
+* issue with git tracked file not ignoreing ge_ignore patterns ([d651d7d](https://github.com/americanexpress/earlybird/commit/d651d7dfafc0dd09f276a4d64b8de592327b9aed))
+
 ## [4.1.2](https://github.com/americanexpress/earlybird/compare/v4.1.1...v4.1.2) (2024-05-20)
 
 
