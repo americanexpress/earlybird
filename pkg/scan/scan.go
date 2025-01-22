@@ -328,7 +328,8 @@ func scanName(file File, rules []Rule, cfg *cfgReader.EarlybirdConfig) (isHit bo
 
 			// Check if the hit has any false positives
 			fpHit := findFalsePositive(hit)
-			if fpHit {
+			isStillHit := hit.postProcess(cfg, &rule)
+			if fpHit || !isStillHit {
 				return false, hit
 			}
 			return true, hit
@@ -598,6 +599,13 @@ func (hit *Hit) postProcess(cfg *cfgReader.EarlybirdConfig, rule *Rule) (isHit b
 			isHit = false
 			break
 		}
+	case rule.Postprocess == "jks":
+		// Skip same key/value pair
+		if cfg.StrictJKS {
+			isHit = postprocess.JKS(hit.Filename)
+			break
+		}
+		isHit = true
 	default:
 		isHit = true
 	}

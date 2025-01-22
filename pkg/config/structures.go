@@ -106,6 +106,7 @@ type EarlybirdConfig struct {
 	WorkerCount                int
 	WorkLength                 int
 	HideMeta                   bool
+	StrictJKS                  bool
 	ModuleConfigs              ModuleConfigs
 	AdjustedSeverityCategories []AdjustedSeverityCategory
 }
