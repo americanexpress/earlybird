@@ -4,7 +4,6 @@ Package jks provides routines for manipulating Java Keystore files.
 package jks
 
 import (
-	"crypto/sha1"
 	"crypto/x509"
 	"time"
 	"unicode/utf16"
@@ -36,27 +35,6 @@ type Keystore struct {
 	// Keypairs is a list of private keys. Each key may have a certificate
 	// chain associated with it.
 	Keypairs []*Keypair
-}
-
-// Options for manipulating a keystore. These allow the caller to specify the
-// password(s) used, or to skip the digest verification if the password is
-// unknown.
-type Options struct {
-	// Password is used as part of a SHA-1 digest over the .jks file.
-	Password string
-
-	// SkipVerifyDigest can be set to skip digest verification when loading
-	// a keystore file. This will inhibit errors from Parse if you don't
-	// know the password.
-	SkipVerifyDigest bool
-
-	// KeyPasswords are used to generate the "encryption" keys for stored
-	// private keys. The map's key is the alias of the private key, and the
-	// value is the password. If there is no entry in the map for a given
-	// alias, then the top-level Password is inherited. Empty strings are
-	// interpreted as an empty password, so use delete() if you truly want
-	// to delete values.
-	KeyPasswords map[string]string
 }
 
 // Cert holds a certificate to trust.
@@ -118,27 +96,6 @@ type KeypairCert struct {
 
 	// CertErr records any error encountered while parsing a certificate.
 	CertErr error
-}
-
-var defaultOptions = Options{
-	SkipVerifyDigest: true,
-}
-
-// ComputeDigest performs the custom hash function over the given file data.
-// DO NOT RE-USE THIS CODE: this is an atrocious way to perform message
-// authentication. Use the HMAC example from
-// https://github.com/lwithers/go-crypto-examples instead. Note this construct
-// is vulnerable to a length extension attack, which is actually exploitable if
-// the JKS reader code does not properly check the "number of entries" value.
-func ComputeDigest(raw []byte, passwd string) []byte {
-	// compute SHA-1 digest over the construct:
-	//  UTF-16(password) + UTF-8(DigestSeparator) + raw
-	md := sha1.New()
-	p := PasswordUTF16(passwd)
-	md.Write(p)
-	md.Write([]byte(DigestSeparator))
-	md.Write(raw)
-	return md.Sum(nil)
 }
 
 // PasswordUTF16 returns a password encoded in UTF-16, big-endian byte order.

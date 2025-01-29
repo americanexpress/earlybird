@@ -3,33 +3,9 @@ package jks
 import (
 	"bytes"
 	"encoding/binary"
-	"encoding/hex"
 	"testing"
 	"unicode/utf16"
 )
-
-// TestComputeDigest is a regression test for the digest function.
-func TestComputeDigest(t *testing.T) {
-	t.Run("empty", testComputeDigest("", "",
-		"569D05A766C473698C0B58EBAEAE0A25EB10BACC"))
-	t.Run("regr", testComputeDigest("input data", "password",
-		"74DDD13B68919674D4409A19AB284019A1DA57C8"))
-}
-
-func testComputeDigest(in, passwd, expHex string) func(*testing.T) {
-	return func(t *testing.T) {
-		exp, err := hex.DecodeString(expHex)
-		if err != nil {
-			t.Fatalf("error decoding expHex: %v", err)
-		}
-		out := ComputeDigest([]byte(in), passwd)
-		if !bytes.Equal(out, exp) {
-			t.Errorf("output sequence (len %d) ≠ expected",
-				len(out))
-			t.Errorf("out %X", out)
-		}
-	}
-}
 
 // TestPasswordUTF16 checks that our UTF-16 encoding routine works as expected.
 // The test cases incorporate empty strings and Unicode strings with characters

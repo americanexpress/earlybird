@@ -52,7 +52,7 @@ var (
 	ptrGitStreamInput             = flag.Bool("git-commit-stream", false, "Use stream IO of Git commit log as input instead of file(s) -- e.g., 'cat secrets.text > go-earlybird'")
 	ptrVerbose                    = flag.Bool("verbose", false, "Reports details about file reads")
 	ptrSuppressSecret             = flag.Bool("suppress", false, "Suppress reporting of the secret found (important if output is going to Slack or other logs)")
-	ptrStrictJKS = flag.Bool("strict-jks", false, "Checks for private keys in the JKS file and return hits only if found")
+	ptrStrictJKS                  = flag.Bool("strict-jks", false, "Checks for private keys in the JKS file and return hits only if found")
 	ptrWorkerCount                = flag.Int("workers", 100, "Set number of workers.")
 	ptrWorkLength                 = flag.Int("worksize", 2500, "Set Line Wrap Length.")
 	ptrMaxFileSize                = flag.Int64("max-file-size", 10240000, "Maximum file size to scan (in bytes)")

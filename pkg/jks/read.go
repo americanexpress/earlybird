@@ -5,7 +5,6 @@ package jks
 
 import (
 	"bytes"
-	"crypto/hmac"
 	"crypto/x509"
 	"encoding/binary"
 	"errors"
@@ -14,7 +13,7 @@ import (
 	"time"
 )
 
-// Parse a JKS file. If desired, opts may be specified to provide more control
+// Parse a JKS file.
 // over the parsing. If nil, then we will use an empty password when attempting
 // to decrypt keys and will not attempt to verify the digest stored in the file.
 //
@@ -25,10 +24,7 @@ import (
 // Parse function returning an error. If digest verification is requested and
 // the password or the digest is incorrect, an error will also be returned. If
 // any useful data has been extracted it will be returned as a partial Keystore.
-func Parse(raw []byte, opts *Options) (*Keystore, error) {
-	if opts == nil {
-		opts = &defaultOptions
-	}
+func Parse(raw []byte) (*Keystore, error) {
 
 	buf := bytes.NewReader(raw)
 	ks := new(Keystore)
@@ -71,7 +67,7 @@ func Parse(raw []byte, opts *Options) (*Keystore, error) {
 		switch etype {
 		case 1:
 			// it's a private key + cert chain
-			kp, err := readKeypair(buf, opts)
+			kp, err := readKeypair(buf)
 			if err != nil {
 				return ks, err
 			}
@@ -96,14 +92,7 @@ func Parse(raw []byte, opts *Options) (*Keystore, error) {
 	case buf.Len() != 20:
 		return ks, errors.New("malformed digest at end of file")
 
-	case opts.SkipVerifyDigest:
-		return ks, nil
-
 	default:
-		digest := ComputeDigest(raw[:len(raw)-20], opts.Password)
-		if !hmac.Equal(digest, raw[len(raw)-20:]) {
-			return ks, errors.New("digest mismatch")
-		}
 		return ks, nil
 	}
 }
@@ -207,7 +196,7 @@ func readCert(buf *bytes.Reader) (*Cert, error) {
 	return cert, nil
 }
 
-func readKeypair(buf *bytes.Reader, opts *Options) (*Keypair, error) {
+func readKeypair(buf *bytes.Reader) (*Keypair, error) {
 	var (
 		offset   int64
 		err      error
@@ -219,11 +208,6 @@ func readKeypair(buf *bytes.Reader, opts *Options) (*Keypair, error) {
 	kp.Alias, offset, err = readStr(buf, "certificate alias")
 	if err != nil {
 		return nil, err
-	}
-	passwd, ok := opts.KeyPasswords[kp.Alias]
-	if !ok {
-		// no specific password for this alias, so use the file password
-		passwd = opts.Password
 	}
 
 	kp.Timestamp, _, err = readTimestamp(buf)
@@ -244,7 +228,7 @@ func readKeypair(buf *bytes.Reader, opts *Options) (*Keypair, error) {
 
 	kp.EncryptedKey = make([]byte, elen)
 	_, _ = buf.Read(kp.EncryptedKey)
-	kp.RawKey, kp.PrivKeyErr = DecryptPKCS8(kp.EncryptedKey, passwd)
+	kp.RawKey, kp.PrivKeyErr = DecryptPKCS8(kp.EncryptedKey, "")
 	if kp.PrivKeyErr == nil {
 		// we should now have a PKCS#8 PrivateKeyInfo, which Go can
 		// parse for us

@@ -9,18 +9,13 @@ import (
 // JKS checks if a file meets standard
 func JKS(file string) bool {
 
-	opts := &jks.Options{
-		SkipVerifyDigest: true,
-		KeyPasswords:     nil,
-	}
-
 	raw, err := os.ReadFile(file)
 	if err != nil {
 		fmt.Printf("JKS file read Error")
 		return false
 	}
 
-	ks, err := jks.Parse(raw, opts)
+	ks, err := jks.Parse(raw)
 	if err != nil {
 		println("JKS Parse Error", err)
 	}
