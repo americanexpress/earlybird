@@ -1,3 +1,15 @@
+# [4.2.0](https://github.com/americanexpress/earlybird/compare/v4.1.3...v4.2.0) (2025-02-04)
+
+
+### Bug Fixes
+
+* **option:** removed options from parsing since not required ([013b439](https://github.com/americanexpress/earlybird/commit/013b439265a367317b7dc6dd8ff2f316addd620f))
+
+
+### Features
+
+* **jks-check:** added config to strictly check for key in jks ([7ce4e75](https://github.com/americanexpress/earlybird/commit/7ce4e75087ae569d0f2a33fca9032c5585bf56fb))
+
 ## [4.1.3](https://github.com/americanexpress/earlybird/compare/v4.1.2...v4.1.3) (2025-01-07)
 
 
