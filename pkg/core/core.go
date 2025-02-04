@@ -195,6 +195,7 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	eb.Config.MaxFileSize = *ptrMaxFileSize
 	eb.Config.VerboseEnabled = *ptrVerbose
 	eb.Config.Suppress = *ptrSuppressSecret
+	eb.Config.StrictJKS = *ptrStrictJKS
 	eb.Config.OutputFormat = *ptrOutputFormat
 	eb.Config.WithConsole = *ptrWithConsole
 	eb.Config.OutputFile = *ptrOutputFile

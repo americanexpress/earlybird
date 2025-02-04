@@ -673,7 +673,7 @@ rules:
     SolutionID: 11
     Severity: 2
     Confidence: 2
-    Postprocess: ''
+    Postprocess: jks
     CWE:
       - CWE-312
       - CWE-321

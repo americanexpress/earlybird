@@ -93,6 +93,8 @@ Usage of go-earlybird:
     	Skip scanning comments in files -- applies only to the 'content' module
   -stream
     	Use stream IO as input instead of file(s)
+  -strict-jks
+        Checks for private keys in the JKS file and only return finding if found. If not passed, it will flag jks file. Default is false.
   -suppress
     	Suppress reporting of the secret found (important if output is going to Slack or other logs)
   -update
