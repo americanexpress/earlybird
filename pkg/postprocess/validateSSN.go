@@ -21,14 +21,14 @@ import (
 	"strings"
 )
 
-//ValidSSN checks if a SSN meets standard
+// ValidSSN checks if a SSN meets standard
 func ValidSSN(ssn string) bool {
 	ssn = strings.Trim(ssn, "\"'\n ")
 	groups := strings.Split(ssn, "-")
 	if len(groups) != 3 {
 		return false
 	}
-	if first, _ := strconv.Atoi(groups[0]); first == 666 || first <= 0 || first > 900 {
+	if first, _ := strconv.Atoi(groups[0]); first == 666 || first <= 0 || first >= 900 {
 		return false
 	} else if second, _ := strconv.Atoi(groups[1]); second <= 0 || second > 99 {
 		return false
