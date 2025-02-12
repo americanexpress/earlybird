@@ -1,3 +1,10 @@
+## [4.2.1](https://github.com/americanexpress/earlybird/compare/v4.2.0...v4.2.1) (2025-02-12)
+
+
+### Bug Fixes
+
+* **ssn:** updated ssn rule to ignore flaging 9xx in first group ([a6ea533](https://github.com/americanexpress/earlybird/commit/a6ea533c120ed3d3457d6ad71cc27ee573df1821))
+
 # [4.2.0](https://github.com/americanexpress/earlybird/compare/v4.1.3...v4.2.0) (2025-02-04)
 
 
