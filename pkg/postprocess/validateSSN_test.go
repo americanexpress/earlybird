@@ -53,6 +53,11 @@ func TestValidSSN(t *testing.T) {
 			want: false,
 		},
 		{
+			name: "Test invalid SSN starting with 9",
+			ssn:  "900-12-1234",
+			want: false,
+		},
+		{
 			name: "Test invalid SSN",
 			ssn:  "999-000-0000",
 			want: false,
