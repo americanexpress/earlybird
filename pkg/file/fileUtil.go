@@ -74,47 +74,62 @@ func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.Earlybird
 			continue
 		}
 
-		//Start of file upload parsing (indepth comments in scanUtil.go)
-		curFile := scan.File{
-			Name: fileNameWithPathPrefix,
-			Path: "buffer",
-		}
+		// No need to send the lines since we are sending the whole file Raw content
+		// If we end-up checking more than one extension then we will move this to config
+		if filepath.Ext(fileName) == ".jks" {
+			fileByte, err := io.ReadAll(myfile)
+			if err != nil {
+				return nil, err
+			}
+			fileList = append(fileList, scan.File{
+				Name: fileNameWithPathPrefix,
+				Path: "buffer",
+				Raw:  fileByte,
+			})
+		} else {
 
-		var line scan.Line
-		reader := bufio.NewReader(myfile)
-		for {
-			var buffer bytes.Buffer
+			//Start of file upload parsing (indepth comments in scanUtil.go)
+			curFile := scan.File{
+				Name: fileNameWithPathPrefix,
+				Path: "buffer",
+			}
 
-			var l []byte
-			var isPrefix bool
+			var line scan.Line
+			reader := bufio.NewReader(myfile)
 			for {
-				l, isPrefix, err = reader.ReadLine()
-				buffer.Write(l)
-				//Reached the end of the line, stop reading.
-				if !isPrefix {
+				var buffer bytes.Buffer
+
+				var l []byte
+				var isPrefix bool
+				for {
+					l, isPrefix, err = reader.ReadLine()
+					buffer.Write(l)
+					//Reached the end of the line, stop reading.
+					if !isPrefix {
+						break
+					}
+					// EOF, break
+					if err != nil {
+						break
+					}
+				}
+				if err == io.EOF {
 					break
 				}
-				// EOF, break
-				if err != nil {
-					break
-				}
+				lineText := buffer.String()
+				line.LineNum = line.LineNum + 1
+				line.LineValue = lineText
+				line.FilePath = curFile.Path
+				line.FileName = fileNameWithPathPrefix
+				curFile.Lines = append(curFile.Lines, line)
 			}
-			if err == io.EOF {
-				break
+			if err != io.EOF {
+				return fileList, err
 			}
-			lineText := buffer.String()
-			line.LineNum = line.LineNum + 1
-			line.LineValue = lineText
-			line.FilePath = curFile.Path
-			line.FileName = fileNameWithPathPrefix
-			curFile.Lines = append(curFile.Lines, line)
-		}
-		if err != io.EOF {
-			return fileList, err
+			fileList = append(fileList, curFile)
 		}
 
 		myfile.Close()
-		fileList = append(fileList, curFile)
 	}
 	return
 }
