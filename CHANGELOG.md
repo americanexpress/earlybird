@@ -1,3 +1,10 @@
+## [4.2.2](https://github.com/americanexpress/earlybird/compare/v4.2.1...v4.2.2) (2025-02-17)
+
+
+### Bug Fixes
+
+* **jks-http:** updated code to check for pk in jks via http ([f12afaa](https://github.com/americanexpress/earlybird/commit/f12afaa29d8e002f61241469869f087e8ead8e3a))
+
 ## [4.2.1](https://github.com/americanexpress/earlybird/compare/v4.2.0...v4.2.1) (2025-02-12)
 
 
