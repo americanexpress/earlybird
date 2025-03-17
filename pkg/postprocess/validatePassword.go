@@ -19,8 +19,8 @@ package postprocess
 import (
 	"golang.org/x/net/html"
 	"regexp"
-	"strconv"
 	"strings"
+	"unicode"
 )
 
 var (
@@ -94,29 +94,14 @@ func PasswordFalse(password string) (confidence int, ignore bool) {
 // SkipPasswordWithUnicode returns true if the password value contains a non ASCII character.
 // UseCase: Localized content contains unicode char for different languages which cannot be passwords in real world.
 func SkipPasswordWithUnicode(password string) bool {
-	passwords := splitPswdPattern.Split(password, -1)
-	// Check if length = 2 for true key/value pair.
-	if len(passwords) == 2 {
-		// convert the unicode chars into string to compare with original password value
-		// If the password value is not a string with quotes then this would never return a value
-		passwordStringValue, err := strconv.Unquote(strings.TrimSpace(passwords[1]))
-		if err != nil {
-			// string with capital unicode errors out, invalid- "Information\U00e4", valid- "Information\u00e4"
-			// Convert the value to lowercase to make sure the unicode is really invalid.
-			passwordStringValue, err = strconv.Unquote(strings.TrimSpace(strings.ToLower(passwords[1])))
-			if err != nil {
-				return false
-			}
-		}
-
-		for i, c := range passwordStringValue {
-			// The rune at the index should match the string rune at the same index for ASCII values.
-			if string(passwordStringValue[i]) != string(c) {
-				// Skips early as soon as it finds a non ASCII rune while iterating the string.
-				return true
-			}
+	for _, c := range password {
+		// The rune c is a Unicode code point, and we check if it is greater than 127 to identify non-ASCII characters.
+		if c > unicode.MaxASCII {
+			// Skips early as soon as it finds a non ASCII rune while iterating the string.
+			return true
 		}
 	}
+
 	return false
 }
 

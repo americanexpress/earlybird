@@ -139,62 +139,43 @@ func TestPasswordFalse(t *testing.T) {
 		})
 	}
 }
+func TestSkipPasswordWithUnicode(t *testing.T) {
+	tests := []struct {
+		name       string
+		password   string
+		wantIgnore bool
+	}{
+		{
+			name:       "Password with non-ASCII characters",
+			password:   "password: \u0049 \u0044 \u306e \u78ba \u8a8d \u3001 \u30d1 \u30b9 \u30ef \u30fc \u30c9 \u306e \u5909 \u66f4",
+			wantIgnore: true,
+		},
+		{
+			name:       "Password with mixed ASCII and non-ASCII characters",
+			password:   "password: VeryStrong$$\u306e\u78ba \u306e",
+			wantIgnore: true,
+		},
+		{
+			name:       "Password with only ASCII characters",
+			password:   "password: VeryStrong857!@$^&*#",
+			wantIgnore: false,
+		},
+		{
+			name:       "Password with non-ASCII characters in JSON format",
+			password:   `"password": "VeryStrong$$你好"`,
+			wantIgnore: true,
+		},
+		{
+			name:       "Password with non-ASCII characters in invalid string",
+			password:   `"password"= "Informationsb你好世界"`,
+			wantIgnore: true,
+		},
+	}
 
-var testSkipUnicodeInPasswords = []struct {
-	name       string
-	args       args
-	wantIgnore bool
-}{
-	{
-		name: "Skip password with unicode which is not ASCII",
-		args: args{
-			testPD: `"password": "\u0049\u0044\u306e\u78ba\u8a8d\u3001\u30d1\u30b9\u30ef\u30fc\u30c9\u306e\u5909\u66f4"`,
-		},
-		wantIgnore: true,
-	},
-	{
-		name: "Skip passwords that has non ASCII char",
-		args: args{
-			testPD: `"password": "VeryStrong$$\u306e\u78ba"`,
-		},
-		wantIgnore: true,
-	},
-	{
-		name: "Do not skip password with unicode that convert to valid of ASCII.",
-		args: args{
-			testPD: `"password": "VeryStrong$$\u0049\u0044"`,
-		},
-		wantIgnore: false,
-	},
-	{
-		name: "Do not skip, real password finding",
-		args: args{
-			testPD: "password: VeryStrong857!@$^&*#",
-		},
-		wantIgnore: false,
-	},
-	{
-		name: "Do not skip, real secret finding",
-		args: args{
-			testPD: "secret: VeryStrong857#",
-		},
-		wantIgnore: false,
-	},
-	{
-		name: "Skip passwords that has non ASCII char and is invalid string due to unicode being in CAPS",
-		args: args{
-			testPD: `"password"= "Informationsb\U00e4rare"`,
-		},
-		wantIgnore: true,
-	},
-}
-
-func TestSkipUnicodeInPasswords(t *testing.T) {
-	for _, tt := range testSkipUnicodeInPasswords {
+	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotIgnore := SkipPasswordWithUnicode(tt.args.testPD)
-			if gotIgnore != tt.wantIgnore {
-				t.Errorf("SkipUnicodeInPasswords() gotIgnore = %v, want %v", gotIgnore, tt.wantIgnore)
+			if gotIgnore := SkipPasswordWithUnicode(tt.password); gotIgnore != tt.wantIgnore {
+				t.Errorf("SkipPasswordWithUnicode() = %v, want %v", gotIgnore, tt.wantIgnore)
 			}
 		})
 	}
