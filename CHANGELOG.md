@@ -1,3 +1,10 @@
+## [4.2.3](https://github.com/americanexpress/earlybird/compare/v4.2.2...v4.2.3) (2025-03-19)
+
+
+### Bug Fixes
+
+* detect unicode char in post processor ([02c8307](https://github.com/americanexpress/earlybird/commit/02c8307ce4c400f79ed3d25867b9e18b22cf737f))
+
 ## [4.2.2](https://github.com/americanexpress/earlybird/compare/v4.2.1...v4.2.2) (2025-02-17)
 
 
