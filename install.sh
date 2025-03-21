@@ -24,15 +24,14 @@ if [ ! -d "$CONFIGDIR" ]; then
   mkdir -p "$CONFIGDIR"
 fi
 
-# Pull the binary
+# Copy the binary to the $LOCALBINDIR
 echo Copying executable
-if [[ "$OSTYPE" == "darwin"* ]]; then
-        #Copy Mac OS bin
-        cp binaries/go-earlybird $LOCALBINDIR/go-earlybird
-        else
-        #Copy Linux bin
-        cp binaries/go-earlybird-linux $LOCALBINDIR/go-earlybird
-        fi
+case "$OSTYPE" in
+  # Copy Mac OS bin
+  "darwin"*) cp binaries/go-earlybird $LOCALBINDIR/go-earlybird ;;
+  # Copy Linux bin
+  *) cp binaries/go-earlybird-linux $LOCALBINDIR/go-earlybird ;;
+esac
 
 echo Updating permissions
 chmod u+x $LOCALBINDIR/go-earlybird
