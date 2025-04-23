@@ -185,10 +185,7 @@ func nameScanner(cfg *cfgReader.EarlybirdConfig, files []File, hits chan<- Hit) 
 		hitFound, hit := scanName(file, CombinedRules, cfg)
 		if hitFound {
 
-			// Append the hit to our slice for return
-			if cfg.LevelMap[hit.Severity] <= cfg.SeverityDisplayLevel {
-				hits <- hit //push hit to channel
-			}
+			hits <- hit //push hit to channel
 
 			// If a hit severity is less than the failLevel and a hit confidence is less than the failLevel, set failScan = true
 			if cfg.LevelMap[hit.Severity] <= cfg.SeverityFailLevel && cfg.LevelMap[hit.Confidence] <= cfg.ConfidenceFailLevel {

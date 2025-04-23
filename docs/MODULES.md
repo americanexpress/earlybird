@@ -31,3 +31,27 @@ New modules can be added via json rules files in the user's `go-earlybird` confi
 }
 ```
 We recommend using a unique, integer-only approach to defining the `Code` field.
+
+## Usage of module-config-file:
+We have a provision to provide separate config for each module. This is helpful in case of displaying hits with different severity for each module without over loading rules.
+Ex: List all the hits for password modules with medium severity and display all the findings from inclusivity module.
+
+Here is the module-config.json file.
+
+```json
+{
+  "modules": {
+    "inclusivity-rules": {
+      "display_severity": "info",
+      "display_confidence": "high"
+    }
+  }
+}
+```
+
+Command will be
+```bash
+go run go-earlybird.go -display-severity=high -module-config-file=/Users/projects/eb/earlybird/module-config.json --enable=password-secret --enable=inclusivity-rules
+```
+
+This will avoid loading all(info and low) rules from `password-secret` module, but still it will run with info severity for inclusivity-rules.
