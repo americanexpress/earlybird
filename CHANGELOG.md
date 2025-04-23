@@ -1,3 +1,10 @@
+## [4.2.4](https://github.com/americanexpress/earlybird/compare/v4.2.3...v4.2.4) (2025-04-23)
+
+
+### Bug Fixes
+
+* **module:** updated code to report finding based on module config ([4f2561c](https://github.com/americanexpress/earlybird/commit/4f2561cd64b0e8b42c5a4a3614746ebba9bff070))
+
 ## [4.2.3](https://github.com/americanexpress/earlybird/compare/v4.2.2...v4.2.3) (2025-03-19)
 
 
