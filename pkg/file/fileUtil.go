@@ -469,7 +469,10 @@ func GetCompressedFiles(files []scan.File, rootPath string) (newfiles []scan.Fil
 		compresspaths = append(compresspaths, tmppath)
 		filenames, err := Uncompress(file.Path, tmppath)
 		if err != nil {
-			return newfiles, compresspaths, err
+			// We log the error and move on if the file cannot be uncompressed
+			log.Println("Error reading compressed file", file.Path, err)
+			// Read the next file in the list
+			continue
 		}
 		for _, subfile := range filenames {
 			if !isIgnoredFile(subfile, rootPath) && !scan.CompressPattern.MatchString(subfile) {
