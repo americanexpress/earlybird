@@ -1,3 +1,10 @@
+## [4.2.5](https://github.com/americanexpress/earlybird/compare/v4.2.4...v4.2.5) (2025-05-19)
+
+
+### Bug Fixes
+
+* log error and continue when error reading compressed file ([7535d3a](https://github.com/americanexpress/earlybird/commit/7535d3aeea88fe2361107d0f3833a49ae5dca718))
+
 ## [4.2.4](https://github.com/americanexpress/earlybird/compare/v4.2.3...v4.2.4) (2025-04-23)
 
 
