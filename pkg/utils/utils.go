@@ -30,6 +30,7 @@ import (
 )
 
 var gitURLPattern = regexp.MustCompile(`([^/]*)(?:.git)`)
+var bbProjectsPattern = regexp.MustCompile(`(?:projects/)([^/]*)`)
 
 // Contains Does an array/slice contain a string
 func Contains(haystack []string, needle string) bool {
@@ -160,8 +161,7 @@ func GetGitRepo(gitURL string) (repository string) {
 
 // GetBBProject Parse project name from bitbucket URL
 func GetBBProject(bbURL string) (project string) {
-	re := regexp.MustCompile(`(?:projects/)([^/]*)`)
-	results := re.FindStringSubmatch(bbURL) // Match second capture group, 1 = project/XXX, 2 = XXX
+	results := bbProjectsPattern.FindStringSubmatch(bbURL) // Match second capture group, 1 = project/XXX, 2 = XXX
 	if len(results) < 1 {
 		log.Println("Failed To Get BB Project from URL:", bbURL)
 		os.Exit(1)
