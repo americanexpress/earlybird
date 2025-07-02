@@ -54,12 +54,26 @@ func isPrivatePem(filePath string) bool {
 
 func checkPrivate(blockType string) bool {
 	list := []string{"private", "PKCS8"}
+	joinedList := strings.Join(list, " ")
+	blockTypes := strings.Split(strings.ToLower(blockType), " ")
 
-	return strings.Contains(strings.Join(list, " "), strings.ToLower(blockType))
+	for _, bt := range blockTypes {
+		if strings.Contains(joinedList, bt) {
+			return true
+		}
+	}
+	return false
 }
 
 func checkPublic(blockType string) bool {
 	list := []string{"public", "certificate", "x509"}
+	joinedList := strings.Join(list, " ")
+	blockTypes := strings.Split(strings.ToLower(blockType), " ")
 
-	return strings.Contains(strings.Join(list, " "), strings.ToLower(blockType))
+	for _, bt := range blockTypes {
+		if strings.Contains(joinedList, bt) {
+			return true
+		}
+	}
+	return false
 }
