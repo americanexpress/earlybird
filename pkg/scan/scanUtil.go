@@ -35,7 +35,7 @@ func findHit(target string, CompiledPattern *regexp.Regexp) (isHit bool, retMatc
 	return false, ""
 }
 
-//substringExistsInLines Search for a regexp pattern occurring anywhere in a file
+// substringExistsInLines Search for a regexp pattern occurring anywhere in a file
 func substringExistsInLines(fileLines []Line, str string) bool {
 	reg := regexp.MustCompile("(?i)" + str)
 	for _, line := range fileLines {
@@ -46,7 +46,7 @@ func substringExistsInLines(fileLines []Line, str string) bool {
 	return false
 }
 
-//substringExistsInString check if sub exists in string
+// substringExistsInString check if sub exists in string
 func substringExistsInString(str string, substr string) bool {
 	m := search.New(language.English, search.IgnoreCase)
 	start, _ := m.IndexString(str, substr)
@@ -98,7 +98,7 @@ func findFalsePositive(hit Hit) (isFP bool) {
 			if len(rule.FileExtensions) > 0 { //Check if this rule only applies to certain files
 				scan = false
 				for _, fileExtension := range rule.FileExtensions { //Cycle through file extensions to verify rule applies to hit
-					if strings.Contains(hit.Filename, fileExtension) {
+					if strings.HasSuffix(strings.ToLower(hit.Filename), strings.ToLower(fileExtension)) {
 						scan = true //Trigger a value scan if the file name matches
 					}
 				}
