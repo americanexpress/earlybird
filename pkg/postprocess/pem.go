@@ -3,13 +3,12 @@ package postprocess
 import (
 	"crypto/x509"
 	"encoding/pem"
-	"fmt"
 	"log"
 	"os"
 	"strings"
 )
 
-func isPrivatePem(filePath string) bool {
+func IsPrivatePem(filePath string) bool {
 	// Read the PEM file
 	pemData, err := os.ReadFile(filePath)
 	if err != nil {
@@ -24,8 +23,6 @@ func isPrivatePem(filePath string) bool {
 			return false // No more blocks to decode
 		}
 
-		// Print block type
-		fmt.Println("Block Type:", block.Type)
 		if checkPrivate(block.Type) {
 			return true
 		}
