@@ -50,7 +50,7 @@ func IsPrivatePem(filePath string) bool {
 }
 
 func checkPrivate(blockType string) bool {
-	list := []string{"private", "PKCS8"}
+	list := []string{"private", "pkcs8"}
 	joinedList := strings.Join(list, " ")
 	blockTypes := strings.Split(strings.ToLower(blockType), " ")
 
