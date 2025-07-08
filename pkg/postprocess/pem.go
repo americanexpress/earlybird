@@ -3,18 +3,10 @@ package postprocess
 import (
 	"crypto/x509"
 	"encoding/pem"
-	"log"
-	"os"
 	"strings"
 )
 
-func IsPrivatePem(filePath string) bool {
-	// Read the PEM file
-	pemData, err := os.ReadFile(filePath)
-	if err != nil {
-		log.Printf("Failed to read PEM file %v: %v", filePath, err)
-		return true
-	}
+func IsPrivatePem(pemData []byte) bool {
 
 	// Loop through all PEM blocks
 	for {
@@ -32,13 +24,13 @@ func IsPrivatePem(filePath string) bool {
 		}
 
 		// Attempt to parse as a private key
-		_, err = x509.ParsePKCS8PrivateKey(block.Bytes)
+		_, err := x509.ParsePKCS8PrivateKey(block.Bytes)
 		if err == nil {
 			return true
 		}
 
 		// Attempt to parse as a public key
-		_, err := x509.ParsePKIXPublicKey(block.Bytes)
+		_, err = x509.ParsePKIXPublicKey(block.Bytes)
 		if err == nil {
 			pemData = rest
 			continue

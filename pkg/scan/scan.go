@@ -534,7 +534,12 @@ func (hit *Hit) filePostProcess(cfg *cfgReader.EarlybirdConfig, rule *Rule, file
 		isHit = true
 	case rule.Postprocess == "pem":
 		// check and return if the file is a private PEM file
-		isHit = postprocess.IsPrivatePem(file.Path)
+		fileBytes := file.Raw
+		// Try to read file from path if file.Raw is nil
+		if fileBytes == nil {
+			fileBytes, _ = os.ReadFile(file.Path)
+		}
+		isHit = postprocess.IsPrivatePem(fileBytes)
 		break
 	default:
 		isHit = true
