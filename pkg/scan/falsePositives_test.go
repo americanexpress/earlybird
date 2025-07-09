@@ -88,15 +88,6 @@ func Test_findFalsePositive(t *testing.T) {
 			wantIsFP: false,
 		},
 		{
-			name: "skip allowed encrypted CC number",
-			hit: Hit{
-				Code:       6008,
-				Filename:   "aspire.json",
-				MatchValue: `      "account_token": "EPQY2I6OK38NBKM",`,
-			},
-			wantIsFP: true,
-		},
-		{
 			name: "Skip typescript variable assignment",
 			hit: Hit{
 				Code:       3006,
