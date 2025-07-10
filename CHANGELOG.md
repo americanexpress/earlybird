@@ -1,3 +1,10 @@
+# [4.3.0](https://github.com/americanexpress/earlybird/compare/v4.2.6...v4.3.0) (2025-07-10)
+
+
+### Features
+
+* adding secret detection in .pem file ([#143](https://github.com/americanexpress/earlybird/issues/143)) ([a496681](https://github.com/americanexpress/earlybird/commit/a49668182066ac943cfea2f6030311945ea5b540))
+
 ## [4.2.6](https://github.com/americanexpress/earlybird/compare/v4.2.5...v4.2.6) (2025-07-10)
 
 
