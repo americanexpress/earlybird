@@ -1,3 +1,11 @@
+## [4.2.6](https://github.com/americanexpress/earlybird/compare/v4.2.5...v4.2.6) (2025-07-10)
+
+
+### Bug Fixes
+
+* remove CC testcase ([6778208](https://github.com/americanexpress/earlybird/commit/6778208df0626bb7dc2c83ec754312ae11d4bf97))
+* Updating the file extension matching ([6f2f4bf](https://github.com/americanexpress/earlybird/commit/6f2f4bf4c8f3684392a303092efe89e2e4c7a866))
+
 ## [4.2.5](https://github.com/americanexpress/earlybird/compare/v4.2.4...v4.2.5) (2025-05-19)
 
 
