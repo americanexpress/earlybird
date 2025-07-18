@@ -22,8 +22,5 @@ import (
 
 // To report account_token as credit card, need to skip for password
 func SkipAccountTokenPassword(password string) bool {
-	if strings.Contains(password, "account_token") {
-		return true
-	}
-	return false
+	return strings.Contains(password, "account_token")
 }
