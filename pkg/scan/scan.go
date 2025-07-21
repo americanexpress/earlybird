@@ -67,7 +67,7 @@ func SearchFiles(cfg *cfgReader.EarlybirdConfig, files []File, compressPaths []s
 	nameScanner(cfg, files, hits)
 
 	//Create work from file content for the scanPool
-	contentJobWriter(cfg, files, jobMutex, jobs)
+	contentJobWriter(cfg, files, jobs)
 
 	//Close our channels
 	close(jobs)
@@ -125,7 +125,7 @@ func determineScanFail(cfg *cfgReader.EarlybirdConfig, hit *Hit) bool {
 }
 
 // contentJobWriter creates work based off file content for scanning
-func contentJobWriter(cfg *cfgReader.EarlybirdConfig, files []File, jobMutex *sync.Mutex, jobs chan WorkJob) {
+func contentJobWriter(cfg *cfgReader.EarlybirdConfig, files []File, jobs chan WorkJob) {
 	var e error
 	// Loop through each File
 	for _, searchFile := range files {

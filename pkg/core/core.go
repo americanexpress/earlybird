@@ -21,8 +21,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/americanexpress/earlybird/v4/pkg/broadcast"
-	"github.com/americanexpress/earlybird/v4/pkg/buildflags"
 	"log"
 	"net/http"
 	"os"
@@ -31,6 +29,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/americanexpress/earlybird/v4/pkg/broadcast"
+	"github.com/americanexpress/earlybird/v4/pkg/buildflags"
 
 	"github.com/americanexpress/earlybird/v4/pkg/api"
 	cfgreader "github.com/americanexpress/earlybird/v4/pkg/config"
@@ -293,10 +294,19 @@ func (eb *EarlybirdCfg) Scan() {
 		log.Fatal("Failed to get FileContext: ", err)
 	}
 	HitChannel := make(chan scan.Hit)
-	go scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
+	ctx, cancel := context.WithCancel(context.Background())
+	if eb.Config.WithConsole && eb.Config.OutputFormat == "json" {
+		// Send output to a writer
+		eb.WriteResults(start, HitChannel, fileContext, ctx)
 
-	// Send output to a writer
-	eb.WriteResults(start, HitChannel, fileContext)
+		scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
+		defer cancel()
+	} else {
+		go scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
+
+		// Send output to a writer
+		eb.WriteResults(start, HitChannel, fileContext, ctx)
+	}
 
 	utils.DeleteGit(eb.Config.Gitrepo, eb.Config.SearchDir)
 	if eb.Config.FailScan {
@@ -335,15 +345,14 @@ func (eb *EarlybirdCfg) FileContext() (fileContext file.Context, err error) {
 }
 
 // WriteResults reads hits from the channel to the console or target file
-func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, fileContext file.Context) {
+func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, fileContext file.Context, ctx context.Context) {
 	// Send output to a writer
 	var err error
 
 	if eb.Config.WithConsole && eb.Config.OutputFormat == "json" {
 		var wg sync.WaitGroup
 		wg.Add(2)
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
+
 		broadcaster := broadcast.NewBroadcastServer(ctx, HitChannel)
 		listener1 := broadcaster.Subscribe()
 		listener2 := broadcaster.Subscribe()
@@ -357,7 +366,6 @@ func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, 
 			defer wg.Done()
 			err = writers.WriteJSON(listener2, eb.Config, fileContext, eb.Config.OutputFile)
 		}()
-		wg.Wait()
 	} else {
 		switch {
 		case eb.Config.OutputFormat == "json":
