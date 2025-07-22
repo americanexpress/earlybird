@@ -1,3 +1,10 @@
+## [4.3.1](https://github.com/americanexpress/earlybird/compare/v4.3.0...v4.3.1) (2025-07-22)
+
+
+### Bug Fixes
+
+* simplify if statement in skipAccountTokenPass ([#149](https://github.com/americanexpress/earlybird/issues/149)) ([347c4ba](https://github.com/americanexpress/earlybird/commit/347c4ba69c3d3472500c538d8568b111f37a68c1))
+
 # [4.3.0](https://github.com/americanexpress/earlybird/compare/v4.2.6...v4.3.0) (2025-07-10)
 
 
