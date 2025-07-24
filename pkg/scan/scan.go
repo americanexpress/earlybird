@@ -71,7 +71,7 @@ func SearchFiles(cfg *cfgReader.EarlybirdConfig, files []File, compressPaths []s
 
 	//Close our channels
 	close(jobs)
-	wg.Wait()
+	defer wg.Wait()
 	close(hits)
 }
 

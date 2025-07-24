@@ -294,19 +294,10 @@ func (eb *EarlybirdCfg) Scan() {
 		log.Fatal("Failed to get FileContext: ", err)
 	}
 	HitChannel := make(chan scan.Hit)
-	ctx, cancel := context.WithCancel(context.Background())
-	if eb.Config.WithConsole && eb.Config.OutputFormat == "json" {
-		// Send output to a writer
-		eb.WriteResults(start, HitChannel, fileContext, ctx)
+	go scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
 
-		scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
-		defer cancel()
-	} else {
-		go scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
-
-		// Send output to a writer
-		eb.WriteResults(start, HitChannel, fileContext, ctx)
-	}
+	// Send output to a writer
+	eb.WriteResults(start, HitChannel, fileContext)
 
 	utils.DeleteGit(eb.Config.Gitrepo, eb.Config.SearchDir)
 	if eb.Config.FailScan {
@@ -352,6 +343,8 @@ func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, 
 	if eb.Config.WithConsole && eb.Config.OutputFormat == "json" {
 		var wg sync.WaitGroup
 		wg.Add(2)
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
 
 		broadcaster := broadcast.NewBroadcastServer(ctx, HitChannel)
 		listener1 := broadcaster.Subscribe()
@@ -366,6 +359,7 @@ func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, 
 			defer wg.Done()
 			err = writers.WriteJSON(listener2, eb.Config, fileContext, eb.Config.OutputFile)
 		}()
+		wg.Wait()
 	} else {
 		switch {
 		case eb.Config.OutputFormat == "json":
