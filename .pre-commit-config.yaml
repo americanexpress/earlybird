@@ -1,0 +1,5 @@
+repos:
+-   repo: https://github.com/ccheng26/earlybird
+    rev: v4.3.1
+    hooks:
+    -   id: earlybird

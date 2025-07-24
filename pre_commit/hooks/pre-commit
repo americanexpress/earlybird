@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+echo "Running Go-EarlyBird pre-commit hook"
+go-earlybird -display-severity=high -fail-severity=critical -git-staged
+
+# $? stores exit value of the last command
+if [ $? -ne 0 ]; then
+ echo ""
+ echo "Secrets detection tests must pass before commit!"
+ echo ""
+ exit 1
+fi

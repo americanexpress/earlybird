@@ -1,0 +1,6 @@
+- id: earlybird
+  name: Earlybird pre-commit check
+  description: This hook runs earlybird check against git-staged files
+  entry: pre_commit/hooks/pre-commit
+  language: script
+  verbose: true
