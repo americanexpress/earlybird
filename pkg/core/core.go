@@ -336,7 +336,7 @@ func (eb *EarlybirdCfg) FileContext() (fileContext file.Context, err error) {
 }
 
 // WriteResults reads hits from the channel to the console or target file
-func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, fileContext file.Context, ctx context.Context) {
+func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, fileContext file.Context) {
 	// Send output to a writer
 	var err error
 
