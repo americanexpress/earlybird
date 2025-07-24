@@ -1,5 +1,5 @@
 repos:
--   repo: https://github.com/ccheng26/earlybird
+-   repo: https://github.com/americanexpress/earlybird
     rev: v4.3.1
     hooks:
     -   id: earlybird
