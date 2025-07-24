@@ -21,8 +21,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/americanexpress/earlybird/v4/pkg/broadcast"
-	"github.com/americanexpress/earlybird/v4/pkg/buildflags"
 	"log"
 	"net/http"
 	"os"
@@ -31,6 +29,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/americanexpress/earlybird/v4/pkg/broadcast"
+	"github.com/americanexpress/earlybird/v4/pkg/buildflags"
 
 	"github.com/americanexpress/earlybird/v4/pkg/api"
 	cfgreader "github.com/americanexpress/earlybird/v4/pkg/config"
@@ -344,6 +345,7 @@ func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, 
 		wg.Add(2)
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
+
 		broadcaster := broadcast.NewBroadcastServer(ctx, HitChannel)
 		listener1 := broadcaster.Subscribe()
 		listener2 := broadcaster.Subscribe()
