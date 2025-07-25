@@ -52,6 +52,7 @@ func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.Earlybird
 		if err != nil {
 			return fileList, err
 		}
+        defer myfile.Close()
 		// Per the HTTP spec, The filename directive of multipart form data will have it's path information stripped https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition.
 		// .ge_ignore file only works on absolute paths, not the basename of a file
 		// client will send filepath as base64 encoded and earlybird will decode to get the full path
@@ -129,7 +130,6 @@ func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.Earlybird
 			fileList = append(fileList, curFile)
 		}
 
-		myfile.Close()
 	}
 	return
 }

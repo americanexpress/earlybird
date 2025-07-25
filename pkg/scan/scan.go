@@ -147,6 +147,8 @@ func contentJobWriter(cfg *cfgReader.EarlybirdConfig, files []File, jobMutex *sy
 						log.Fatal("Can't open file", err)
 					}
 				}
+				defer fileOS.Close()
+
 				var work []WorkJob
 				var job WorkJob
 				job.FileLines = searchFile.Lines
@@ -172,7 +174,6 @@ func contentJobWriter(cfg *cfgReader.EarlybirdConfig, files []File, jobMutex *sy
 				for _, job := range work {
 					jobs <- job
 				}
-				fileOS.Close()
 			}
 		}
 	}
