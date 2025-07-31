@@ -47,6 +47,7 @@ var (
 func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.EarlybirdConfig) (fileList []scan.File, err error) {
 	ignorePatterns = getIgnorePatterns(cfg.SearchDir, cfg.IgnoreFile, cfg.VerboseEnabled)
 
+    var buffer bytes.Buffer
 	for _, fheader := range files {
 		myfile, err := fheader.Open()
 		if err != nil {
@@ -97,7 +98,7 @@ func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.Earlybird
 			var line scan.Line
 			reader := bufio.NewReader(myfile)
 			for {
-				var buffer bytes.Buffer
+				buffer.Reset()
 
 				var l []byte
 				var isPrefix bool
