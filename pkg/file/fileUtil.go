@@ -96,8 +96,9 @@ func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.Earlybird
 
 			var line scan.Line
 			reader := bufio.NewReader(myfile)
+			var buffer bytes.Buffer
 			for {
-				var buffer bytes.Buffer
+				buffer.Reset()
 
 				var l []byte
 				var isPrefix bool
