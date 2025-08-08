@@ -1,3 +1,10 @@
+## [4.3.2](https://github.com/americanexpress/earlybird/compare/v4.3.1...v4.3.2) (2025-08-08)
+
+
+### Bug Fixes
+
+* reuse bytes.Buffer in loop to reduce allocations ([#154](https://github.com/americanexpress/earlybird/issues/154)) ([8693c7f](https://github.com/americanexpress/earlybird/commit/8693c7f701b1f8d17753b423a34a236d1f8d15ef))
+
 ## [4.3.1](https://github.com/americanexpress/earlybird/compare/v4.3.0...v4.3.1) (2025-07-22)
 
 
