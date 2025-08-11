@@ -345,7 +345,6 @@ func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, 
 		wg.Add(2)
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
-
 		broadcaster := broadcast.NewBroadcastServer(ctx, HitChannel)
 		listener1 := broadcaster.Subscribe()
 		listener2 := broadcaster.Subscribe()
