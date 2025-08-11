@@ -54,6 +54,7 @@ func SearchFiles(cfg *cfgReader.EarlybirdConfig, files []File, compressPaths []s
 	//Delete tmp file directory when we're done
 	defer DeleteFiles(compressPaths)
 	defer DeleteFiles(convertPaths)
+	defer close(hits)
 
 	//Create our channels and mutex
 	var jobMutex = &sync.Mutex{}
@@ -71,8 +72,7 @@ func SearchFiles(cfg *cfgReader.EarlybirdConfig, files []File, compressPaths []s
 
 	//Close our channels
 	close(jobs)
-	defer wg.Wait()
-	close(hits)
+	wg.Wait()
 }
 
 // scanPool searches incoming jobs for secrets and write findings to hits channel
