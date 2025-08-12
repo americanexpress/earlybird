@@ -21,8 +21,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/americanexpress/earlybird/v4/pkg/broadcast"
-	"github.com/americanexpress/earlybird/v4/pkg/buildflags"
 	"log"
 	"net/http"
 	"os"
@@ -31,6 +29,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/americanexpress/earlybird/v4/pkg/broadcast"
+	"github.com/americanexpress/earlybird/v4/pkg/buildflags"
 
 	"github.com/americanexpress/earlybird/v4/pkg/api"
 	cfgreader "github.com/americanexpress/earlybird/v4/pkg/config"
