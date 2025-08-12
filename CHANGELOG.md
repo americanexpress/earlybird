@@ -1,3 +1,10 @@
+## [4.3.3](https://github.com/americanexpress/earlybird/compare/v4.3.2...v4.3.3) (2025-08-12)
+
+
+### Bug Fixes
+
+* addressing the deadlock issue ([#150](https://github.com/americanexpress/earlybird/issues/150)) ([c0e61c6](https://github.com/americanexpress/earlybird/commit/c0e61c6c81881ee15e28f0a34f0fb044b82d0471))
+
 ## [4.3.2](https://github.com/americanexpress/earlybird/compare/v4.3.1...v4.3.2) (2025-08-08)
 
 
