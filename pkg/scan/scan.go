@@ -58,7 +58,7 @@ func SearchFiles(cfg *cfgReader.EarlybirdConfig, files []File, compressPaths []s
 
 	//Create our channels and mutex
 	var jobMutex = &sync.Mutex{}
-	jobs := make(chan WorkJob)
+	jobs := make(chan WorkJob, 100)
 	wg := new(sync.WaitGroup)
 
 	//Create our worker pool

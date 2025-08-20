@@ -23,6 +23,7 @@ package broadcast
 
 import (
 	"context"
+
 	"github.com/americanexpress/earlybird/v4/pkg/scan"
 )
 
@@ -55,7 +56,7 @@ func NewBroadcastServer(ctx context.Context, source <-chan scan.Hit) BroadcastSe
 	service := &broadcastServer{
 		source:         source,
 		listeners:      make([]chan scan.Hit, 0),
-		addListener:    make(chan chan scan.Hit),
+		addListener:    make(chan chan scan.Hit, 10),
 		removeListener: make(chan (<-chan scan.Hit)),
 	}
 	go service.serve(ctx)
