@@ -604,6 +604,11 @@ func (hit *Hit) postProcess(cfg *cfgReader.EarlybirdConfig, rule *Rule) (isHit b
 			isHit = true
 		}
 
+	case rule.Postprocess == "basicAuth":
+		if postprocess.IsBasicAuthHeader(hit.MatchValue) {
+			isHit = true
+		}
+
 		// Verify credit card hits against a mod10 check
 	case rule.Postprocess == "mod10":
 		// If the match passed a Luhn/mod-10 check, build a Hit
