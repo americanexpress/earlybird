@@ -1,3 +1,11 @@
+## [4.3.4](https://github.com/americanexpress/earlybird/compare/v4.3.3...v4.3.4) (2025-08-28)
+
+
+### Bug Fixes
+
+* making the addlistener channel as buffered ([986daa7](https://github.com/americanexpress/earlybird/commit/986daa728aacb2468cca7361cc616d9058ad4c8b))
+* making the addlistener channel as buffered ([3e987dd](https://github.com/americanexpress/earlybird/commit/3e987dd8ed8b4cea1e7ac97bc8d6ba53790a06ea))
+
 ## [4.3.3](https://github.com/americanexpress/earlybird/compare/v4.3.2...v4.3.3) (2025-08-12)
 
 
