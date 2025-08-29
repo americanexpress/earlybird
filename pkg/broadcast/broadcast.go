@@ -33,31 +33,35 @@ type BroadcastServer interface {
 }
 
 type broadcastServer struct {
-	source         <-chan scan.Hit
-	listeners      []chan scan.Hit
-	addListener    chan chan scan.Hit
-	removeListener chan (<-chan scan.Hit)
+	source    <-chan scan.Hit
+	listeners []chan scan.Hit
 }
 
 // Subscribe() creates a subcribtion on broadcastServer.
 func (s *broadcastServer) Subscribe() <-chan scan.Hit {
 	newListener := make(chan scan.Hit)
-	s.addListener <- newListener
+	s.listeners = append(s.listeners, newListener)
+
 	return newListener
 }
 
 // CancelSubscription() cancel a subcribtion on broadcastServer.
 func (s *broadcastServer) CancelSubscription(channel <-chan scan.Hit) {
-	s.removeListener <- channel
+	for i, ch := range s.listeners {
+		if ch == channel {
+			s.listeners[i] = s.listeners[len(s.listeners)-1]
+			s.listeners = s.listeners[:len(s.listeners)-1]
+			close(ch)
+			break
+		}
+	}
 }
 
 // NewBroadcastServer() create a broadcast server and starts new routine.
 func NewBroadcastServer(ctx context.Context, source <-chan scan.Hit) BroadcastServer {
 	service := &broadcastServer{
-		source:         source,
-		listeners:      make([]chan scan.Hit, 0),
-		addListener:    make(chan chan scan.Hit, 10),
-		removeListener: make(chan (<-chan scan.Hit)),
+		source:    source,
+		listeners: make([]chan scan.Hit, 0),
 	}
 	go service.serve(ctx)
 	return service
@@ -77,17 +81,6 @@ func (s *broadcastServer) serve(ctx context.Context) {
 		select {
 		case <-ctx.Done():
 			return
-		case newListener := <-s.addListener:
-			s.listeners = append(s.listeners, newListener)
-		case listenerToRemove := <-s.removeListener:
-			for i, ch := range s.listeners {
-				if ch == listenerToRemove {
-					s.listeners[i] = s.listeners[len(s.listeners)-1]
-					s.listeners = s.listeners[:len(s.listeners)-1]
-					close(ch)
-					break
-				}
-			}
 		case val, ok := <-s.source:
 			if !ok {
 				return
