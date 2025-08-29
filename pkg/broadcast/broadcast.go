@@ -39,7 +39,7 @@ type broadcastServer struct {
 
 // Subscribe() creates a subcribtion on broadcastServer.
 func (s *broadcastServer) Subscribe() <-chan scan.Hit {
-	newListener := make(chan scan.Hit)
+	newListener := make(chan scan.Hit, 100)
 	s.listeners = append(s.listeners, newListener)
 
 	return newListener
