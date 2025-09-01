@@ -18,7 +18,6 @@ package core
 
 import (
 	"bufio"
-	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -295,14 +294,12 @@ func (eb *EarlybirdCfg) Scan() {
 	}
 	var wg sync.WaitGroup
 	HitChannel := make(chan scan.Hit)
-	ctx, cancel := context.WithCancel(context.Background())
 
 	// Send output to a writer | creating the hit results receiver first.
-	eb.WriteResults(start, HitChannel, fileContext, ctx, &wg)
-	go scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
+	eb.WriteResults(start, HitChannel, fileContext, &wg)
+	scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
 
 	wg.Wait()
-	cancel()
 
 	utils.DeleteGit(eb.Config.Gitrepo, eb.Config.SearchDir)
 	if eb.Config.FailScan {
@@ -341,22 +338,24 @@ func (eb *EarlybirdCfg) FileContext() (fileContext file.Context, err error) {
 }
 
 // WriteResults reads hits from the channel to the console or target file
-func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, fileContext file.Context, ctx context.Context, wg *sync.WaitGroup) {
+func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, fileContext file.Context, wg *sync.WaitGroup) {
 	// Send output to a writer
 	var err error
 	//
-	if true {
+	if eb.Config.WithConsole && eb.Config.OutputFormat == "json" {
 		// initializing the broadcaster with two listeners, and starting the broadcast server
-		broadcaster := broadcast.NewBroadcastServer(ctx, HitChannel, 2, wg)
+		broadcaster := broadcast.NewBroadcastServer(HitChannel, 2, wg)
 		listener := broadcaster.GetListeners()
 		go func() {
 			defer wg.Done()
 			err = writers.WriteConsole(listener[0], "", eb.Config.ShowFullLine)
 			log.Printf("\n%d files scanned in %s", len(fileContext.Files), time.Since(start))
+			printError(err)
 		}()
 		go func() {
 			defer wg.Done()
 			err = writers.WriteJSON(listener[1], eb.Config, fileContext, eb.Config.OutputFile)
+			printError(err)
 		}()
 	} else {
 		wg.Add(1)
@@ -371,8 +370,12 @@ func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, 
 				err = writers.WriteConsole(HitChannel, eb.Config.OutputFile, eb.Config.ShowFullLine)
 				log.Printf("\n%d files scanned in %s", len(fileContext.Files), time.Since(start))
 			}
+			printError(err)
 		}()
 	}
+}
+
+func printError(err error) {
 	if err != nil {
 		log.Println("Writing Results failed:", err)
 	}

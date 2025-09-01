@@ -22,7 +22,6 @@
 package broadcast
 
 import (
-	"context"
 	"sync"
 
 	"github.com/americanexpress/earlybird/v4/pkg/scan"
@@ -77,43 +76,28 @@ func (s *broadcastServer) CloseBroadcast() {
 			close(listener)
 		}
 	}
-	// defer s.wg.Done()
 }
 
 // NewBroadcastServer() create a broadcast server and starts new routine.
-func NewBroadcastServer(ctx context.Context, source <-chan scan.Hit, count int, wg *sync.WaitGroup) BroadcastServer {
+func NewBroadcastServer(source <-chan scan.Hit, count int, wg *sync.WaitGroup) BroadcastServer {
 	service := &broadcastServer{
 		source:    source,
 		listeners: make([]chan scan.Hit, 0),
 		wg:        wg,
 	}
 	service.AddSubscriber(count, wg)
-	go service.serve(ctx)
+	go service.broadCastData()
 	return service
 }
 
-// serve() run the server and manages listener counts.
-func (s *broadcastServer) serve(ctx context.Context) {
-	defer s.CloseBroadcast()
-
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		case val, ok := <-s.source:
-			if !ok {
-				return
-			}
-			for _, listener := range s.listeners {
-				if listener != nil {
-					select {
-					case listener <- val:
-					case <-ctx.Done():
-						return
-					}
-
-				}
+// broadCastData() run the server and manages listener counts.
+func (s *broadcastServer) broadCastData() {
+	for val := range s.source {
+		for _, listener := range s.listeners {
+			if listener != nil {
+				listener <- val
 			}
 		}
 	}
+	s.CloseBroadcast()
 }
