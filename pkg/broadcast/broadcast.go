@@ -23,32 +23,35 @@ package broadcast
 
 import (
 	"context"
+	"sync"
 
 	"github.com/americanexpress/earlybird/v4/pkg/scan"
 )
 
 type BroadcastServer interface {
-	Subscribe() <-chan scan.Hit
 	CancelSubscription(<-chan scan.Hit)
+	GetListeners() []chan scan.Hit
 }
 
 type broadcastServer struct {
 	source    <-chan scan.Hit
 	listeners []chan scan.Hit
+	wg        *sync.WaitGroup
 }
 
-// Subscribe() creates a subcribtion on broadcastServer.
+// Subscribe() creates a subscription on broadcastServer.
 func (s *broadcastServer) Subscribe() <-chan scan.Hit {
-	newListener := make(chan scan.Hit, 100)
+	newListener := make(chan scan.Hit)
 	s.listeners = append(s.listeners, newListener)
 
 	return newListener
 }
 
-// CancelSubscription() cancel a subcribtion on broadcastServer.
+// CancelSubscription() cancel a subscription on broadcastServer.
 func (s *broadcastServer) CancelSubscription(channel <-chan scan.Hit) {
 	for i, ch := range s.listeners {
 		if ch == channel {
+			s.wg.Done()
 			s.listeners[i] = s.listeners[len(s.listeners)-1]
 			s.listeners = s.listeners[:len(s.listeners)-1]
 			close(ch)
@@ -57,25 +60,41 @@ func (s *broadcastServer) CancelSubscription(channel <-chan scan.Hit) {
 	}
 }
 
+func (s *broadcastServer) GetListeners() []chan scan.Hit {
+	return s.listeners
+}
+
+func (s *broadcastServer) AddSubscriber(count int, wg *sync.WaitGroup) {
+	for i := 0; i < count; i++ {
+		s.wg.Add(1)
+		s.Subscribe()
+	}
+}
+
+func (s *broadcastServer) CloseBroadcast() {
+	for _, listener := range s.listeners {
+		if listener != nil {
+			close(listener)
+		}
+	}
+	// defer s.wg.Done()
+}
+
 // NewBroadcastServer() create a broadcast server and starts new routine.
-func NewBroadcastServer(ctx context.Context, source <-chan scan.Hit) BroadcastServer {
+func NewBroadcastServer(ctx context.Context, source <-chan scan.Hit, count int, wg *sync.WaitGroup) BroadcastServer {
 	service := &broadcastServer{
 		source:    source,
 		listeners: make([]chan scan.Hit, 0),
+		wg:        wg,
 	}
+	service.AddSubscriber(count, wg)
 	go service.serve(ctx)
 	return service
 }
 
 // serve() run the server and manages listener counts.
 func (s *broadcastServer) serve(ctx context.Context) {
-	defer func() {
-		for _, listener := range s.listeners {
-			if listener != nil {
-				close(listener)
-			}
-		}
-	}()
+	defer s.CloseBroadcast()
 
 	for {
 		select {
