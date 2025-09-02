@@ -16,22 +16,24 @@ func decodeBase64(encoded string) (string, error) {
 
 func IsBasicAuthHeader(rawText string) bool {
 
+	// check if the rawText contains "Authorization" and "Basic" (case-insensitive).  Raw text is expected to looks like this somewhat this Authorization: Basic asdffgfsaf
 	if !strings.Contains(strings.ToLower(rawText), "authorization") || !strings.Contains(strings.ToLower(rawText), "basic") {
 		return false
 	}
 
+	// Getting the start index of base64 encoded text from the header.
 	Index := strings.Index(strings.ToLower(rawText), "basic")
 	encryptedText := ""
 	for i := Index + 5; i < len(rawText); i++ {
-		if rawText[i] == ' ' || rawText[i] == '"' || rawText[i] == '`' || rawText[i] == '$' || rawText[i] == '\'' {
+		if rawText[i] == ' ' || rawText[i] == '"' || rawText[i] == '`' || rawText[i] == '$' || rawText[i] == '\'' { // removing the trailing spaces and quotes if any.
 			continue
 		}
-		encryptedText += string(rawText[i])
+		encryptedText += string(rawText[i]) // appending character to encryptedText
 	}
 
-	decodedText, err := decodeBase64(encryptedText)
+	decodedText, err := decodeBase64(encryptedText) // decoding the base64 encoded text.
 	if err != nil || decodedText == "" {
 		return false
 	}
-	return strings.Contains(decodedText, ":") && len(strings.Split(decodedText, ":")) == 2 && len(decodedText) > 2
+	return strings.Contains(decodedText, ":") && len(strings.Split(decodedText, ":")) == 2 && len(decodedText) > 2 // checking if the decoded text contains ':' and has two parts (username and password).
 }
