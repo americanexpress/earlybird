@@ -299,7 +299,7 @@ func (eb *EarlybirdCfg) Scan() {
 	eb.WriteResults(start, HitChannel, fileContext, &wg)
 	scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
 
-	wg.Wait()
+	wg.Wait() // this wait ensures that all writers goroutine are finished
 
 	utils.DeleteGit(eb.Config.Gitrepo, eb.Config.SearchDir)
 	if eb.Config.FailScan {
