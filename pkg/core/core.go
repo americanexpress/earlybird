@@ -295,9 +295,8 @@ func (eb *EarlybirdCfg) Scan() {
 	var wg sync.WaitGroup
 	HitChannel := make(chan scan.Hit)
 
-	// Send output to a writer | creating the hit results receiver first.
-	eb.WriteResults(start, HitChannel, fileContext, &wg)
-	scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
+	eb.WriteResults(start, HitChannel, fileContext, &wg)                                                             // Registering the hit receiver.
+	scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel) // sending the hits to the channel from the worker threads running on go-routine.
 
 	wg.Wait() // this wait ensures that all writers goroutine are finished
 
