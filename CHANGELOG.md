@@ -1,3 +1,10 @@
+# [4.4.0](https://github.com/americanexpress/earlybird/compare/v4.3.4...v4.4.0) (2025-09-03)
+
+
+### Features
+
+* adding postprocess for basic auth header ([#163](https://github.com/americanexpress/earlybird/issues/163)) ([b803750](https://github.com/americanexpress/earlybird/commit/b803750f62e81b05ad2c59316dc70f6461738f80))
+
 ## [4.3.4](https://github.com/americanexpress/earlybird/compare/v4.3.3...v4.3.4) (2025-08-28)
 
 
