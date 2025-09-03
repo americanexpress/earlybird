@@ -21,16 +21,6 @@ func TestIsBasicAuthHeader(t *testing.T) {
 			"Authorization: Basic acdefjhikl",
 			false,
 		},
-		{
-			"garbage in middle - this is handled by the pattern matching",
-			"370000ajlsdklasdj000000002",
-			true,
-		},
-		{
-			"Test AMEX example credit card",
-			"370000000000002",
-			true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
