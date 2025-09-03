@@ -615,7 +615,10 @@ func (hit *Hit) postProcess(cfg *cfgReader.EarlybirdConfig, rule *Rule) (isHit b
 		if postprocess.IsCard(hit.MatchValue) {
 			isHit = true
 		}
-
+	case rule.Postprocess == "basicAuth":
+		if postprocess.IsBasicAuthHeader(hit.MatchValue) {
+			isHit = true
+		}
 		// Calculate the entropy of a string and make sure it passes entropyThreshold
 	case rule.Postprocess == "entropy":
 		e := postprocess.Shannon(hit.MatchValue)
