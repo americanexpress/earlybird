@@ -16,8 +16,8 @@ func decodeBase64(encoded string) (string, error) {
 
 func IsBasicAuthHeader(rawText string) bool {
 
-	// check if the rawText contains "Authorization" and "Basic" (case-insensitive).  Raw text is expected to looks like this somewhat this Authorization: Basic asdffgfsaf
-	if !strings.Contains(strings.ToLower(rawText), "authorization") || !strings.Contains(strings.ToLower(rawText), "basic") {
+	// check if the rawText contains "Basic" (case-insensitive).  Raw text is expected to looks like this somewhat this Authorization: Basic dXNlbmFtZTpwYXNzd29yZA==
+	if !strings.Contains(strings.ToLower(rawText), "basic") {
 		return false
 	}
 
