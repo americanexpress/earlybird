@@ -59,8 +59,7 @@ rules:
     SolutionID: 11
     Severity: 1
     Confidence: 2
-    Postprocess: "pem
-    "
+    Postprocess: "pem"
     CWE:
       - CWE-312
       - CWE-321
