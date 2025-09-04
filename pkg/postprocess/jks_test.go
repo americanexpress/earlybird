@@ -17,12 +17,12 @@ func TestIsJKS(t *testing.T) {
 			false,
 		},
 		{
-			"Valid Basic Auth Header",
+			"Invalid JKS file",
 			[]byte("This is not a JKS file."),
 			false,
 		},
 		{
-			"Empty Basic Auth Header",
+			"Invalid JKS file",
 			[]byte("Non-JKS File"),
 			false,
 		},
