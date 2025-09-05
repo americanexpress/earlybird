@@ -19,11 +19,12 @@ package writers
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"time"
+
 	cfgReader "github.com/americanexpress/earlybird/v4/pkg/config"
 	"github.com/americanexpress/earlybird/v4/pkg/file"
 	"github.com/americanexpress/earlybird/v4/pkg/scan"
-	"os"
-	"time"
 )
 
 // WriteJSON takes the hits, converts them into JSON report and passing report to reportToJSONWriter().
@@ -52,7 +53,7 @@ func WriteJSON(hits <-chan scan.Hit, config cfgReader.EarlybirdConfig, fileConte
 	return err
 }
 
-//reportToJSONWriter Outputs an object as a JSON blob to an output file or console
+// reportToJSONWriter Outputs an object as a JSON blob to an output file or console
 func reportToJSONWriter(v interface{}, fileName string) (s string, err error) {
 	b, err := json.MarshalIndent(v, "", "\t")
 	if err != nil {
