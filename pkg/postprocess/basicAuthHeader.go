@@ -35,5 +35,6 @@ func IsBasicAuthHeader(rawText string) bool {
 	if err != nil || decodedText == "" {
 		return false
 	}
-	return strings.Contains(decodedText, ":") && len(strings.Split(decodedText, ":")) == 2 && len(decodedText) > 2 // checking if the decoded text contains ':' and has two parts (username and password).
+	colonIndex := strings.Index(decodedText, ":")
+	return colonIndex != -1 && colonIndex != 0 && colonIndex != len(decodedText)-1 && len(decodedText) > 2 // checking if the decoded text contains ':' and has two parts (username and password).
 }
