@@ -1,3 +1,12 @@
+## [4.4.1](https://github.com/americanexpress/earlybird/compare/v4.4.0...v4.4.1) (2025-09-08)
+
+
+### Bug Fixes
+
+* basic auth fp ([30071ec](https://github.com/americanexpress/earlybird/commit/30071ec2c0b34e96ac81a0803680dba0ce29031b)), closes [#178](https://github.com/americanexpress/earlybird/issues/178)
+* basic auth fp ([a8a6e97](https://github.com/americanexpress/earlybird/commit/a8a6e97ffa5a2eb663a94e4add6a4d30b1049e0e))
+* eb release ([ac83277](https://github.com/americanexpress/earlybird/commit/ac832778cbecffc11a0618a7473753db36d4553e))
+
 # [4.4.0](https://github.com/americanexpress/earlybird/compare/v4.3.4...v4.4.0) (2025-09-03)
 
 
