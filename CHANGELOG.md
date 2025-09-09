@@ -1,3 +1,11 @@
+## [4.4.2](https://github.com/americanexpress/earlybird/compare/v4.4.1...v4.4.2) (2025-09-09)
+
+
+### Bug Fixes
+
+* file leakage ([5f764c5](https://github.com/americanexpress/earlybird/commit/5f764c5699cbc7682e8a6e886f017ef89a98a507)), closes [#152](https://github.com/americanexpress/earlybird/issues/152)
+* use defer .Close() to protect against file leakage ([54b93ce](https://github.com/americanexpress/earlybird/commit/54b93ce0dd61953bc392ac694df21bc762d5601b))
+
 ## [4.4.1](https://github.com/americanexpress/earlybird/compare/v4.4.0...v4.4.1) (2025-09-08)
 
 
