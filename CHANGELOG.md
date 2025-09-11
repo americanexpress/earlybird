@@ -1,3 +1,10 @@
+## [4.4.3](https://github.com/americanexpress/earlybird/compare/v4.4.2...v4.4.3) (2025-09-11)
+
+
+### Bug Fixes
+
+* bug on symlinks ([#174](https://github.com/americanexpress/earlybird/issues/174)) ([29cc1ac](https://github.com/americanexpress/earlybird/commit/29cc1ac86ff69fa37f19677badf922f6e0d9cf3b))
+
 ## [4.4.2](https://github.com/americanexpress/earlybird/compare/v4.4.1...v4.4.2) (2025-09-09)
 
 
