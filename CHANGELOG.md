@@ -1,3 +1,11 @@
+## [4.4.4](https://github.com/americanexpress/earlybird/compare/v4.4.3...v4.4.4) (2025-09-12)
+
+
+### Bug Fixes
+
+* adding pem postprocess ([e04b560](https://github.com/americanexpress/earlybird/commit/e04b56083f61b3c7a3db9ac0dc7206f4a372ff4b))
+* indentation ([4966b4e](https://github.com/americanexpress/earlybird/commit/4966b4e876fd150366ad04357653ecd0b8ec77ca))
+
 ## [4.4.3](https://github.com/americanexpress/earlybird/compare/v4.4.2...v4.4.3) (2025-09-11)
 
 
