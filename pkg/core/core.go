@@ -175,6 +175,12 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	flag.Var(&enableFlags, "enable", "Enable individual scanning modules "+utils.GetDisplayList(eb.Config.AvailableModules))
 	flag.Parse()
 
+	// Print version and exit if version flag used
+	if *ptrVersion {
+		fmt.Println(eb.Config.Version)
+		os.Exit(0)
+	}
+
 	// Load Earlybird config
 	eb.Config.ConfigDir = *ptrConfigDir
 	earlybirdConfigPath := path.Join(eb.Config.ConfigDir, "earlybird.json")
