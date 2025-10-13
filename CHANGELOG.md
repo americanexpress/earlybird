@@ -1,3 +1,10 @@
+## [4.4.5](https://github.com/americanexpress/earlybird/compare/v4.4.4...v4.4.5) (2025-10-13)
+
+
+### Bug Fixes
+
+* adding valid pem test ([0945a39](https://github.com/americanexpress/earlybird/commit/0945a3934996e5efd5af0f0163456f72a7f31ada))
+
 ## [4.4.4](https://github.com/americanexpress/earlybird/compare/v4.4.3...v4.4.4) (2025-09-12)
 
 
