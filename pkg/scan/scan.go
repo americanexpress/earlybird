@@ -20,6 +20,7 @@ import (
 	"bufio"
 	"crypto/sha1"
 	"io"
+	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
@@ -141,9 +142,10 @@ func contentJobWriter(cfg *cfgReader.EarlybirdConfig, files []File, jobs chan Wo
 			//Don't do file read/scan on files we know will trigger the filename scan -- Don't open compressed files either
 			if !isExcludedFileType(cfg, searchFile.Name) && len(CompressPattern.FindStringSubmatch(searchFile.Name)) <= 0 {
 				fileInfo, err := os.Lstat(searchFile.Path)
-				if fileInfo.Mode()&os.ModeSymlink != 0 {
+				if err == nil && fileInfo != nil && fileInfo.Mode()&fs.ModeSymlink != 0 {
 					continue
 				}
+
 				fileOS, err := os.Open(searchFile.Path) //Open file path
 				if err != nil {
 					fileOS, err = os.Open(searchFile.Name) //If file path open fails, try file name
