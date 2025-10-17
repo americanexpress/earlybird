@@ -1,3 +1,10 @@
+## [4.4.6](https://github.com/americanexpress/earlybird/compare/v4.4.5...v4.4.6) (2025-10-17)
+
+
+### Bug Fixes
+
+* error with nil pointer on symlink check ([#185](https://github.com/americanexpress/earlybird/issues/185)) ([83efbbd](https://github.com/americanexpress/earlybird/commit/83efbbd3964e7d9b50556ab0b05a63440de1a107))
+
 ## [4.4.5](https://github.com/americanexpress/earlybird/compare/v4.4.4...v4.4.5) (2025-10-13)
 
 
