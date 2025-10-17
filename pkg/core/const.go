@@ -76,4 +76,5 @@ var (
 	ptrFailConfidenceThreshold    = flag.String("fail-confidence", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.FailThreshold), "Lowest confidence level at which to fail "+levelOptions)
 	ptrModuleConfigFile           = flag.String("module-config-file", "", "Path to file with per module config settings")
 	ptrDisableHttpKeepAlives      = flag.Bool("disable-keep-alives", false, "To disable keep-alives when running as http Server. By default, keep-alives are always enabled")
+	ptrVersion                    = flag.Bool("version", false, "Display version information and exit")
 )

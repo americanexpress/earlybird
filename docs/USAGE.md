@@ -101,6 +101,8 @@ Usage of go-earlybird:
     	Update module configurations
   -verbose
     	Reports details about file reads
+  -version
+    	Display version information and exit
   -with-console
         Prints findings in console with JSON format report
   -workers int
