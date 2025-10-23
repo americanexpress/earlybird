@@ -35,7 +35,7 @@ type issue struct {
 
 var issues = make(map[string]int)
 
-//WriteConsole streams hits from the result channel to the command line or target file
+// WriteConsole streams hits from the result channel to the command line or target file
 func WriteConsole(hits <-chan scan.Hit, fileName string, showFullLine bool) error {
 	// If no filename was passed in, just print to stdout
 	if fileName == "" {
@@ -53,6 +53,7 @@ func WriteConsole(hits <-chan scan.Hit, fileName string, showFullLine bool) erro
 		}
 	}
 	displayIssues()
+	log.Printf("\n%d rules observed\n", len(scan.CombinedRules))
 	return nil
 }
 
