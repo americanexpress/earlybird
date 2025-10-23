@@ -1,3 +1,10 @@
+# [4.5.0](https://github.com/americanexpress/earlybird/compare/v4.4.6...v4.5.0) (2025-10-23)
+
+
+### Features
+
+* add version flag ([#182](https://github.com/americanexpress/earlybird/issues/182)) ([f504664](https://github.com/americanexpress/earlybird/commit/f504664f4d98b36afbe1a0a89f23bbe0a298bf96))
+
 ## [4.4.6](https://github.com/americanexpress/earlybird/compare/v4.4.5...v4.4.6) (2025-10-17)
 
 
