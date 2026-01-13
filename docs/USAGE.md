@@ -109,6 +109,8 @@ Usage of go-earlybird:
     	Set number of workers. (default 100)
   -worksize int
     	Set Line Wrap Length. (default 2500)
+  -list-available-modules
+    	List available scanning modules. This is useful when inporting configurations from a file and you want to know the module available to configure.
   -module-config-file string
         Absolute path to a json or yaml file for per module level config -- {"modules": { "aModule": { "display_severity": "medium" } } }
   ```

@@ -39,6 +39,14 @@ func Init(cfg cfgreader.EarlybirdConfig) {
 		fmt.Println("Max file size to scan: ", cfg.MaxFileSize, " bytes")
 	}
 
+	if cfg.ModuleOnly {
+		log.Println("Available modules: ")
+		for moduleName := range cfg.EnabledModulesMap {
+			log.Println(moduleName)
+		}
+		os.Exit(0)
+	}
+
 	// Init rule set for modules
 	for moduleName, fileName := range cfg.EnabledModulesMap {
 		log.Println("loading module: ", moduleName)
