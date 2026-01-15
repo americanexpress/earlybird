@@ -13,6 +13,7 @@
 # permissions and limitations under the License.
 
 ---
+description: This module check for the presence of sensitive files and cryptographic keys based on filename patterns. It uses regular expressions to identify filenames that are commonly associated with private keys, configuration files, log files, database dumps, and other sensitive information. The rules in this module can help identify potential security risks where sensitive files may have been inadvertently included in a code repository or exposed in a file system. Each rule includes a severity level and confidence score to help prioritize findings.
 Searcharea: filename
 rules:
   - Code: 4001

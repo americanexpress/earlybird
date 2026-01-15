@@ -13,6 +13,7 @@
 # permissions and limitations under the License.
 
 ---
+description: This module checks for the presence of the terms "whitelist", "blacklist", "master", and "slave" in code, which are considered oppressive metaphors. The use of these terms can perpetuate harmful stereotypes and contribute to an unwelcoming environment. The rules in this module aim to promote inclusivity by encouraging developers to use more neutral language in their coding practices.
 Searcharea: body
 rules:
   - Code: 20001

@@ -40,9 +40,19 @@ func Init(cfg cfgreader.EarlybirdConfig) {
 	}
 
 	if cfg.ModuleOnly {
-		log.Println("Available modules: ")
-		for moduleName := range cfg.EnabledModulesMap {
-			log.Println(moduleName)
+		fmt.Println("\n\nAvailable Module List")
+		for moduleName, fileName := range cfg.EnabledModulesMap {
+			// Load the module config file to get the description
+			var moduleConfig struct {
+				Description string `json:"description"`
+			}
+			modulePath := path.Join(cfg.RulesConfigDir, fileName)
+			err := cfgreader.LoadConfig(&moduleConfig, modulePath)
+			if err != nil {
+				log.Println("Failed to load module file for description:", err)
+			} else {
+				fmt.Printf("\n%s: \n%s \n", moduleName, moduleConfig.Description)
+			}
 		}
 		os.Exit(0)
 	}
