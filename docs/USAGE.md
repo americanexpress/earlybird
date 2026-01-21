@@ -87,9 +87,14 @@ Specify the **directory** to scan (absolute path only).
 
 # Selective scanning
 
-- **`--enable value`**<br>
-`Type: String`, `Default:''` <br>
-Enable individual scanning modules. The supported module names are: **`inclusivity-rules`**, **`password-secret`**
+- **`--ignorefile`**<br>
+`Type: String`, `Default: './.ge_ignore` <br>
+Specify the patterns file for files to ignore. You can list files inside the ge_ignore as listed below:
+```shell
+/folder-name1/**
+/folder-name2/subfolder/**
+**/file-name.extension
+```
 
 - **`--ignore-fp-rules`**<br>
 `Type: Boolean`, `Default: false` <br>
@@ -301,14 +306,9 @@ Specify the private key file for TLS connect for the https server.
 
 # Additional Options
 
-- **`--ignorefile`**<br>
-`Type: String`, `Default: './.ge_ignore` <br>
-Specify the patterns file for files to ignore. You can list files inside the ge_ignore as listed below:
-```shell
-/folder-name1/**
-/folder-name2/subfolder/**
-**/file-name.extension
-```
+- **`--enable value`**<br>
+`Type: String`, `Default:''` <br>
+Enable individual scanning modules. By default all module are enabled and we recommend to use this feature only when specific module scanning is required. The supported module names are: **`inclusivity-rules`**, **`password-secret`**, **`ccnumber`**, **`content`** and **`filename`**
 
 
 - **`--ignore-failure`**<br>
