@@ -4,7 +4,7 @@ import (
 	"strings"
 	"time"
 
-	jwt "github.com/golang-jwt/jwt/v4"
+	jwt "github.com/golang-jwt/jwt/v5"
 )
 
 // IsValidJWT checks if the JWT token is valid and not expired.

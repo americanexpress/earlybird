@@ -7,7 +7,7 @@ require (
 	github.com/dghubble/sling v1.4.2
 	github.com/ghodss/yaml v1.0.0
 	github.com/gocarina/gocsv v0.0.0-20200330101823-46266ca37bd3
-	github.com/golang-jwt/jwt/v4 v4.5.2
+	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/gorilla/mux v1.8.1
 	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
