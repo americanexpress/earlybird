@@ -1,7 +1,6 @@
 package postprocess
 
 import (
-	"strings"
 	"time"
 
 	jwt "github.com/golang-jwt/jwt/v5"
@@ -15,11 +14,6 @@ func IsValidJWT(rawText string) bool {
 		if ch != ' ' && ch != '"' && ch != ':' && ch != '=' && ch != '\'' {
 			jwtToken += string(ch)
 		}
-	}
-
-	// Token is encrypted.
-	if len(strings.Split(jwtToken, ".")) == 5 {
-		return false
 	}
 
 	// Parse the JWT token.
