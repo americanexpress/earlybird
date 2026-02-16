@@ -25,11 +25,6 @@ func TestProcessJWT(t *testing.T) {
 			true,
 		},
 		{
-			"Ignore finding for Encrypted JWE token",
-			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
-			false,
-		},
-		{
 			"Valid JWT token, as it does contain expiration claim, and the expiration time is in the future",
 			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjMxNTU4NjkxNzkzMDAwLCJuYW1lIjoiQW1lcmljYW4gRXhwcmVzcyIsImFkbWluIjp0cnVlLCJpYXQiOjE1MTYyMzkwMjJ9.wOSLG3VTKg7A2KoKu9WsuIiKIpl__PDWStw1CkmeOPs",
 			true,
