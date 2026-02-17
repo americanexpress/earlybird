@@ -2,6 +2,18 @@
 
 EarlyBird is a sensitive data detection tool capable of scanning source code repositories for clear text password violations, PII, outdated cryptography methods, key files and more. It can be used to scan remote git repositories, local files or directories or as a pre-commit step.
 
+## Prerequisites
+Before running the `build` and `install` scripts on your local machine, you must ensure that `go` is installed locally on your machine. The following command can be
+used to check whether go has been installed.
+
+```
+go version
+```
+
+If `go` is not installed locally on your machine, then you ned to ensure that it is installed and the above command works on your local machine. The latest version of `go` can be downloaded from the following link.
+
+https://go.dev/dl/
+
 ## Installation
 ### Linux & Mac
 Running the `build.sh` script will produce a binary for each OS, while the `install.sh` script will install Earlybird on your system. This will create a `.go-earlybird` directory in your home directory with all the configuration files. Finally installing `go-earlybird` as an executable in `/usr/local/bin/`.
