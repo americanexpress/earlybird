@@ -610,7 +610,10 @@ func (hit *Hit) postProcess(cfg *cfgReader.EarlybirdConfig, rule *Rule) (isHit b
 		if postprocess.ValidSSN(hit.MatchValue) {
 			isHit = true
 		}
-
+	case rule.Postprocess == "jwt":
+		if postprocess.IsValidJWT(hit.MatchValue) {
+			isHit = true
+		}
 	case rule.Postprocess == "basicAuth":
 		if postprocess.IsBasicAuthHeader(hit.MatchValue) {
 			isHit = true

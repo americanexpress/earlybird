@@ -3,9 +3,6 @@ package postprocess
 import "testing"
 
 func TestIsPem(t *testing.T) {
-	type args struct {
-		cc string
-	}
 	tests := []struct {
 		name     string
 		text     []byte
