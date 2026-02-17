@@ -1,3 +1,10 @@
+## [4.5.1](https://github.com/americanexpress/earlybird/compare/v4.5.0...v4.5.1) (2026-02-17)
+
+
+### Bug Fixes
+
+* download artificat changes ([8a9d6d1](https://github.com/americanexpress/earlybird/commit/8a9d6d102b8b0e5571fcd4da7cb8b86c25468d07))
+
 # [4.5.0](https://github.com/americanexpress/earlybird/compare/v4.4.6...v4.5.0) (2025-10-23)
 
 
