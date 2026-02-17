@@ -1,3 +1,17 @@
+# [4.6.0](https://github.com/americanexpress/earlybird/compare/v4.5.1...v4.6.0) (2026-02-17)
+
+
+### Bug Fixes
+
+* adding test ([c9b653d](https://github.com/americanexpress/earlybird/commit/c9b653d4ce0ddd0a3c7dd0b36c7dae797e62f8d3))
+* removing encrypted test ([d201b71](https://github.com/americanexpress/earlybird/commit/d201b719e8fcfc21927c1281b1af769c508dcdf7))
+* removing incrypted exclusion ([300164f](https://github.com/americanexpress/earlybird/commit/300164f409fb538656199e15d884bfa2c89832a7))
+
+
+### Features
+
+* adding jwt detection ([30b72c4](https://github.com/americanexpress/earlybird/commit/30b72c407d53b27e47ff9322baedc0d21c0d67c9))
+
 ## [4.5.1](https://github.com/americanexpress/earlybird/compare/v4.5.0...v4.5.1) (2026-02-17)
 
 
