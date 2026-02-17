@@ -97,6 +97,7 @@ type EarlybirdConfig struct {
 	ShowFullLine               bool
 	FailScan                   bool
 	RulesOnly                  bool
+	ModuleOnly                 bool
 	ExtensionsToSkipScan       []string
 	AnnotationsToSkipLine      []string
 	SkipComments               bool
