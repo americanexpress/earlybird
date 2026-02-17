@@ -54,8 +54,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN}}
       - name: Download earlybird artifacts
         uses: actions/download-artifact@v6
-      - name: Copy artifacts to current directory
-        run: mv earlybird-binaries/* .
       - name: Print current directory
         run: ls -lah
       - name: Rename macOS binary
