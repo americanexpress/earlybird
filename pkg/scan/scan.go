@@ -297,14 +297,13 @@ func scanLine(line Line, fileLines []Line, cfg *cfgReader.EarlybirdConfig) (isHi
 
 // Take a filename and run through the rules, looking for a hit
 func scanName(file File, rules []Rule, cfg *cfgReader.EarlybirdConfig) (isHit bool, hit Hit) {
+	if file.Path == "buffer" {
+		file.Path = file.Name
+	}
 	for _, rule := range rules {
-		if rule.Searcharea == "body" { //Skip rules that do not apply
-			continue
-		}
-
-		if file.Path == "buffer" {
-			file.Path = file.Name
-		}
+		// if rule.Searcharea == "body" { //Skip other rules, except filename rules
+		// 	continue
+		// }
 
 		patternMatch, _ := findHit(file.Path, rule.CompiledPattern)
 
