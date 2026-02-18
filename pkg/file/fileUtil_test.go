@@ -38,7 +38,7 @@ func init() {
 
 	workDir = workingDir
 	projectRoot = path.Join(workingDir, "../../")
-	ignorePatterns = getIgnorePatterns(projectRoot, path.Join(projectRoot, ".ge_ignore"), false)
+	globalIgnorePatterns, globalIgnoreMatcher = getIgnorePatterns(projectRoot, path.Join(projectRoot, ".ge_ignore"), false)
 }
 
 func TestGetFiles(t *testing.T) {
@@ -57,7 +57,7 @@ func TestGetFiles(t *testing.T) {
 		t.Errorf("GetFiles() first file doesn't match example file")
 	}
 
-	if len(fileContext.IgnorePatterns) == 0 {
+	if fileContext.IgnorePatterns == nil {
 		t.Errorf("GetFiles() IgnorePatterns, got none")
 	}
 }
@@ -129,8 +129,8 @@ func Test_getFileSizeOK(t *testing.T) {
 }
 
 func Test_getIgnorePatterns(t *testing.T) {
-	if gotIgnorePatterns := getIgnorePatterns(projectRoot, ".ge_ignore", false); len(ignorePatterns) == 0 {
-		t.Errorf("getIgnorePatterns() = %v, want multiple patterns", gotIgnorePatterns)
+	if _, gotMatcher := getIgnorePatterns(projectRoot, ".ge_ignore", false); gotMatcher == nil {
+		t.Errorf("getIgnorePatterns() returned nil matcher")
 	}
 }
 
