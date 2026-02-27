@@ -35,17 +35,18 @@ import (
 	cfgreader "github.com/americanexpress/earlybird/v4/pkg/config"
 	"github.com/americanexpress/earlybird/v4/pkg/scan"
 	"github.com/americanexpress/earlybird/v4/pkg/utils"
-	"github.com/americanexpress/earlybird/v4/pkg/wildcard"
+	"gopkg.in/src-d/go-git.v4/plumbing/format/gitignore"
 )
 
 var (
-	ignoreFiles    = [...]string{".ge_ignore"}
-	ignorePatterns []string
+	ignoreFiles         = [...]string{".ge_ignore"}
+	globalIgnoreMatcher gitignore.Matcher
+	globalIgnorePatterns []string
 )
 
 // MultipartToScanFiles converts the multipart file upload into Earlybird files
 func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.EarlybirdConfig) (fileList []scan.File, err error) {
-	ignorePatterns = getIgnorePatterns(cfg.SearchDir, cfg.IgnoreFile, cfg.VerboseEnabled)
+	globalIgnorePatterns, globalIgnoreMatcher = getIgnorePatterns(cfg.SearchDir, cfg.IgnoreFile, cfg.VerboseEnabled)
 
     var buffer bytes.Buffer
 	for _, fheader := range files {
@@ -137,7 +138,7 @@ func MultipartToScanFiles(files []*multipart.FileHeader, cfg cfgreader.Earlybird
 
 // GetGitFiles Builds the list of staged or tracked files
 func GetGitFiles(fileType string, cfg *cfgreader.EarlybirdConfig) (fileContext Context, err error) {
-	ignorePatterns = getIgnorePatterns(cfg.SearchDir, cfg.IgnoreFile, cfg.VerboseEnabled)
+	globalIgnorePatterns, globalIgnoreMatcher = getIgnorePatterns(cfg.SearchDir, cfg.IgnoreFile, cfg.VerboseEnabled)
 
 	var (
 		output       []byte
@@ -167,7 +168,7 @@ func GetGitFiles(fileType string, cfg *cfgreader.EarlybirdConfig) (fileContext C
 	fileContext.Files = append(fileList, compressList...)
 	convertList, fileContext.ConvertPaths = GetConvertedFiles(fileContext.Files) //Get the files that need to be converted and convert them to plaintext
 	fileContext.Files = append(fileContext.Files, convertList...)
-	fileContext.IgnorePatterns = ignorePatterns
+	fileContext.IgnorePatterns = globalIgnorePatterns
 	fileContext.SkippedFiles = skipList
 	return fileContext, nil
 }
@@ -220,7 +221,7 @@ func parseGitFiles(out []byte, verbose bool, maxFileSize int64, searchDir string
 
 // GetFiles Build the list of files
 func GetFiles(searchDir, ignoreFile string, verbose bool, maxFileSize int64) (fileContext Context, err error) {
-	ignorePatterns = getIgnorePatterns(searchDir, ignoreFile, verbose)
+	globalIgnorePatterns, globalIgnoreMatcher = getIgnorePatterns(searchDir, ignoreFile, verbose)
 	fileList := make([]scan.File, 0)
 	var curFile scan.File
 	err = filepath.Walk(searchDir, func(path string, f os.FileInfo, err error) error {
@@ -269,7 +270,7 @@ func GetFiles(searchDir, ignoreFile string, verbose bool, maxFileSize int64) (fi
 	fileContext.Files = append(fileList, compressList...)
 	convertList, fileContext.ConvertPaths = GetConvertedFiles(fileContext.Files) //Get the files that need to be converted and convert them to plaintext
 	fileContext.Files = append(fileContext.Files, convertList...)
-	fileContext.IgnorePatterns = ignorePatterns
+	fileContext.IgnorePatterns = globalIgnorePatterns
 	return fileContext, nil
 }
 
@@ -345,33 +346,33 @@ func hasCompressionExtension(path string) bool {
 }
 
 // Read in .ge_ignore file and ignore files matching the patterns
-func getIgnorePatterns(filePath, ignoreFile string, verbose bool) (ignorePatterns []string) {
-	ignorePatterns = append(ignorePatterns, "*.git/*")
+func getIgnorePatterns(filePath, ignoreFile string, verbose bool) (ignorePatterns []string, matcher gitignore.Matcher) {
+	var patterns []gitignore.Pattern
+	// Always ignore .git directory
+	patterns = append(patterns, gitignore.ParsePattern(".git/", nil))
 
-	// Loop through the files defined to contain ignore patterns (.ge_ignore, .gitignore, etc.)
-	for _, ignoreFile := range ignoreFiles {
-		actualFilePath := path.Join(filePath, ignoreFile)
+	// Loop through the files defined to contain ignore patterns (.ge_ignore)
+	for _, fName := range ignoreFiles {
+		actualFilePath := path.Join(filePath, fName)
 		if Exists(actualFilePath) {
 			file, err := os.Open(actualFilePath)
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer file.Close()
-			scanner := bufio.NewScanner(file)
-			var line, firstChar string
-			for scanner.Scan() {
-				line = scanner.Text()
-
-				// Ignore comment lines (starting with #)
-				runes := []rune(line)
-				firstChar = string(runes[0:1])
-				if !(firstChar == "#") && strings.Trim(line, " ") != "" {
-					ignorePatterns = append(ignorePatterns, line)
+			if err == nil {
+				defer file.Close()
+				scanner := bufio.NewScanner(file)
+				for scanner.Scan() {
+					line := scanner.Text()
+					if strings.TrimSpace(line) != "" && !strings.HasPrefix(line, "#") {
+						ignorePatterns = append(ignorePatterns, line)
+						patterns = append(patterns, gitignore.ParsePattern(line, nil))
+					}
 				}
+			} else {
+				log.Println("Failed to open ignore file", err)
 			}
 		}
 	}
 
+	// User provided ignore file
 	if ignoreFile != "" {
 		file, err := os.Open(ignoreFile)
 		if err != nil {
@@ -379,36 +380,49 @@ func getIgnorePatterns(filePath, ignoreFile string, verbose bool) (ignorePattern
 		} else {
 			defer file.Close()
 			scanner := bufio.NewScanner(file)
-			var line, firstChar string
 			for scanner.Scan() {
-				line = scanner.Text()
-
-				// Ignore comment lines (starting with #)
-				runes := []rune(line)
-				firstChar = string(runes[0:1])
-				if !(firstChar == "#") && strings.Trim(line, " ") != "" {
+				line := scanner.Text()
+				if strings.TrimSpace(line) != "" && !strings.HasPrefix(line, "#") {
 					ignorePatterns = append(ignorePatterns, line)
+					patterns = append(patterns, gitignore.ParsePattern(line, nil))
 				}
 			}
 		}
 	}
 
 	if verbose {
-		log.Println("Ignore pattern: ", strings.Join(ignorePatterns, ", "))
+		log.Println("Parsed ignore patterns count: ", len(patterns))
 	}
-	return ignorePatterns
+	
+	matcher = gitignore.NewMatcher(patterns)
+	return ignorePatterns, matcher
 }
 
 // If the file matches a pattern in one of the ignore files, return true
 func isIgnoredFile(fileName string, fileRoot string) bool {
 	// ignore root directory when checking ignore matching
+	// The matcher expects paths relative to the root, effectively.
+	// But go-git matcher Match() expects a string slice of path components.
+	
 	trimmedName := strings.Replace(fileName, fileRoot, "", 1)
-	for _, pattern := range ignorePatterns {
-		if wildcard.PatternMatch(trimmedName, pattern) {
-			return true
-		}
+	trimmedName = strings.TrimPrefix(trimmedName, "/")
+	
+	if trimmedName == "" {
+		return false
 	}
-	return false
+	
+	pathParts := strings.Split(trimmedName, "/")
+	
+	// We default isDir to false unless we know better.
+	// Improvements could be made to pass isDir through, but for now this covers file cases.
+	// If the path ends in /, we assume it is a dir.
+	isDir := strings.HasSuffix(fileName, "/")
+	
+	// Match returns true if it matches an ignore pattern (and not a negation)
+	if globalIgnoreMatcher == nil {
+		return false
+	}
+	return globalIgnoreMatcher.Match(pathParts, isDir)
 }
 
 // Check a path to see if it's a directory
