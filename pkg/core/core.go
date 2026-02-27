@@ -211,6 +211,7 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	eb.Config.IgnoreFailure = *ptrIgnoreFailure
 	eb.Config.GitStream = *ptrGitStreamInput
 	eb.Config.RulesOnly = *ptrRulesOnly
+	eb.Config.ModuleOnly = *ptrAvailableModules
 	eb.Config.SkipComments = *ptrSkipComments
 	eb.Config.IgnoreFPRules = *ptrIgnoreFPRules
 	eb.Config.ShowSolutions = *ptrShowSolutions
