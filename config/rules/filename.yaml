@@ -63,6 +63,18 @@ rules:
     CWE:
       - CWE-312
       - CWE-321
+  - Code: 4061
+    Pattern: "(?i).*\\.pgp$"
+    Caption: Potential PGP key file
+    Category: key
+    Example: file.pgp
+    SolutionID: 11
+    Severity: 1
+    Confidence: 2
+    Postprocess: "pgp"
+    CWE:
+      - CWE-312
+      - CWE-321
   - Code: 4005
     Pattern: "(?i).*\\.pem$"
     Caption: Potential cryptographic private key

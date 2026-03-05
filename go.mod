@@ -4,6 +4,7 @@ go 1.24.0
 
 require (
 	code.sajari.com/docconv v1.3.8
+	github.com/ProtonMail/go-crypto v1.4.0
 	github.com/dghubble/sling v1.4.2
 	github.com/ghodss/yaml v1.0.0
 	github.com/gocarina/gocsv v0.0.0-20200330101823-46266ca37bd3
@@ -22,6 +23,7 @@ require (
 	github.com/advancedlogic/GoOse v0.0.0-20191112112754-e742535969c1 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/araddon/dateparse v0.0.0-20200409225146-d820a6159ab1 // indirect
+	github.com/cloudflare/circl v1.6.2 // indirect
 	github.com/emirpasic/gods v1.12.0 // indirect
 	github.com/fatih/set v0.2.1 // indirect
 	github.com/gigawattio/window v0.0.0-20180317192513-0f5467e35573 // indirect
