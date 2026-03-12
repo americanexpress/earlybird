@@ -18,7 +18,6 @@ package core
 
 import (
 	"bufio"
-	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -299,11 +298,13 @@ func (eb *EarlybirdCfg) Scan() {
 	if err != nil {
 		log.Fatal("Failed to get FileContext: ", err)
 	}
+	var wg sync.WaitGroup
 	HitChannel := make(chan scan.Hit)
-	go scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
 
-	// Send output to a writer
-	eb.WriteResults(start, HitChannel, fileContext)
+	eb.WriteResults(start, HitChannel, fileContext, &wg)                                                             // Registering the hit receiver.
+	scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel) // sending the hits to the channel from the worker threads running on go-routine.
+
+	wg.Wait() // this wait ensures that all writers goroutine are finished
 
 	utils.DeleteGit(eb.Config.Gitrepo, eb.Config.SearchDir)
 	if eb.Config.FailScan {
@@ -342,41 +343,44 @@ func (eb *EarlybirdCfg) FileContext() (fileContext file.Context, err error) {
 }
 
 // WriteResults reads hits from the channel to the console or target file
-func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, fileContext file.Context) {
+func (eb *EarlybirdCfg) WriteResults(start time.Time, HitChannel chan scan.Hit, fileContext file.Context, wg *sync.WaitGroup) {
 	// Send output to a writer
 	var err error
-
+	//
 	if eb.Config.WithConsole && eb.Config.OutputFormat == "json" {
-		var wg sync.WaitGroup
-		wg.Add(2)
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
-		broadcaster := broadcast.NewBroadcastServer(ctx, HitChannel)
-		listener1 := broadcaster.Subscribe()
-		listener2 := broadcaster.Subscribe()
+		// initializing the broadcaster with two listeners, and starting the broadcast server
+		broadcaster := broadcast.NewBroadcastServer(HitChannel, 2, wg)
+		listener := broadcaster.GetListeners()
 		go func() {
 			defer wg.Done()
-			err = writers.WriteConsole(listener1, "", eb.Config.ShowFullLine)
+			err = writers.WriteConsole(listener[0], "", eb.Config.ShowFullLine)
 			log.Printf("\n%d files scanned in %s", len(fileContext.Files), time.Since(start))
-			log.Printf("\n%d rules observed\n", len(scan.CombinedRules))
+			printError(err)
 		}()
 		go func() {
 			defer wg.Done()
-			err = writers.WriteJSON(listener2, eb.Config, fileContext, eb.Config.OutputFile)
+			err = writers.WriteJSON(listener[1], eb.Config, fileContext, eb.Config.OutputFile)
+			printError(err)
 		}()
-		wg.Wait()
 	} else {
-		switch {
-		case eb.Config.OutputFormat == "json":
-			err = writers.WriteJSON(HitChannel, eb.Config, fileContext, eb.Config.OutputFile)
-		case eb.Config.OutputFormat == "csv":
-			err = writers.WriteCSV(HitChannel, eb.Config.OutputFile)
-		default:
-			err = writers.WriteConsole(HitChannel, eb.Config.OutputFile, eb.Config.ShowFullLine)
-			log.Printf("\n%d files scanned in %s", len(fileContext.Files), time.Since(start))
-			log.Printf("\n%d rules observed\n", len(scan.CombinedRules))
-		}
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			switch {
+			case eb.Config.OutputFormat == "json":
+				err = writers.WriteJSON(HitChannel, eb.Config, fileContext, eb.Config.OutputFile)
+			case eb.Config.OutputFormat == "csv":
+				err = writers.WriteCSV(HitChannel, eb.Config.OutputFile)
+			default:
+				err = writers.WriteConsole(HitChannel, eb.Config.OutputFile, eb.Config.ShowFullLine)
+				log.Printf("\n%d files scanned in %s", len(fileContext.Files), time.Since(start))
+			}
+			printError(err)
+		}()
 	}
+}
+
+func printError(err error) {
 	if err != nil {
 		log.Println("Writing Results failed:", err)
 	}
