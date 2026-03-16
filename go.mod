@@ -1,6 +1,6 @@
 module github.com/americanexpress/earlybird/v4
 
-go 1.24.0
+go 1.25.0
 
 require (
 	code.sajari.com/docconv v1.3.8
@@ -12,7 +12,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
 	golang.org/x/net v0.50.0
-	golang.org/x/text v0.34.0
+	golang.org/x/text v0.35.0
 	gopkg.in/src-d/go-git.v4 v4.13.1
 )
 
