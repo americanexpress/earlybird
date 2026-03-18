@@ -25,7 +25,7 @@ var (
 	delta  = []int{0, 1, 2, 3, 4, -4, -3, -2, -1, 0}
 )
 
-//IsCard Run a mod10 check on a potential card number
+// IsCard Run a mod10 check on a potential card number
 func IsCard(cc string) bool {
 	cc = isolateNumber(cc)
 	if len(cc) == 0 {
@@ -41,6 +41,9 @@ func IsCard(cc string) bool {
 			checksum += delta[cn]
 		}
 		bOdd = !bOdd
+	}
+	if len(card) == 13 { // checking if the first 2 digits are 34 or 37 for AMEX.
+		return (checksum+8)%10 == 0 || (checksum+11)%10 == 0
 	}
 	return checksum%10 == 0
 }
