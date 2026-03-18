@@ -548,6 +548,15 @@ func (hit *Hit) filePostProcess(cfg *cfgReader.EarlybirdConfig, rule *Rule, file
 		}
 		isHit = postprocess.IsPrivatePem(fileBytes)
 		break
+	case rule.Postprocess == "pgp":
+		// check and return if the file is a private PGP file
+		fileBytes := file.Raw
+		// Try to read file from path if file.Raw is nil
+		if fileBytes == nil {
+			fileBytes, _ = os.ReadFile(file.Path)
+		}
+		isHit = postprocess.IsPrivatePGP(fileBytes)
+		break
 	default:
 		isHit = true
 	}
