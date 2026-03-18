@@ -59,6 +59,7 @@ var (
 	ptrShowFullLine               = flag.Bool("show-full-line", false, "Display the full line where the pattern match was found (warning: this can be dangerous with minified script files)")
 	ptrConfigDir                  = flag.String("config", utils.GetConfigDir(), "Directory where configuration files are stored")
 	ptrRulesOnly                  = flag.Bool("show-rules-only", false, "Display rules that would be run, but do not execute a scan")
+	ptrAvailableModules           = flag.Bool("list-available-modules", false, "Display modules that are available, but do not execute a scan")
 	ptrSkipComments               = flag.Bool("skip-comments", false, "Skip scanning comments in files -- applies only to the 'content' module")
 	ptrIgnoreFPRules              = flag.Bool("ignore-fp-rules", false, "Ignore the false positive post-process rules")
 	ptrShowSolutions              = flag.Bool("show-solutions", false, "Display recommended solution for each finding")

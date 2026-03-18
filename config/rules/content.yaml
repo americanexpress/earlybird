@@ -13,6 +13,7 @@
 # permissions and limitations under the License.
 
 ---
+description: This module check for the presence of potential sensitive information in files. It uses a variety of regular expressions to identify patterns that may indicate the presence of sensitive data, such as keys, passwords, phone numbers, email addresses, IP addresses, social security numbers, national IDs, passport numbers, and deprecated cryptographic methods. The rules are designed to help identify potential security risks and protect sensitive information from being exposed. Each rule includes a post-processing step to further analyze the matched data and determine if it is indeed sensitive information.
 Searcharea: body
 rules:
   - Code: 3009
