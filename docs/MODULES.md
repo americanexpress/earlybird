@@ -10,7 +10,7 @@ Modules are configurable rule sets that define patterns and target areas for sea
  &nbsp;
  
 ## Creating New Modules:
-New modules can be added via json rules files in the user's `go-earlybird` configuration directory.  Simply add a new json file into this directory (e.g. `custom-rules.json`) with the following structure, and EarlyBird will detect and load the rules.  Keeping these custom rules in a separate file will ensure they do not get overwritten when EarlyBird is updated.
+New modules can be added via JSON rules files in the user's `go-earlybird` configuration directory.  Simply add a new JSON file into this directory (e.g. `custom-rules.json`) with the following structure, and EarlyBird will detect and load the rules.  Keeping these custom rules in a separate file will ensure they do not get overwritten when EarlyBird is updated.
 ```
 {
     "Searcharea": "<Where in the file should the scan search?  Supports `body` or `filename`>",

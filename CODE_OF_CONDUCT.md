@@ -3,15 +3,15 @@
 #### Last Modified: January 29, 2016
 
 Welcome to the American Express Open Source Community on GitHub! These American Express Community
-Guidelines outline our expectations for Github participating members within the American Express
+Guidelines outline our expectations for GitHub participating members within the American Express
 community, as well as steps for reporting unacceptable behavior. We are committed to providing a
 welcoming and inspiring community for all and expect our community Guidelines to be honored.
 
 **IMPORTANT REMINDER:**
 
 When you visit American Express on any third party sites such as GitHub your activity there is
-subject to that site’s then current terms of use., along with their privacy and data security
-practices and policies. The Github platform is not affiliated with us and may have practices and
+subject to that site’s then current terms of use, along with their privacy and data security
+practices and policies. The GitHub platform is not affiliated with us and may have practices and
 policies that are different than are our own.
 
 Please note, American Express is not responsible for, and does not control, the GitHub site’s terms
@@ -55,7 +55,7 @@ to food, health, parenting, drugs, and employment
 - Deliberate misgendering. This includes deadnaming or persistently using a pronoun that does not
 correctly reflect a person's gender identity. You must address people by the name they give you when
 not addressing them by their username or handle
-- Physical contact and simulated physical contact (eg, textual descriptions like “hug” or “backrub”)
+- Physical contact and simulated physical contact (e.g., textual descriptions like “hug” or “backrub”)
 without consent or after a request to stop
 - Threats of violence, both physical and psychological
 - Incitement of violence towards any individual, including encouraging a person to commit suicide
@@ -114,7 +114,7 @@ protecting victims of abuse.
 
 ### Removal of Posts
 We will not review every comment or post, but we reserve the right to remove any that violates these
-Guidelines or that, in our sole discretion, we otherwise consider objectionable and we may ban
+Guidelines or that, in our sole discretion, we otherwise consider objectionable, and we may ban
 offenders from our community.
 
 ### Suspension/Termination/Reporting to Authority

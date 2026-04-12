@@ -16,7 +16,7 @@ fi
 *(NOTE: To run the pre-commit hook without failing the commit, you can remove the `exit 1` line, although we recommend keeping the commit-blocking in place)*
 &nbsp;
 
-The following is an example of running EarlyBird from package.json against a local repository before commit, failing the commit if high or critical issues are found (requires git-bash on windows):
+The following is an example of running EarlyBird from package.json against a local repository before commit, failing the commit if high or critical issues are found (requires git-bash on Windows):
 ```
 {
   "name": "demoproj",

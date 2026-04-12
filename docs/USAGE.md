@@ -1,7 +1,7 @@
 ## <a name="running"></a> Running Go-EarlyBird
 
 ### <a name="standalone"></a> Standalone
-Assuming the setup script was run, you can kick off the application by running 'go-earlybird' / 'go-earlybird.exe' / 'go-earlybird-linux (mac / windows / linux).  See the *Usage* section below
+Assuming the setup script was run, you can kick off the application by running 'go-earlybird' / 'go-earlybird.exe' / 'go-earlybird-linux' (Mac / Windows / Linux).  See the *Usage* section below.
 
 If Go is installed, the project can be downloaded and run with `go run go-earlybird.go`
 
@@ -20,7 +20,7 @@ Using the `-stream` flag, users can stream or pipe file contents to 'go-earlybir
 ```
 ᐅ go-earlybird --http 0.0.0.0:3000
 ```
-`/scan` will accept a multi-part upload and scan the contents, returning json output.
+`/scan` will accept a multi-part upload and scan the contents, returning JSON output.
 
 The normal HTTP listener will operate on HTTP/1.1.  Go-EarlyBird can be run as HTTPS/2 with the `-https [ip:port]` flag.  Note that this also requires the `-https-cert [/path/to/cert]` and `-https-key [/path/to/key]` parameters.
 

@@ -1,6 +1,6 @@
 ![Logo](docs/GoEarlyBird-logo_sm.png)
 
-EarlyBird is a sensitive data detection tool capable of scanning source code repositories for clear text password violations, PII, outdated cryptography methods, key files and more. It can be used to scan remote git repositories, local files or directories or as a pre-commit step.
+EarlyBird is a sensitive data detection tool capable of scanning source code repositories for clear text password violations, PII, outdated cryptography methods, key files, and more. It can be used to scan remote Git repositories, local files or directories or as a pre-commit step.
 
 ## Prerequisites
 Before running the `build` and `install` scripts on your local machine, you must ensure that `go` is installed locally on your machine. The following command can be
@@ -10,13 +10,13 @@ used to check whether go has been installed.
 go version
 ```
 
-If `go` is not installed locally on your machine, then you ned to ensure that it is installed and the above command works on your local machine. The latest version of `go` can be downloaded from the following link.
+If `go` is not installed locally on your machine, then you need to ensure that it is installed and the above command works on your local machine. The latest version of `go` can be downloaded from the following link.
 
 https://go.dev/dl/
 
 ## Installation
 ### Linux & Mac
-Running the `build.sh` script will produce a binary for each OS, while the `install.sh` script will install Earlybird on your system. This will create a `.go-earlybird` directory in your home directory with all the configuration files. Finally installing `go-earlybird` as an executable in `/usr/local/bin/`.
+Running the `build.sh` script will produce a binary for each OS, while the `install.sh` script will install EarlyBird on your system. This will create a `.go-earlybird` directory in your home directory with all the configuration files. Finally, the `install.sh` script installs `go-earlybird` as an executable in `/usr/local/bin/`.
 ```
 ./build.sh && ./install.sh
 ```
@@ -44,10 +44,10 @@ $ go-earlybird --git=https://github.com/americanexpress/earlybird
 
 
 ## Documentation
- - [Usage - How do I use Earlybird?](./docs/USAGE.md)
+ - [Usage - How do I use EarlyBird?](./docs/USAGE.md)
  - [Modules - What is a Module? How do I create one?](./docs/MODULES.md)
- - [Hooks - How do I use Earlybird as Pre-Commit Hook?](./docs/HOOKS.md)
- - [REST API - How do I use Earlybird as REST API?](./docs/REST.md)
+ - [Hooks - How do I use EarlyBird as Pre-Commit Hook?](./docs/HOOKS.md)
+ - [REST API - How do I use EarlyBird as a REST API?](./docs/REST.md)
  - [False Positives - How are they managed? How do I filter them?](./docs/FALSEPOSITIVES.md)
  - [Labels - What are labels? How do I create my own?](./docs/LABELS.md)
  - [Ignore - How do I skip lines or files intentionally?](./docs/IGNORE.md)
@@ -70,11 +70,11 @@ The MITRE Corporation provides a catalog of [Common Weakness Enumerations](https
 ---
 
 ## Contributing
-We welcome your interest in the American Express Open Source Community on Github. Any Contributor to
+We welcome your interest in the American Express Open Source Community on GitHub. Any Contributor to
 any Open Source Project managed by the American Express Open Source Community must accept and sign
 an Agreement indicating agreement to the terms below. Except for the rights granted in this 
-Agreement to American Express and to recipients of software distributed by American Express, You
-reserve all right, title, and interest, if any, in and to your contributions. Please
+Agreement to American Express and to recipients of software distributed by American Express, you
+reserve all rights, title, and interest, if any, in and to your contributions. Please
 [fill out the Agreement](https://cla-assistant.io/americanexpress/earlybird).
 
 ## License
