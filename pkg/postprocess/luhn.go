@@ -45,6 +45,7 @@ func IsCard(cc string) bool {
 	if len(card) == 13 { // checking if the first 2 digits are 34 or 37 for AMEX.
 		return (checksum+8)%10 == 0 || (checksum+11)%10 == 0
 	}
+
 	return checksum%10 == 0
 }
 
