@@ -16,10 +16,22 @@
 Searcharea: body
 rules:
   - Code: 2001
-    Pattern: "[^\\.](\\b3[47]\\d{13}\\b)"
+    Pattern: "[^\\.-]\\b3[47]\\d{2}(\\d{6}| \\d{6} |-\\d{6}-)\\d{5}[^\\w-]"
     Caption: Potential American Express credit card number in file
     Category: cc-number
     Example: '"378282246310005"'
+    SolutionID: 7
+    Severity: 2
+    Confidence: 2
+    Postprocess: mod10
+    CWE:
+      - CWE-312
+
+  - Code: 2008
+    Pattern: "[^\\.](\\b(xx|XX|__)?\\d{2}(\\d{6}| \\d{6} |-\\d{6}-)\\d{5}\\b)"
+    Caption: Potential Amex credit card number in file where first two obvious digits are masked
+    Category: cc-number
+    Example: "\"xx8282246310005\""
     SolutionID: 7
     Severity: 2
     Confidence: 2
