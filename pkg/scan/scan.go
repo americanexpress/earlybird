@@ -301,7 +301,7 @@ func scanName(file File, rules []Rule, cfg *cfgReader.EarlybirdConfig) (isHit bo
 		file.Path = file.Name
 	}
 	for _, rule := range rules {
-		if rule.Searcharea == "body" { //Skip other rules, except filename rules
+		if rule.Searcharea == "body" { //Skip other rules, except filename rules that do not apply
 			continue
 		}
 
