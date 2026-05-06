@@ -418,37 +418,21 @@ func splitSubN(s string, n int) []string {
 		}
 	}
 
-	results := []string{}
-	//subs contains all split strings
-	//iterate over strings parsing
-	toggle := true
-	for _, sub := range chunks {
-		var tmpString string
-		if toggle { // Check if we should parse from the end of the string
-			toggle = false
-			results = append(results, sub) // Append split string
-			if len(sub) >= overlapLength {
-				tmpString = sub[len(sub)-overlapLength:]
-			} else {
-				if len(sub) > 0 {
-					tmpString = sub[len(sub)-(len(sub)-1):]
-				} else {
-					tmpString = sub[0:]
-				}
-			}
-			continue
+	if len(chunks) == 0 {
+		return []string{}
+	}
+
+	results := []string{chunks[0]}
+	for i := 1; i < len(chunks); i++ {
+		prev := chunks[i-1]
+		cur := chunks[i]
+
+		if len(prev) >= overlapLength && len(cur) >= overlapLength {
+			bridge := prev[len(prev)-overlapLength:] + cur[:overlapLength]
+			results = append(results, bridge)
 		}
-		// parse from the start of the string
-		toggle = true
-		if len(sub) > overlapLength {
-			tmpString = tmpString + sub[0:overlapLength-1]
-			results = append(results, tmpString) //Append overlapped data
-			results = append(results, sub)       // Append split string
-			tmpString = ""
-		} else {
-			results = append(results, sub) // Append split string
-			break                          //stop if last element is too short
-		}
+
+		results = append(results, cur)
 	}
 	return results
 }

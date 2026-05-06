@@ -38,21 +38,21 @@ type Rule struct {
 
 // Hit is a match in a file against a specific rule
 type Hit struct {
-	Code         int      `json:"code"`
-	Filename     string   `json:"filename"`
-	Caption      string   `json:"caption"`
-	Category     string   `json:"category"`
-	MatchValue   string   `json:"match_value"`
-	LineValue    string   `json:"line_value"`
-	Solution     string   `json:"solution"`
-	Line         int      `json:"line"`
-	Severity     string   `json:"severity"`
-	SeverityID   int      `json:"severity_id"`
-	Confidence   string   `json:"confidence"`
-	ConfidenceID int      `json:"confidence_id"`
-	Labels       []string `json:"labels"`
-	CWE          []string `json:"cwe"`
-	Time         string   `json:"time"`
+	Code          int      `json:"code"`
+	Filename      string   `json:"filename"`
+	Caption       string   `json:"caption"`
+	Category      string   `json:"category"`
+	MatchValue    string   `json:"match_value"`
+	LineValue string `json:"line_value"`
+	Solution      string   `json:"solution"`
+	Line          int      `json:"line"`
+	Severity      string   `json:"severity"`
+	SeverityID    int      `json:"severity_id"`
+	Confidence    string   `json:"confidence"`
+	ConfidenceID  int      `json:"confidence_id"`
+	Labels        []string `json:"labels"`
+	CWE           []string `json:"cwe"`
+	Time          string   `json:"time"`
 }
 
 // File to scan
@@ -65,7 +65,7 @@ type File struct {
 
 // Line in a file to scan
 type Line struct {
-	LineNum                       int
+	LineNum                                      int
 	LineValue, FilePath, FileName string
 }
 
