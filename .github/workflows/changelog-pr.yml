@@ -1,0 +1,56 @@
+name: Changelog PR
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update_changelog:
+    if: github.event.release.prerelease == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build changelog entry
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_DATE: ${{ github.event.release.published_at }}
+          RELEASE_BODY: ${{ github.event.release.body }}
+          RELEASE_URL: ${{ github.event.release.html_url }}
+        run: |
+          # Normalize markdown heading and prepend the latest release at the top.
+          release_date="$(date -u -d "$RELEASE_DATE" +%Y-%m-%d 2>/dev/null || date -u +%Y-%m-%d)"
+          {
+            echo "## [$RELEASE_TAG]($RELEASE_URL) - $release_date"
+            echo
+            printf '%s\n' "$RELEASE_BODY"
+            echo
+          } > /tmp/changelog-entry.md
+
+          if [ -f CHANGELOG.md ]; then
+            cat CHANGELOG.md >> /tmp/changelog-entry.md
+          fi
+
+          mv /tmp/changelog-entry.md CHANGELOG.md
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "docs(changelog): update changelog for ${{ github.event.release.tag_name }}"
+          title: "docs(changelog): update changelog for ${{ github.event.release.tag_name }}"
+          body: |
+            Automated changelog update for release `${{ github.event.release.tag_name }}`.
+
+            This PR was created by the `changelog-pr` workflow after publishing a GitHub release.
+          branch: automation/changelog-${{ github.event.release.tag_name }}
+          delete-branch: true
+          labels: |
+            documentation
