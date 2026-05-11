@@ -434,7 +434,7 @@ func splitSubN(s string, n int) []string {
 		// parse from the start of the string
 		toggle = true
 		if len(sub) > overlapLength {
-			tmpString = tmpString + sub[0:overlapLength-1]
+			tmpString = tmpString + sub[0:overlapLength]
 			results = append(results, tmpString) //Append overlapped data
 			results = append(results, sub)       // Append split string
 			tmpString = ""
