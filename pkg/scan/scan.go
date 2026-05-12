@@ -420,9 +420,11 @@ func splitSubN(s string, n int) []string {
 	start := n
 	for ; start+n < len(runes); start += n {
 		cur := runes[start : start+n]
-		bridge := string(prev[n-overlapLength:]) + string(cur[:overlapLength])
+		if n > overlapLength {
+			bridge := string(prev[n-overlapLength:]) + string(cur[:overlapLength])
+			results = append(results, bridge)
+		}
 		results = append(results, string(cur))
-		results = append(results, bridge)
 		prev = cur
 	}
 
