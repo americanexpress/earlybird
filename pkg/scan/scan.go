@@ -411,7 +411,20 @@ func splitSubN(s string, n int) []string {
 	if len(runes) <= n {
 		return []string{s}
 	}
-	results := make([]string, 0, len(runes)/n)
+
+	if n <= overlapLength {
+		// simple split only, no bridge
+		results := make([]string, 0, (len(runes) / n))
+		for start := 0; start < len(runes); start += n {
+			end := start + n
+			if end > len(runes) {
+				end = len(runes)
+			}
+			results = append(results, string(runes[start:end]))
+		}
+		return results
+	}
+	results := make([]string, 0, 2*(len(runes)/n))
 
 	// Append first chunk before the loop
 	results = append(results, string(runes[0:n]))
@@ -420,10 +433,8 @@ func splitSubN(s string, n int) []string {
 	start := n
 	for ; start+n < len(runes); start += n {
 		cur := runes[start : start+n]
-		if n > overlapLength {
-			bridge := string(prev[n-overlapLength:]) + string(cur[:overlapLength])
-			results = append(results, bridge)
-		}
+		bridge := string(prev[n-overlapLength:]) + string(cur[:overlapLength])
+		results = append(results, bridge)
 		results = append(results, string(cur))
 		prev = cur
 	}
