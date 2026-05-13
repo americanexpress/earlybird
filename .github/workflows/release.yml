@@ -20,7 +20,7 @@ jobs:
       - name: Get version for next release
         id: getversion
         run: |
-          echo "earlybird_next_version=$(npx -p @semantic-release/changelog -p @semantic-release/git -p semantic-release@19.0.2 semantic-release --no-ci --dry-run | grep -o 'The next release version is .*' | awk '{print $NF}')" >> $GITHUB_OUTPUT
+          echo "earlybird_next_version=$(npx -p @semantic-release/github -p @semantic-release/release-notes-generator -p semantic-release@19.0.2 semantic-release --no-ci --dry-run | grep -o 'The next release version is .*' | awk '{print $NF}')" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build:
@@ -65,6 +65,6 @@ jobs:
         with:
           node-version: '16'
       - name: Create a release with Semantic Release
-        run: npx -p @semantic-release/changelog -p @semantic-release/git -p semantic-release@19.0.2 semantic-release
+        run: npx -p @semantic-release/github -p @semantic-release/release-notes-generator -p semantic-release@19.0.2 semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
