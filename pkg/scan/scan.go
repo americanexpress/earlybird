@@ -439,9 +439,14 @@ func splitSubN(s string, n int) []string {
 		prev = cur
 	}
 
-	// Handle the final tail chunk. Just simply append the bridge to it.
+	// Handle the final tail chunk. Append bridge and last chunk separately.
 	last := runes[start:]
-	results = append(results, string(prev[n-overlapLength:])+string(last))
+	if len(last) > overlapLength {
+		results = append(results, string(prev[n-overlapLength:]) + string(last[:overlapLength]))
+		results = append(results, string(last))
+	} else{
+		results = append(results, string(prev[n-overlapLength:]) + string(last))
+	}
 	return results
 }
 
