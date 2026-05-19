@@ -7,18 +7,6 @@
       "assets": ["go-earlybird-linux", "go-earlybird-macos", "go-earlybird.exe", "go-earlybird-arm64-macos"],
       "proxy": false
     }],
-    "@semantic-release/release-notes-generator",
-    [
-      "@semantic-release/changelog",
-      {
-        "changelogFile": "CHANGELOG.md"
-      }
-    ],
-    [
-      "@semantic-release/git",
-      {
-        "assets": ["CHANGELOG.md"]
-      }
-    ]
+    "@semantic-release/release-notes-generator"
   ]  
 }
