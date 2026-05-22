@@ -468,6 +468,31 @@ func Test_splitSubN(t *testing.T) {
 			},
 			want: []string{"foo", "bar"},
 		},
+		{
+			name: "Split with overlap bridge",
+			args: args{
+				s: "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGH",
+				n: 30,
+			},
+			want: []string{
+				"ABCDEFGHIJKLMNOPQRSTUVWXYZABCD",
+				"FGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABC",
+				"EFGHIJKLMNOPQRSTUVWXYZABCDEFGH",
+			},
+		},
+		{
+			name: "Split builds overlap for every adjacent pair",
+			args: args{
+				s: "aaaaaxxSECRETyyzzzzz",
+				n: 5,
+			},
+			want: []string{
+				"aaaaa",
+				"xxSEC",
+				"RETyy",
+				"zzzzz",
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

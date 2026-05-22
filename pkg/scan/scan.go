@@ -408,46 +408,44 @@ func splitJob(inJob WorkJob, worklength int) (work []WorkJob) {
 // splitSubN Create the overlap string when splitting long strings
 func splitSubN(s string, n int) []string {
 	runes := []rune(s)
-	chunks := make([]string, 0, len(runes)/n)
-	for start := 0; start < len(runes); start += n {
-		if end := start + n; end < len(runes) {
-			chunks = append(chunks, string(runes[start:end]))
-		} else {
-			chunks = append(chunks, string(runes[start:]))
-		}
+	if len(runes) <= n {
+		return []string{s}
 	}
 
-	results := []string{}
-	//subs contains all split strings
-	//iterate over strings parsing
-	toggle := true
-	for _, sub := range chunks {
-		var tmpString string
-		if toggle { // Check if we should parse from the end of the string
-			toggle = false
-			results = append(results, sub) // Append split string
-			if len(sub) >= overlapLength {
-				tmpString = sub[len(sub)-overlapLength:]
-			} else {
-				if len(sub) > 0 {
-					tmpString = sub[len(sub)-(len(sub)-1):]
-				} else {
-					tmpString = sub[0:]
-				}
+	if n <= overlapLength {
+		// simple split only, no bridge
+		results := make([]string, 0, (len(runes) / n))
+		for start := 0; start < len(runes); start += n {
+			end := start + n
+			if end > len(runes) {
+				end = len(runes)
 			}
-			continue
+			results = append(results, string(runes[start:end]))
 		}
-		// parse from the start of the string
-		toggle = true
-		if len(sub) > overlapLength {
-			tmpString = tmpString + sub[0:overlapLength-1]
-			results = append(results, tmpString) //Append overlapped data
-			results = append(results, sub)       // Append split string
-			tmpString = ""
-		} else {
-			results = append(results, sub) // Append split string
-			break                          //stop if last element is too short
-		}
+		return results
+	}
+	results := make([]string, 0, 2*(len(runes)/n))
+
+	// Append first chunk before the loop
+	results = append(results, string(runes[0:n]))
+
+	prev := runes[0:n]
+	start := n
+	for ; start+n < len(runes); start += n {
+		cur := runes[start : start+n]
+		bridge := string(prev[n-overlapLength:]) + string(cur[:overlapLength])
+		results = append(results, bridge)
+		results = append(results, string(cur))
+		prev = cur
+	}
+
+	// Handle the final tail chunk. Append bridge and last chunk separately.
+	last := runes[start:]
+	if len(last) > overlapLength {
+		results = append(results, string(prev[n-overlapLength:]) + string(last[:overlapLength]))
+		results = append(results, string(last))
+	} else{
+		results = append(results, string(prev[n-overlapLength:]) + string(last))
 	}
 	return results
 }
