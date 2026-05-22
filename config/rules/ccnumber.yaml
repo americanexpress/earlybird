@@ -13,6 +13,7 @@
 # permissions and limitations under the License.
 
 ---
+description: This module identifies potential American Express credit card numbers in files. It uses a regular expression to match patterns that resemble American Express card numbers, which typically start with 34 or 37 and are 15 digits long. The rule also includes a post-processing step to validate the matched numbers using the Luhn algorithm (mod10). If a potential credit card number is found, it will be redacted in the output to protect sensitive information.
 Searcharea: body
 rules:
   - Code: 2001

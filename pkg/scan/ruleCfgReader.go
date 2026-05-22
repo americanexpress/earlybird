@@ -39,6 +39,24 @@ func Init(cfg cfgreader.EarlybirdConfig) {
 		fmt.Println("Max file size to scan: ", cfg.MaxFileSize, " bytes")
 	}
 
+	if cfg.ModuleOnly {
+		fmt.Println("\n\nAvailable Module List")
+		for moduleName, fileName := range cfg.EnabledModulesMap {
+			// Load the module config file to get the description
+			var moduleConfig struct {
+				Description string `json:"description"`
+			}
+			modulePath := path.Join(cfg.RulesConfigDir, fileName)
+			err := cfgreader.LoadConfig(&moduleConfig, modulePath)
+			if err != nil {
+				log.Println("Failed to load module file for description:", err)
+			} else {
+				fmt.Printf("\n%s: \n%s \n", moduleName, moduleConfig.Description)
+			}
+		}
+		os.Exit(0)
+	}
+
 	// Init rule set for modules
 	for moduleName, fileName := range cfg.EnabledModulesMap {
 		log.Println("loading module: ", moduleName)
