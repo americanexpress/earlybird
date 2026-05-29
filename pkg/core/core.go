@@ -214,6 +214,14 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	eb.Config.SkipComments = *ptrSkipComments
 	eb.Config.IgnoreFPRules = *ptrIgnoreFPRules
 	eb.Config.ShowSolutions = *ptrShowSolutions
+	eb.Config.EnableLLMScan = *ptrEnableLLMScan
+	eb.Config.LLMEndpoint = *ptrLLMEndpoint
+	eb.Config.LLMAPIKey = firstNonEmpty(os.Getenv("EARLYBIRD_LLM_API_KEY"), os.Getenv("OPENAI_API_KEY"))
+	eb.Config.LLMModel = *ptrLLMModel
+	eb.Config.LLMTimeoutSeconds = *ptrLLMTimeoutSeconds
+	eb.Config.LLMMaxLines = *ptrLLMMaxLines
+	eb.Config.LLMMaxBytes = *ptrLLMMaxBytes
+	eb.Config.LLMFailClosed = *ptrLLMFailClosed
 
 	eb.Config.RulesConfigDir = path.Join(eb.Config.ConfigDir, rulesDir)
 	eb.Config.FalsePositivesConfigDir = path.Join(eb.Config.ConfigDir, falsePositivesDir)

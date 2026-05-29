@@ -33,6 +33,15 @@ const (
 
 type arrayFlags []string
 
+func firstNonEmpty(values ...string) string {
+	for _, value := range values {
+		if value != "" {
+			return value
+		}
+	}
+	return ""
+}
+
 func (i *arrayFlags) String() string {
 	return ""
 }
@@ -76,5 +85,12 @@ var (
 	ptrFailConfidenceThreshold    = flag.String("fail-confidence", cfgreader.Settings.TranslateLevelID(cfgreader.Settings.FailThreshold), "Lowest confidence level at which to fail "+levelOptions)
 	ptrModuleConfigFile           = flag.String("module-config-file", "", "Path to file with per module config settings")
 	ptrDisableHttpKeepAlives      = flag.Bool("disable-keep-alives", false, "To disable keep-alives when running as http Server. By default, keep-alives are always enabled")
+	ptrEnableLLMScan              = flag.Bool("llm-scan", false, "Send file content to a GPT-compatible API for additional credential review")
+	ptrLLMEndpoint                = flag.String("llm-endpoint", firstNonEmpty(os.Getenv("EARLYBIRD_LLM_ENDPOINT"), "https://api.openai.com/v1/chat/completions"), "OpenAI-compatible chat completions endpoint for LLM scanning")
+	ptrLLMModel                   = flag.String("llm-model", firstNonEmpty(os.Getenv("EARLYBIRD_LLM_MODEL"), "gpt-4.1-mini"), "Model to use for LLM scanning")
+	ptrLLMTimeoutSeconds          = flag.Int("llm-timeout-seconds", 30, "Timeout in seconds for each LLM scan request")
+	ptrLLMMaxLines                = flag.Int("llm-max-lines", 200, "Maximum file lines to send per LLM request chunk")
+	ptrLLMMaxBytes                = flag.Int("llm-max-bytes", 16000, "Maximum approximate payload bytes to send per LLM request chunk")
+	ptrLLMFailClosed              = flag.Bool("llm-fail-closed", false, "Fail the scan if an enabled LLM scan request cannot be completed")
 	ptrVersion                    = flag.Bool("version", false, "Display version information and exit")
 )

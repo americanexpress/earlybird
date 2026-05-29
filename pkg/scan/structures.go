@@ -17,6 +17,7 @@
 package scan
 
 import (
+	"net/http"
 	"regexp"
 )
 
@@ -89,6 +90,61 @@ type Report struct {
 type WorkJob struct {
 	WorkLine  Line
 	FileLines []Line
+}
+
+type LLMJob struct {
+	FileLines          []string
+	FilePath, FileName string
+}
+
+type llmMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+type llmResponseFormat struct {
+	Type string `json:"type"`
+}
+
+type llmChatCompletionRequest struct {
+	Model          string             `json:"model"`
+	Messages       []llmMessage       `json:"messages"`
+	Temperature    int                `json:"temperature"`
+	ResponseFormat *llmResponseFormat `json:"response_format,omitempty"`
+}
+
+type llmChatCompletionChoice struct {
+	Message llmMessage `json:"message"`
+}
+
+type llmAPIError struct {
+	Message string `json:"message"`
+}
+
+type llmChatCompletionResponse struct {
+	Choices []llmChatCompletionChoice `json:"choices"`
+	Error   *llmAPIError              `json:"error,omitempty"`
+}
+
+type LLMFinding struct {
+	Line           int    `json:"line"`
+	CredentialType string `json:"credential_type"`
+	Confidence     string `json:"confidence"`
+	Candidate      string `json:"candidate"`
+	Reason         string `json:"reason"`
+}
+
+type llmStructuredResponse struct {
+	Findings []LLMFinding `json:"findings"`
+}
+
+type llmFileChunk struct {
+	StartLine int
+	Lines     []string
+}
+
+type llmHTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
 }
 
 // FalsePositives are the rules to match false positives post process
