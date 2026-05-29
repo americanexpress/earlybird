@@ -91,6 +91,11 @@ type WorkJob struct {
 	FileLines []Line
 }
 
+type LLMJob struct {
+	FileLines          []string
+	FilePath, FileName string
+}
+
 // FalsePositives are the rules to match false positives post process
 type FalsePositives struct {
 	FalsePositives []FalsePositive `json:"rules"`

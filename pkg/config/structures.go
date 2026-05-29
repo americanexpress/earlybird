@@ -107,6 +107,14 @@ type EarlybirdConfig struct {
 	WorkLength                 int
 	HideMeta                   bool
 	StrictJKS                  bool
+	EnableLLMScan              bool
+	LLMEndpoint                string
+	LLMAPIKey                  string
+	LLMModel                   string
+	LLMTimeoutSeconds          int
+	LLMMaxLines                int
+	LLMMaxBytes                int
+	LLMFailClosed              bool
 	ModuleConfigs              ModuleConfigs
 	AdjustedSeverityCategories []AdjustedSeverityCategory
 }
