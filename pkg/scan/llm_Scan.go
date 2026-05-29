@@ -13,59 +13,9 @@ import (
 	"time"
 
 	cfgReader "github.com/americanexpress/earlybird/v4/pkg/config"
-	)
-
-type llmHTTPClient interface {
-	Do(req *http.Request) (*http.Response, error)
-}
+)
 
 var defaultLLMHTTPClient llmHTTPClient = &http.Client{}
-
-type llmMessage struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
-}
-
-type llmResponseFormat struct {
-	Type string `json:"type"`
-}
-
-type llmChatCompletionRequest struct {
-	Model          string              `json:"model"`
-	Messages       []llmMessage        `json:"messages"`
-	Temperature    int                 `json:"temperature"`
-	ResponseFormat *llmResponseFormat  `json:"response_format,omitempty"`
-}
-
-type llmChatCompletionChoice struct {
-	Message llmMessage `json:"message"`
-}
-
-type llmAPIError struct {
-	Message string `json:"message"`
-}
-
-type llmChatCompletionResponse struct {
-	Choices []llmChatCompletionChoice `json:"choices"`
-	Error   *llmAPIError              `json:"error,omitempty"`
-}
-
-type LLMFinding struct {
-	Line           int    `json:"line"`
-	CredentialType string `json:"credential_type"`
-	Confidence     string `json:"confidence"`
-	Candidate      string `json:"candidate"`
-	Reason         string `json:"reason"`
-}
-
-type llmStructuredResponse struct {
-	Findings []LLMFinding `json:"findings"`
-}
-
-type llmFileChunk struct {
-	StartLine int
-	Lines     []string
-}
 
 func llm_scan(cfg *cfgReader.EarlybirdConfig, scanjob LLMJob) ([]LLMFinding, error) {
 	if err := validateLLMConfig(cfg); err != nil {
@@ -90,6 +40,7 @@ func llm_scan(cfg *cfgReader.EarlybirdConfig, scanjob LLMJob) ([]LLMFinding, err
 	return findings, nil
 }
 
+// validateLLMConfig checks that the necessary configuration for LLM scan is present and valid.
 func validateLLMConfig(cfg *cfgReader.EarlybirdConfig) error {
 	if cfg == nil {
 		return fmt.Errorf("llm scan config is nil")
@@ -119,9 +70,6 @@ func validateLLMConfig(cfg *cfgReader.EarlybirdConfig) error {
 }
 
 func buildLLMFileChunks(fileLines []string, maxLines int, maxBytes int) []llmFileChunk {
-	if len(fileLines) == 0 {
-		return nil
-	}
 
 	chunks := make([]llmFileChunk, 0, (len(fileLines)/maxLines)+1)
 	current := llmFileChunk{StartLine: 1}
@@ -154,11 +102,11 @@ func callLLMChunk(client llmHTTPClient, cfg *cfgReader.EarlybirdConfig, scanjob 
 		Temperature: 0,
 		Messages: []llmMessage{
 			{
-				Role: "system",
+				Role:    "system",
 				Content: "You review source code for likely hard-coded credentials or secrets. Return JSON only with the top-level field findings. Each finding must contain line, credential_type, confidence, candidate, and reason. Confidence must be one of low, medium, or high. Ignore placeholders, obvious examples, comments describing documentation samples, and non-secret identifiers.",
 			},
 			{
-				Role: "user",
+				Role:    "user",
 				Content: buildLLMUserPrompt(scanjob, chunk),
 			},
 		},
