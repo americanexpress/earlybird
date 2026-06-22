@@ -17,7 +17,11 @@
 package scan
 
 import (
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"regexp"
+	"strconv"
 )
 
 // Rules is the exported definition of the Rules structure for Earlybird
@@ -89,6 +93,167 @@ type Report struct {
 type WorkJob struct {
 	WorkLine  Line
 	FileLines []Line
+}
+
+type LLMJob struct {
+	FileLines          []string
+	FilePath, FileName string
+}
+
+type llmMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+type GeminiContent struct {
+	Role  string  `json:"role"`
+	Parts []Parts `json:"parts"`
+}
+
+type Parts struct {
+	Text string `json:"text"`
+}
+
+type llmResponseFormat struct {
+	Type string `json:"type"`
+}
+
+type llmChatCompletionRequest struct {
+	Model          string             `json:"model"`
+	Messages       []llmMessage       `json:"messages"`
+	Temperature    int                `json:"temperature"`
+	ResponseFormat *llmResponseFormat `json:"response_format,omitempty"`
+}
+
+type gptLlmResponsesTextPart struct {
+	Type string `json:"type"`
+	Text string `json:"text"`
+}
+
+type gptLlmResponsesInput struct {
+	Role    string                    `json:"role"`
+	Content []gptLlmResponsesTextPart `json:"content"`
+}
+
+type gptLlmResponsesTextFormat struct {
+	Type string `json:"type"`
+}
+
+type gptLlmResponsesText struct {
+	Format gptLlmResponsesTextFormat `json:"format"`
+}
+
+type GptLlmResponsesRequest struct {
+	Model string                 `json:"model"`
+	Input []gptLlmResponsesInput `json:"input"`
+	Text  gptLlmResponsesText    `json:"text"`
+}
+
+type GeminiRequestBody struct {
+	Contents []GeminiContent `json:"contents"`
+}
+
+type GeminiResponseBody struct {
+	Candidates    []llmGeminiCandidate `json:"candidates,omitempty"`
+	ModelVersion  string               `json:"model_version,omitempty"`
+	ResponseId    string               `json:"response_id,omitempty"`
+	UsageMetadata struct {
+		PromptTokenCount     int    `json:"prompt_tokens"`
+		CandidatesTokenCount int    `json:"candidates_token_count"`
+		TotalTokenCount      int    `json:"total_tokens"`
+		ThoughtsTokenCount   int    `json:"thoughts_token_count,omitempty"`
+		ServiceTier          string `json:"service_tier,omitempty"`
+		PromptTokenDetails   struct {
+			Modality   string `json:"modality"`
+			TokenCount int    `json:"token_count"`
+		} `json:"completion_tokens"`
+	} `json:"usage_metadata,omitempty"`
+}
+
+type llmChatCompletionChoice struct {
+	Message llmMessage `json:"message"`
+}
+
+type llmAPIError struct {
+	Message string `json:"message"`
+}
+
+type gptLlmChatCompletionResponse struct {
+	Choices []llmChatCompletionChoice `json:"choices"`
+	Error   *llmAPIError              `json:"error,omitempty"`
+}
+
+type llmResponsesOutput struct {
+	Content []gptLlmResponsesTextPart `json:"content,omitempty"`
+}
+
+type gptLlmResponsesResponse struct {
+	Output []llmResponsesOutput `json:"output,omitempty"`
+	Error  *llmAPIError         `json:"error,omitempty"`
+}
+
+type llmGeminiCandidate struct {
+	Content json.RawMessage `json:"content"`
+}
+
+type llmAIResponse struct {
+	Choices    []llmChatCompletionChoice `json:"choices,omitempty"`
+	Candidates []llmGeminiCandidate      `json:"candidates,omitempty"`
+	Error      *llmAPIError              `json:"error,omitempty"`
+}
+
+type LLMConfidence string
+
+func (c *LLMConfidence) UnmarshalJSON(data []byte) error {
+	if string(data) == "null" {
+		*c = ""
+		return nil
+	}
+
+	var s string
+	if err := json.Unmarshal(data, &s); err == nil {
+		*c = LLMConfidence(s)
+		return nil
+	}
+
+	var i int64
+	if err := json.Unmarshal(data, &i); err == nil {
+		*c = LLMConfidence(strconv.FormatInt(i, 10))
+		return nil
+	}
+
+	var f float64
+	if err := json.Unmarshal(data, &f); err == nil {
+		if float64(int64(f)) == f {
+			*c = LLMConfidence(strconv.FormatInt(int64(f), 10))
+		} else {
+			*c = LLMConfidence(strconv.FormatFloat(f, 'f', -1, 64))
+		}
+		return nil
+	}
+
+	return fmt.Errorf("invalid confidence value: %s", string(data))
+}
+
+type LLMFinding struct {
+	Line           int           `json:"line"`
+	CredentialType string        `json:"credential_type"`
+	Confidence     LLMConfidence `json:"confidence"`
+	Candidate      string        `json:"candidate,omitempty"`
+	Reason         string        `json:"reason"`
+}
+
+type llmStructuredResponse struct {
+	Findings []LLMFinding `json:"findings"`
+}
+
+type llmFileChunk struct {
+	StartLine int
+	Lines     []string
+}
+
+type llmHTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
 }
 
 // FalsePositives are the rules to match false positives post process

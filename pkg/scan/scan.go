@@ -162,11 +162,16 @@ func contentJobWriter(cfg *cfgReader.EarlybirdConfig, files []File, jobs chan Wo
 				//Search line by line
 				reader := bufio.NewReader(fileOS)
 				job.WorkLine.LineValue, e = readln(reader)
+
+				var llm_job LLMJob
+				llm_job.FileName = searchFile.Name
+				llm_job.FilePath = searchFile.Path
 				for e == nil {
 					job.WorkLine.LineNum = job.WorkLine.LineNum + 1
 					job.WorkLine.FileName = jobFileName(cfg.Gitrepo, searchFile.Name)
 					job.WorkLine.FilePath = searchFile.Path
 					job.FileLines = append(job.FileLines, job.WorkLine)
+					llm_job.FileLines = append(llm_job.FileLines, job.WorkLine.LineValue)
 
 					//Add our split up jobs to the work array
 					work = append(work, splitJob(job, cfg.WorkLength)...)
@@ -174,6 +179,15 @@ func contentJobWriter(cfg *cfgReader.EarlybirdConfig, files []File, jobs chan Wo
 					job.WorkLine.LineValue, e = readln(reader)
 					if e != nil && e != io.EOF {
 						log.Println("Error reading file:", e)
+					}
+				}
+				if cfg.EnableLLMScan {
+					_, err = llm_scan(cfg, llm_job)
+					if err != nil {
+						log.Println("LLM scan failed:", err)
+						if cfg.LLMFailClosed {
+							cfg.FailScan = true
+						}
 					}
 				}
 				//Push our work to the jobs channel
@@ -442,10 +456,10 @@ func splitSubN(s string, n int) []string {
 	// Handle the final tail chunk. Append bridge and last chunk separately.
 	last := runes[start:]
 	if len(last) > overlapLength {
-		results = append(results, string(prev[n-overlapLength:]) + string(last[:overlapLength]))
+		results = append(results, string(prev[n-overlapLength:])+string(last[:overlapLength]))
 		results = append(results, string(last))
-	} else{
-		results = append(results, string(prev[n-overlapLength:]) + string(last))
+	} else {
+		results = append(results, string(prev[n-overlapLength:])+string(last))
 	}
 	return results
 }

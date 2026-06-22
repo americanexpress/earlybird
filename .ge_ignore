@@ -53,6 +53,7 @@
 **/*.scss
 **/*.less
 **/*.css
+**/*.mov
 **/*.css.map
 **/*.min.css
 **/*jquery*
