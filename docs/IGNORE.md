@@ -30,7 +30,7 @@ configuration might be
       "patterns": [
         "(?i)/test/",
         "(?i)/tests/",
-        "(?i)/__tests__/",
+        "(?i)/__tests__/"
       ],
       "adjusted_display_severity": "medium",
       "use_filename": true
