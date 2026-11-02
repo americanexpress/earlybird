@@ -34,6 +34,7 @@ import (
 	"github.com/americanexpress/earlybird/v4/pkg/buildflags"
 
 	"github.com/americanexpress/earlybird/v4/pkg/api"
+	"github.com/americanexpress/earlybird/v4/pkg/baseline"
 	cfgreader "github.com/americanexpress/earlybird/v4/pkg/config"
 	"github.com/americanexpress/earlybird/v4/pkg/file"
 	"github.com/americanexpress/earlybird/v4/pkg/git"
@@ -173,6 +174,7 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	eb.Config.Version = buildflags.Version
 	//Load CLI arguments and parse
 	flag.Var(&enableFlags, "enable", "Enable individual scanning modules "+utils.GetDisplayList(eb.Config.AvailableModules))
+	flag.Var(&baselineOpt, "baseline", "Generate a baseline file of findings (defaults to earlybird_baseline.json)")
 	flag.Parse()
 
 	// Print version and exit if version flag used
@@ -214,6 +216,8 @@ func (eb *EarlybirdCfg) ConfigInit() {
 	eb.Config.SkipComments = *ptrSkipComments
 	eb.Config.IgnoreFPRules = *ptrIgnoreFPRules
 	eb.Config.ShowSolutions = *ptrShowSolutions
+	eb.Config.BaselineFile = baselineOpt.value
+	eb.Config.IgnoreBaselineFile = *ptrIgnoreBaselineFile
 
 	eb.Config.RulesConfigDir = path.Join(eb.Config.ConfigDir, rulesDir)
 	eb.Config.FalsePositivesConfigDir = path.Join(eb.Config.ConfigDir, falsePositivesDir)
@@ -299,11 +303,49 @@ func (eb *EarlybirdCfg) Scan() {
 	if err != nil {
 		log.Fatal("Failed to get FileContext: ", err)
 	}
+
+	if eb.Config.IgnoreBaselineFile != "" {
+		bl, err := baseline.Load(eb.Config.IgnoreBaselineFile)
+		if err != nil {
+			log.Fatalf("Failed to load baseline file %s: %v", eb.Config.IgnoreBaselineFile, err)
+		}
+		eb.Config.BaselineFilter = func(h any) bool {
+			if hit, ok := h.(scan.Hit); ok {
+				return bl.IsIgnored(hit)
+			}
+			return false
+		}
+	}
+
 	HitChannel := make(chan scan.Hit)
 	go scan.SearchFiles(&eb.Config, fileContext.Files, fileContext.CompressPaths, fileContext.ConvertPaths, HitChannel)
 
+	var collectedHits []scan.Hit
+	var hitsMutex sync.Mutex
+
+	outputChannel := make(chan scan.Hit)
+	go func() {
+		for hit := range HitChannel {
+			if eb.Config.BaselineFile != "" {
+				hitsMutex.Lock()
+				collectedHits = append(collectedHits, hit)
+				hitsMutex.Unlock()
+			}
+			outputChannel <- hit
+		}
+		close(outputChannel)
+	}()
+
 	// Send output to a writer
-	eb.WriteResults(start, HitChannel, fileContext)
+	eb.WriteResults(start, outputChannel, fileContext)
+
+	if eb.Config.BaselineFile != "" {
+		if err := baseline.Save(eb.Config.BaselineFile, collectedHits, eb.Config.Version); err != nil {
+			log.Fatalf("Failed to save baseline file %s: %v", eb.Config.BaselineFile, err)
+		}
+		log.Printf("Generated baseline with %d findings to %s\n", len(collectedHits), eb.Config.BaselineFile)
+		eb.Config.FailScan = false
+	}
 
 	utils.DeleteGit(eb.Config.Gitrepo, eb.Config.SearchDir)
 	if eb.Config.FailScan {

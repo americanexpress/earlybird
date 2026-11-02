@@ -53,7 +53,7 @@ func PathMustExist(path string) {
 
 // GetConfigDir Determine the operating system and pull the path to the go-earlybird config directory
 func GetConfigDir() (configDir string) {
-	if strings.HasSuffix(os.Args[0], ".test") { // Return repository config directory when testing ../../config
+	if strings.HasSuffix(os.Args[0], ".test") || strings.HasSuffix(os.Args[0], ".test.exe") { // Return repository config directory when testing ../../config
 		return ".." + string(os.PathSeparator) + ".." + string(os.PathSeparator) + "config" + string(os.PathSeparator)
 	}
 

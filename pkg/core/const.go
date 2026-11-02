@@ -31,6 +31,32 @@ const (
 	solutionsDir      = "solutions"
 )
 
+type baselineFlag struct {
+	value string
+	set   bool
+}
+
+func (b *baselineFlag) String() string {
+	return b.value
+}
+
+func (b *baselineFlag) Set(val string) error {
+	b.set = true
+	if val == "true" || val == "" {
+		b.value = "earlybird_baseline.json"
+	} else if val == "false" {
+		b.value = ""
+		b.set = false
+	} else {
+		b.value = val
+	}
+	return nil
+}
+
+func (b *baselineFlag) IsBoolFlag() bool {
+	return true
+}
+
 type arrayFlags []string
 
 func (i *arrayFlags) String() string {
@@ -77,4 +103,6 @@ var (
 	ptrModuleConfigFile           = flag.String("module-config-file", "", "Path to file with per module config settings")
 	ptrDisableHttpKeepAlives      = flag.Bool("disable-keep-alives", false, "To disable keep-alives when running as http Server. By default, keep-alives are always enabled")
 	ptrVersion                    = flag.Bool("version", false, "Display version information and exit")
+	baselineOpt                   baselineFlag
+	ptrIgnoreBaselineFile         = flag.String("ignore-baseline", "", "Path to baseline file containing findings to exclude from scan results (e.g. earlybird_baseline.json)")
 )

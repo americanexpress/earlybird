@@ -109,4 +109,7 @@ type EarlybirdConfig struct {
 	StrictJKS                  bool
 	ModuleConfigs              ModuleConfigs
 	AdjustedSeverityCategories []AdjustedSeverityCategory
+	BaselineFile               string
+	IgnoreBaselineFile         string
+	BaselineFilter             func(hit any) bool
 }
