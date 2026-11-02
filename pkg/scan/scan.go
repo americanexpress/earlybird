@@ -105,6 +105,10 @@ func scanPool(cfg *cfgReader.EarlybirdConfig, wg *sync.WaitGroup, jobMutex *sync
 						}
 						jobMutex.Unlock()
 
+						if cfg.BaselineFilter != nil && cfg.BaselineFilter(hit) {
+							continue
+						}
+
 						if hit.ConfidenceID <= cfg.ConfidenceDisplayLevel {
 							hits <- hit //Push hits to channel
 						}
@@ -191,6 +195,9 @@ func nameScanner(cfg *cfgReader.EarlybirdConfig, files []File, hits chan<- Hit) 
 		// Scan the filename based on the Filename rules
 		hitFound, hit := scanName(file, CombinedRules, cfg)
 		if hitFound {
+			if cfg.BaselineFilter != nil && cfg.BaselineFilter(hit) {
+				continue
+			}
 
 			hits <- hit //push hit to channel
 
@@ -442,10 +449,10 @@ func splitSubN(s string, n int) []string {
 	// Handle the final tail chunk. Append bridge and last chunk separately.
 	last := runes[start:]
 	if len(last) > overlapLength {
-		results = append(results, string(prev[n-overlapLength:]) + string(last[:overlapLength]))
+		results = append(results, string(prev[n-overlapLength:])+string(last[:overlapLength]))
 		results = append(results, string(last))
-	} else{
-		results = append(results, string(prev[n-overlapLength:]) + string(last))
+	} else {
+		results = append(results, string(prev[n-overlapLength:])+string(last))
 	}
 	return results
 }

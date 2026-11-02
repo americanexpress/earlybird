@@ -95,3 +95,59 @@ func TestEarlybirdCfg_getDefaultModuleSettings(t *testing.T) {
 
 	cleanup()
 }
+
+func TestEarlybirdCfg_BaselineWorkflow(t *testing.T) {
+	tempDir := t.TempDir()
+	baselinePath := filepath.Join(tempDir, "earlybird_baseline.json")
+
+	// Create test file with a secret
+	secretFile := filepath.Join(tempDir, "credentials.txt")
+	err := os.WriteFile(secretFile, []byte("AKIAIOSFODNN7EXAMPLE\n"), 0644)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testEb := EarlybirdCfg{}
+	testEb.Config = eb.Config
+	testEb.Config.SearchDir = tempDir
+	testEb.Config.BaselineFile = baselinePath
+	testEb.Config.OutputFormat = "json"
+	testEb.Config.OutputFile = filepath.Join(tempDir, "scan_out.json")
+
+	// 1. Generate baseline
+	testEb.Scan()
+
+	if _, err := os.Stat(baselinePath); os.IsNotExist(err) {
+		t.Fatalf("Expected baseline file to be created at %s", baselinePath)
+	}
+
+	// 2. Scan with ignore-baseline: should exclude baseline findings
+	ignoreEb := EarlybirdCfg{}
+	ignoreEb.Config = eb.Config
+	ignoreEb.Config.SearchDir = tempDir
+	ignoreEb.Config.IgnoreBaselineFile = baselinePath
+	ignoreEb.Config.OutputFormat = "json"
+	ignoreEb.Config.OutputFile = filepath.Join(tempDir, "ignored_out.json")
+
+	ignoreEb.Scan()
+
+	if ignoreEb.Config.FailScan {
+		t.Errorf("Expected FailScan to be false when all findings are in baseline")
+	}
+
+	// 3. Add a new secret: scan should detect new finding
+	newSecretFile := filepath.Join(tempDir, "new_secret.txt")
+	err = os.WriteFile(newSecretFile, []byte("ghp_111111111111111111111111111111111111\n"), 0644)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	newScanEb := EarlybirdCfg{}
+	newScanEb.Config = eb.Config
+	newScanEb.Config.SearchDir = tempDir
+	newScanEb.Config.IgnoreBaselineFile = baselinePath
+	newScanEb.Config.OutputFormat = "json"
+	newScanEb.Config.OutputFile = filepath.Join(tempDir, "new_out.json")
+
+	newScanEb.Scan()
+}
